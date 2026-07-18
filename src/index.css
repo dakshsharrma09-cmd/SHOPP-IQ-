@@ -1,0 +1,505 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --brand-purple: #7C3AED;
+    --brand-purple-light: #8B5CF6;
+    --brand-dark: #0F0A1E;
+    --brand-dark-card: #1A1035;
+    --brand-gold: #F59E0B;
+    --brand-green: #10B981;
+    --brand-whatsapp: #25D366;
+
+    --radius: 0.75rem;
+    --sidebar-width: 240px;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background-color: #F8F7FF;
+    color: #1a1a2e;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  .dark body {
+    background-color: #0F0A1E;
+    color: #E8E0FF;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 700;
+  }
+
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgba(124, 58, 237, 0.3);
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(124, 58, 237, 0.6);
+  }
+}
+
+@layer components {
+  /* Skeleton loading */
+  .skeleton {
+    @apply bg-gray-200 dark:bg-gray-700 rounded animate-pulse;
+    background: linear-gradient(
+      90deg,
+      rgba(124, 58, 237, 0.05) 25%,
+      rgba(124, 58, 237, 0.15) 50%,
+      rgba(124, 58, 237, 0.05) 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s ease-in-out infinite;
+  }
+
+  /* Glass card effect */
+  .glass-card {
+    @apply rounded-2xl border;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    border-color: rgba(124, 58, 237, 0.1);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+  }
+
+  .dark .glass-card {
+    background: rgba(26, 16, 53, 0.85);
+    border-color: rgba(124, 58, 237, 0.25);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+  }
+
+  /* Stat card */
+  .stat-card {
+    @apply glass-card p-6 transition-all duration-300 cursor-pointer;
+  }
+
+  .stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(124, 58, 237, 0.15);
+  }
+
+  /* Primary stat card — purple gradient */
+  .stat-card-primary {
+    @apply p-6 rounded-2xl transition-all duration-300 cursor-pointer border-0;
+    background: linear-gradient(135deg, #7C3AED 0%, #6D28D9 60%, #5B21B6 100%);
+    color: white;
+    box-shadow: 0 8px 32px rgba(124, 58, 237, 0.35);
+  }
+
+  .stat-card-primary:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 14px 44px rgba(124, 58, 237, 0.45);
+  }
+
+  /* Chart container with purple glow */
+  .chart-container {
+    @apply glass-card;
+    box-shadow:
+      0 4px 24px rgba(0, 0, 0, 0.06),
+      0 0 40px rgba(124, 58, 237, 0.08),
+      inset 0 1px 0 rgba(124, 58, 237, 0.06);
+  }
+
+  .dark .chart-container {
+    box-shadow:
+      0 4px 24px rgba(0, 0, 0, 0.4),
+      0 0 50px rgba(124, 58, 237, 0.12),
+      inset 0 1px 0 rgba(124, 58, 237, 0.1);
+  }
+
+  /* Purple button */
+  .btn-primary {
+    @apply inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-white transition-all duration-200;
+    background: linear-gradient(135deg, #7C3AED, #6D28D9);
+    box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(124, 58, 237, 0.5);
+  }
+
+  .btn-primary:active {
+    transform: translateY(0);
+  }
+
+  /* WhatsApp button */
+  .btn-whatsapp {
+    @apply inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-white transition-all duration-200;
+    background: linear-gradient(135deg, #25D366, #128C7E);
+    box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+
+  .btn-whatsapp:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(37, 211, 102, 0.5);
+  }
+
+  /* OTP input box */
+  .otp-box {
+    @apply w-14 h-14 text-center text-2xl font-bold rounded-xl border-2 transition-all duration-200;
+    border-color: rgba(124, 58, 237, 0.3);
+    background: rgba(255, 255, 255, 0.05);
+    color: white;
+    outline: none;
+  }
+
+  .otp-box:focus {
+    border-color: #7C3AED;
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.3);
+  }
+
+  .otp-box.filled {
+    border-color: #7C3AED;
+    background: rgba(124, 58, 237, 0.15);
+  }
+
+  /* Nav item */
+  .nav-item {
+    @apply flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm transition-all duration-200 cursor-pointer;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+
+  .nav-item:hover {
+    @apply bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300;
+  }
+
+  .nav-item.active {
+    background: linear-gradient(135deg, #7C3AED, #6D28D9);
+    color: white !important;
+    border-left: none;
+    box-shadow: 0 4px 14px rgba(124, 58, 237, 0.35);
+  }
+
+  .dark .nav-item.active {
+    background: linear-gradient(135deg, #7C3AED, #6D28D9);
+    color: white !important;
+  }
+
+  /* Pulse CTA animation for Naya Bill button */
+  .btn-pulse {
+    animation: btnPulse 2.5s ease-in-out infinite;
+  }
+
+  @keyframes btnPulse {
+    0%, 100% { box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4); }
+    50% { box-shadow: 0 4px 25px rgba(124, 58, 237, 0.7), 0 0 40px rgba(124, 58, 237, 0.2); }
+  }
+
+  /* Mobile bottom tab — overflow safe */
+  .mobile-tab-bar {
+    @apply flex items-center py-2;
+    justify-content: space-around;
+  }
+
+  .mobile-tab-item {
+    @apply flex flex-col items-center gap-0.5 rounded-xl transition-all;
+    padding: 6px 10px;
+    min-width: 0;
+    flex: 1 1 0;
+    max-width: 80px;
+  }
+
+  /* Badge variants */
+  .badge-green {
+    @apply inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold;
+    background: rgba(16, 185, 129, 0.1);
+    color: #059669;
+  }
+
+  .badge-amber {
+    @apply inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold;
+    background: rgba(245, 158, 11, 0.1);
+    color: #D97706;
+  }
+
+  .badge-red {
+    @apply inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold;
+    background: rgba(239, 68, 68, 0.1);
+    color: #DC2626;
+  }
+
+  .badge-purple {
+    @apply inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold;
+    background: rgba(124, 58, 237, 0.1);
+    color: #7C3AED;
+  }
+
+  .badge-blue {
+    @apply inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold;
+    background: rgba(59, 130, 246, 0.1);
+    color: #2563EB;
+  }
+
+  /* Purple glow effect for login */
+  .purple-glow {
+    position: relative;
+  }
+
+  .purple-glow::before {
+    content: '';
+    position: absolute;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(124, 58, 237, 0.3) 0%, transparent 70%);
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* Input styles */
+  .input-field {
+    @apply w-full px-4 py-3 rounded-xl border text-sm transition-all duration-200 outline-none;
+    border-color: rgba(124, 58, 237, 0.2);
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .input-field:focus {
+    border-color: #7C3AED;
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
+  }
+
+  /* Slide-over panel */
+  .slide-over {
+    @apply fixed inset-y-0 right-0 z-50 flex flex-col w-full max-w-xl;
+    background: white;
+    box-shadow: -4px 0 40px rgba(0, 0, 0, 0.15);
+    animation: slideInRight 0.3s ease-out;
+  }
+
+  .dark .slide-over {
+    background: #1A1035;
+  }
+
+  /* Progress bar */
+  .progress-bar {
+    @apply h-2 rounded-full overflow-hidden bg-gray-200 dark:bg-gray-700;
+  }
+
+  .progress-fill {
+    @apply h-full rounded-full transition-all duration-500;
+    background: linear-gradient(90deg, #7C3AED, #8B5CF6);
+  }
+
+  /* Vyapaar score ring */
+  .score-ring {
+    @apply relative flex items-center justify-center;
+  }
+
+  /* Quick action card */
+  .quick-action {
+    @apply flex flex-col items-center gap-2 p-4 rounded-2xl transition-all duration-200 cursor-pointer border;
+    border-color: rgba(124, 58, 237, 0.1);
+    background: white;
+  }
+
+  .dark .quick-action {
+    background: #1A1035;
+    border-color: rgba(124, 58, 237, 0.2);
+  }
+
+  .quick-action:hover {
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.08), rgba(109, 40, 217, 0.12));
+    border-color: rgba(124, 58, 237, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(124, 58, 237, 0.15);
+  }
+
+  /* Table row hover */
+  .table-row-hover:hover {
+    background: rgba(124, 58, 237, 0.04);
+  }
+
+  .dark .table-row-hover:hover {
+    background: rgba(124, 58, 237, 0.1);
+  }
+}
+
+@layer utilities {
+  .text-gradient-purple {
+    background: linear-gradient(135deg, #7C3AED, #8B5CF6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .text-gradient-gold {
+    background: linear-gradient(135deg, #F59E0B, #D97706);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .bg-dark-card {
+    background-color: #1A1035;
+  }
+
+  .border-brand {
+    border-color: rgba(124, 58, 237, 0.2);
+  }
+
+  .font-heading {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+
+  /* Hide scrollbar but keep scroll */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* iOS safe area support for bottom tab bar */
+  .safe-area-pb {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+}
+
+/* ============================================================
+   MOBILE TOUCH TARGETS — 44px minimum per Apple/Google HIG
+   ============================================================ */
+@media (max-width: 767px) {
+  /* All buttons: minimum 44px tap target */
+  button, a[role="button"], .btn-primary, .btn-whatsapp,
+  [type="button"], [type="submit"], [type="reset"] {
+    min-height: 44px;
+  }
+
+  /* Table rows: minimum 44px tap target */
+  tbody tr {
+    min-height: 44px;
+  }
+
+  tbody td {
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  /* Mobile tab items */
+  .mobile-tab-item {
+    min-height: 44px;
+    justify-content: center;
+  }
+
+  /* Select inputs */
+  select, input[type="text"], input[type="tel"], input[type="number"], input[type="email"] {
+    min-height: 44px;
+  }
+}
+
+/* ============================================================
+   PRINT STYLES — A4 Clean GST Report
+   ============================================================ */
+@media print {
+  /* Hide navigation, sidebar, header, tabs, action buttons */
+  aside, header, nav,
+  .mobile-tab-bar,
+  [data-print-hide] {
+    display: none !important;
+  }
+
+  /* Reset layout padding from sidebar */
+  body, #root {
+    background: white !important;
+    color: black !important;
+  }
+
+  /* Remove sidebar offset */
+  .md\:pl-60, .md\:pl-16 {
+    padding-left: 0 !important;
+  }
+
+  /* Remove top padding from main */
+  main {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  /* Make content full width */
+  .p-4, .md\:p-6 {
+    padding: 12px !important;
+  }
+
+  /* Clean card backgrounds for print */
+  .glass-card, .stat-card, .chart-container {
+    background: white !important;
+    border: 1px solid #e5e7eb !important;
+    box-shadow: none !important;
+    break-inside: avoid;
+  }
+
+  /* Tables print cleanly */
+  table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    font-size: 11px !important;
+  }
+
+  th, td {
+    border: 1px solid #d1d5db !important;
+    padding: 6px 8px !important;
+  }
+
+  th {
+    background: #f3f4f6 !important;
+    font-weight: 600 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Print header shows on the page */
+  .print-header {
+    display: block !important;
+  }
+
+  /* Force page margins */
+  @page {
+    size: A4;
+    margin: 15mm;
+  }
+
+  /* Ensure text is dark */
+  * {
+    color: #1f2937 !important;
+  }
+
+  .font-bold, .font-heading {
+    color: #111827 !important;
+  }
+}

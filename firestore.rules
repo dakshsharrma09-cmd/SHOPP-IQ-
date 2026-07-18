@@ -1,0 +1,14 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Tenant document — only the owner can read/write
+    match /tenants/{tenantId} {
+      allow read, write: if request.auth != null && request.auth.uid == tenantId;
+
+      // All sub-collections under a tenant — scoped to owner
+      match /{collection}/{document=**} {
+        allow read, write: if request.auth != null && request.auth.uid == tenantId;
+      }
+    }
+  }
+}
