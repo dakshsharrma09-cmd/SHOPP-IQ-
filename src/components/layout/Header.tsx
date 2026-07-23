@@ -182,7 +182,7 @@ export default function Header({ sidebarCollapsed }: HeaderProps) {
 
   return (
     <header className={cn(
-      'fixed top-0 right-0 z-30 h-16 bg-white/80 dark:bg-brand-dark-card/80 backdrop-blur-md border-b border-gray-100 dark:border-brand-dark-border transition-all duration-300',
+      'fixed top-0 right-0 z-30 h-16 bg-white/80 dark:bg-brand-dark-card/80 backdrop-blur-xl border-b border-gray-100 dark:border-brand-dark-border transition-all duration-300 header-shine',
       'left-0 md:left-auto',
       sidebarCollapsed ? 'md:left-16' : 'md:left-60'
     )}>

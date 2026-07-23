@@ -59,7 +59,7 @@ export default function Sidebar({ collapsed, onCollapse }: SidebarProps) {
           'flex items-center gap-3 px-4 py-5 border-b border-gray-100 dark:border-brand-dark-border',
           collapsed && 'justify-center px-2'
         )}>
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-purple to-purple-600 flex items-center justify-center flex-shrink-0 shadow-purple-glow-sm">
+          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-purple to-purple-600 flex items-center justify-center flex-shrink-0 shadow-purple-glow-sm animate-pulse-glow">
             <ShoppingBag size={18} className="text-white" />
           </div>
           {!collapsed && (

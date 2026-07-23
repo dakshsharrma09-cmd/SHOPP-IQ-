@@ -25,7 +25,7 @@ export default function DashboardLayout() {
           'min-h-screen',
           isWhatsApp ? 'pt-0 pb-0' : 'pt-16 pb-20 md:pb-0'
         )}>
-          <div className={cn('animate-fade-in', isWhatsApp ? 'p-0 h-screen' : 'p-4 md:p-6')}>
+          <div key={location.pathname} className={cn('page-enter', isWhatsApp ? 'p-0 h-screen' : 'p-4 md:p-6')}>
             <Outlet />
           </div>
         </main>

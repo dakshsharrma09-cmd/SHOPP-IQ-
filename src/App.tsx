@@ -1,7 +1,9 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { useState } from 'react';
 import { AuthProvider } from './contexts/AuthContext';
 import { LanguageProvider } from './contexts/LanguageContext';
 import AuthGuard from './components/AuthGuard';
+import LoadingScreen from './components/LoadingScreen';
 import DashboardLayout from './components/layout/DashboardLayout';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -18,6 +20,12 @@ import WhatsAppChat from './pages/WhatsAppChat';
 import OfflineBanner from './components/OfflineBanner';
 
 export default function App() {
+  const [appReady, setAppReady] = useState(false);
+
+  if (!appReady) {
+    return <LoadingScreen onFinished={() => setAppReady(true)} />;
+  }
+
   return (
     <LanguageProvider>
       <AuthProvider>

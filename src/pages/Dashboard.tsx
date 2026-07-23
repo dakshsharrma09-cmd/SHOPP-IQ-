@@ -18,6 +18,31 @@ import {
   PieChart, Pie, Cell, BarChart, Bar
 } from 'recharts';
 
+const getGreeting = () => {
+  const hour = new Date().getHours();
+  if (hour < 12) return { text: 'शुभ प्रभात', emoji: '☀️', sub: 'Good Morning' };
+  if (hour < 17) return { text: 'नमस्ते', emoji: '🙏', sub: 'Good Afternoon' };
+  if (hour < 21) return { text: 'शुभ संध्या', emoji: '🌅', sub: 'Good Evening' };
+  return { text: 'शुभ रात्रि', emoji: '🌙', sub: 'Good Night' };
+};
+
+function AnimatedNumber({ value, prefix = '', suffix = '' }: { value: number; prefix?: string; suffix?: string }) {
+  const [display, setDisplay] = useState(0);
+  useEffect(() => {
+    const duration = 1500;
+    const steps = 40;
+    const inc = value / steps;
+    let cur = 0;
+    const t = setInterval(() => {
+      cur += inc;
+      if (cur >= value) { setDisplay(value); clearInterval(t); }
+      else setDisplay(Math.floor(cur));
+    }, duration / steps);
+    return () => clearInterval(t);
+  }, [value]);
+  return <>{prefix}{display.toLocaleString('en-IN')}{suffix}</>;
+}
+
 function StatusBadge({ status }: { status: string }) {
   const map: Record<string, string> = {
     paid: 'badge-green', partial: 'badge-amber', unpaid: 'badge-red', overdue: 'badge-red',
@@ -204,16 +229,29 @@ export default function Dashboard() {
     setSeeding(false);
   };
 
+  const greeting = getGreeting();
+
   return (
     <div className="space-y-6 animate-fade-in">
+      <style>{`
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-in-up { animation: fadeInUp 0.5s ease-out forwards; opacity: 0; }
+      `}</style>
+      
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-heading font-bold text-gray-900 dark:text-white">
-            {language === 'hi' ? `Namaste, ${tenant?.ownerName?.split(' ')[0] || 'ji'} 👋` : `Good Morning, ${tenant?.ownerName?.split(' ')[0] || 'there'} 👋`}
+          <h1 className="text-3xl font-heading font-bold text-gray-900 dark:text-white flex items-center gap-3">
+            {greeting.emoji} {greeting.text}, {tenant?.ownerName?.split(' ')[0] || 'Boss'}!
+            {isLive && (
+              <span className="relative flex h-3 w-3 mt-1" title="Live from Firestore">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-green opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-brand-green"></span>
+              </span>
+            )}
           </h1>
-          <p className="text-sm text-gray-500 mt-0.5">
-            {tenant?.businessName || 'Your Store'} · {formatDate(new Date())}
+          <p className="text-sm text-gray-500 mt-1">
+            {new Intl.DateTimeFormat('hi-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }).format(new Date())}
           </p>
         </div>
         {!seeded && (
@@ -229,26 +267,23 @@ export default function Dashboard() {
       </div>
 
       {/* ROW 1: Stat Cards */}
-      <div className="mb-1 flex items-center gap-2">
-        {isLive && (
-          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-brand-green/10">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-green opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-brand-green"></span>
-            </span>
-            <span className="text-[10px] font-heading font-semibold text-brand-green uppercase tracking-wider">Live</span>
-          </div>
-        )}
-      </div>
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard primary title={t('todaySales')} value={formatINR(todaySales)} sub={`${todayInvoices.length} invoices today`} subColor="text-brand-green"
-          icon={TrendingUp} iconColor="text-brand-purple" iconBg="bg-brand-purple/10" onClick={() => navigate('/analytics')} />
-        <StatCard title={t('pendingPayments')} value={formatINR(pendingTotal)} sub={`${pendingCount} invoices pending`} subColor="text-brand-gold"
-          icon={AlertTriangle} iconColor="text-brand-gold" iconBg="bg-brand-gold/10" onClick={() => navigate('/payments')} />
-        <StatCard title={t('lowStock')} value={`${lowStockProducts.length} Products`} sub={lowStockProducts.length > 0 ? 'Reorder needed' : 'All stocked'} subColor={lowStockProducts.length > 0 ? 'text-red-500' : 'text-brand-green'}
-          icon={Package} iconColor="text-red-500" iconBg="bg-red-50" onClick={() => navigate('/inventory')} />
-        <StatCard title={t('newCustomers')} value={`${newCustomersToday} ${language === 'hi' ? 'Naye' : 'New'}`} sub={`${todayInvoices.filter(i => !i.customerId).length} walk-ins today`} subColor="text-blue-500"
-          icon={Users} iconColor="text-blue-500" iconBg="bg-blue-50" onClick={() => navigate('/customers')} />
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-2">
+        <div className="fade-in-up" style={{ animationDelay: '0ms' }}>
+          <StatCard primary title={t('todaySales')} value={<AnimatedNumber value={todaySales} prefix="₹" />} sub={`${todayInvoices.length} invoices today`} subColor="text-brand-green"
+            icon={TrendingUp} iconColor="text-brand-purple" iconBg="bg-brand-purple/10" onClick={() => navigate('/analytics')} />
+        </div>
+        <div className="fade-in-up" style={{ animationDelay: '100ms' }}>
+          <StatCard title={t('pendingPayments')} value={<AnimatedNumber value={pendingTotal} prefix="₹" />} sub={`${pendingCount} invoices pending`} subColor="text-brand-gold"
+            icon={AlertTriangle} iconColor="text-brand-gold" iconBg="bg-brand-gold/10" onClick={() => navigate('/payments')} />
+        </div>
+        <div className="fade-in-up" style={{ animationDelay: '200ms' }}>
+          <StatCard title={t('lowStock')} value={<><AnimatedNumber value={lowStockProducts.length} /> Products</>} sub={lowStockProducts.length > 0 ? 'Reorder needed' : 'All stocked'} subColor={lowStockProducts.length > 0 ? 'text-red-500' : 'text-brand-green'}
+            icon={Package} iconColor="text-red-500" iconBg="bg-red-50" onClick={() => navigate('/inventory')} />
+        </div>
+        <div className="fade-in-up" style={{ animationDelay: '300ms' }}>
+          <StatCard title={t('newCustomers')} value={<><AnimatedNumber value={newCustomersToday} /> {language === 'hi' ? 'Naye' : 'New'}</>} sub={`${todayInvoices.filter(i => !i.customerId).length} walk-ins today`} subColor="text-blue-500"
+            icon={Users} iconColor="text-blue-500" iconBg="bg-blue-50" onClick={() => navigate('/customers')} />
+        </div>
       </div>
 
       {/* ROW 2: Charts */}
@@ -384,7 +419,7 @@ export default function Dashboard() {
         <h2 className="font-heading font-semibold text-gray-900 dark:text-white mb-4">{t('quickActions')}</h2>
         <div className="grid grid-cols-4 md:grid-cols-8 gap-3">
           {quickActions.map(action => (
-            <button key={action.label} onClick={() => navigate(action.path)} className="quick-action">
+            <button key={action.label} onClick={() => navigate(action.path)} className="quick-action hover:scale-105 transition-transform duration-200">
               <div className={`w-10 h-10 rounded-xl flex items-center justify-center bg-gray-50 dark:bg-gray-800 group-hover:bg-brand-purple/10`}>
                 <action.icon size={20} className={action.color} />
               </div>

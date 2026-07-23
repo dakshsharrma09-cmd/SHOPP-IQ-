@@ -6,6 +6,23 @@ import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { cn } from '../lib/formatters';
 
+function CountUp({ target, prefix = '', suffix = '', isFloat = false }: { target: number; prefix?: string; suffix?: string; isFloat?: boolean }) {
+  const [count, setCount] = useState(0);
+  useEffect(() => {
+    const duration = 2000;
+    const steps = 60;
+    const increment = target / steps;
+    let current = 0;
+    const timer = setInterval(() => {
+      current += increment;
+      if (current >= target) { setCount(target); clearInterval(timer); }
+      else setCount(isFloat ? Number(current.toFixed(1)) : Math.floor(current));
+    }, duration / steps);
+    return () => clearInterval(timer);
+  }, [target, isFloat]);
+  return <>{prefix}{isFloat ? count.toFixed(1) : count.toLocaleString('en-IN')}{suffix}</>;
+}
+
 export default function Login() {
   const { sendOTP, verifyOTP } = useAuth();
   const { language, setLanguage, t } = useLanguage();
@@ -121,15 +138,56 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden"
-      style={{ background: 'linear-gradient(135deg, #0F0A1E 0%, #1A0D3F 50%, #0F0A1E 100%)' }}>
+    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden animate-gradient"
+      style={{ background: 'linear-gradient(135deg, #0F0A1E 0%, #1A0D3F 50%, #2D1B69 100%, #1A0D3F 150%)' }}>
+
+      <style>{`
+        @keyframes float1 {
+          0%, 100% { transform: translate(0, 0) scale(1); }
+          50% { transform: translate(30px, -50px) scale(1.1); }
+        }
+        @keyframes float2 {
+          0%, 100% { transform: translate(0, 0) scale(1); }
+          50% { transform: translate(-40px, 40px) scale(1.05); }
+        }
+        @keyframes float3 {
+          0%, 100% { transform: translate(0, 0) scale(1); }
+          50% { transform: translate(50px, 20px) scale(0.95); }
+        }
+        @keyframes gradientShift {
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
+        }
+        @keyframes slideUpFade {
+          from { opacity: 0; transform: translateY(30px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes shake {
+          0%, 100% { transform: translateX(0); }
+          25% { transform: translateX(-5px); }
+          75% { transform: translateX(5px); }
+        }
+        .animate-gradient {
+          background-size: 400% 400% !important;
+          animation: gradientShift 15s ease infinite;
+        }
+        .animate-slide-up-fade {
+          animation: slideUpFade 0.6s ease-out forwards;
+        }
+        .animate-shake {
+          animation: shake 0.4s ease-in-out;
+        }
+      `}</style>
 
       {/* Background decorations */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full opacity-20 blur-3xl"
-          style={{ background: 'radial-gradient(circle, #7C3AED, transparent)' }} />
-        <div className="absolute bottom-1/4 right-1/4 w-64 h-64 rounded-full opacity-15 blur-3xl"
-          style={{ background: 'radial-gradient(circle, #F59E0B, transparent)' }} />
+        <div className="absolute top-[10%] left-[15%] rounded-full mix-blend-screen"
+          style={{ width: '200px', height: '200px', background: 'radial-gradient(circle, rgba(124,58,237,0.4), transparent 70%)', animation: 'float1 15s ease-in-out infinite' }} />
+        <div className="absolute top-[60%] right-[10%] rounded-full mix-blend-screen"
+          style={{ width: '150px', height: '150px', background: 'radial-gradient(circle, rgba(245,158,11,0.3), transparent 70%)', animation: 'float2 20s ease-in-out infinite reverse' }} />
+        <div className="absolute bottom-[20%] left-[30%] rounded-full mix-blend-screen"
+          style={{ width: '120px', height: '120px', background: 'radial-gradient(circle, rgba(236,72,153,0.3), transparent 70%)', animation: 'float3 18s ease-in-out infinite' }} />
         {/* Dot grid */}
         <div className="absolute inset-0 opacity-5"
           style={{ backgroundImage: 'radial-gradient(#7C3AED 1px, transparent 1px)', backgroundSize: '30px 30px' }} />
@@ -148,7 +206,7 @@ export default function Login() {
       <div id="recaptcha-container" />
 
       {/* Login Card */}
-      <div className="relative w-full max-w-md animate-scale-in">
+      <div className="relative w-full max-w-md animate-slide-up-fade">
         <div className="rounded-3xl p-8 border relative overflow-hidden"
           style={{
             background: 'rgba(255,255,255,0.05)',
@@ -256,7 +314,7 @@ export default function Login() {
               </div>
 
               {/* 6-box OTP input */}
-              <div className="flex gap-2 justify-center mb-6">
+              <div className={cn("flex gap-2 justify-center mb-6", error && "animate-shake")}>
                 {otp.map((digit, index) => (
                   <input
                     key={index}
@@ -331,17 +389,17 @@ export default function Login() {
             </p>
             <div className="flex items-center justify-center gap-4 mt-3">
               <div className="text-center">
-                <div className="text-white text-sm font-bold font-heading">10K+</div>
+                <div className="text-white text-sm font-bold font-heading"><CountUp target={10} suffix="K+" /></div>
                 <div className="text-gray-500 text-[10px]">Stores</div>
               </div>
               <div className="w-px h-6 bg-white/10" />
               <div className="text-center">
-                <div className="text-white text-sm font-bold font-heading">₹50Cr+</div>
+                <div className="text-white text-sm font-bold font-heading"><CountUp target={50} prefix="₹" suffix="Cr+" /></div>
                 <div className="text-gray-500 text-[10px]">Processed</div>
               </div>
               <div className="w-px h-6 bg-white/10" />
               <div className="text-center">
-                <div className="text-white text-sm font-bold font-heading">4.8 ★</div>
+                <div className="text-white text-sm font-bold font-heading"><CountUp target={4.8} suffix=" ★" isFloat /></div>
                 <div className="text-gray-500 text-[10px]">Rating</div>
               </div>
             </div>
