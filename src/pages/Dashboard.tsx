@@ -50,37 +50,6 @@ function StatusBadge({ status }: { status: string }) {
   return <span className={map[status] || 'badge-blue'}>{status}</span>;
 }
 
-function StatCard({ title, value, sub, subColor, icon: Icon, iconColor, iconBg, onClick, primary }: any) {
-  if (primary) {
-    return (
-      <div className="stat-card-primary group" onClick={onClick}>
-        <div className="flex items-start justify-between mb-4">
-          <div className="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center">
-            <Icon size={22} className="text-white" />
-          </div>
-          <ArrowUpRight size={16} className="text-white/50 group-hover:text-white transition-colors" />
-        </div>
-        <div className="text-2xl font-bold font-heading text-white mb-1">{value}</div>
-        <div className="text-sm text-white/80 mb-1">{title}</div>
-        <div className="text-xs font-medium text-white/60">{sub}</div>
-      </div>
-    );
-  }
-  return (
-    <div className="stat-card group" onClick={onClick}>
-      <div className="flex items-start justify-between mb-4">
-        <div className={`w-12 h-12 rounded-2xl ${iconBg} flex items-center justify-center`}>
-          <Icon size={22} className={iconColor} />
-        </div>
-        <ArrowUpRight size={16} className="text-gray-300 group-hover:text-brand-purple transition-colors" />
-      </div>
-      <div className="text-2xl font-bold font-heading text-gray-900 dark:text-white mb-1">{value}</div>
-      <div className="text-sm text-gray-500 dark:text-gray-400 mb-1">{title}</div>
-      <div className={`text-xs font-medium ${subColor}`}>{sub}</div>
-    </div>
-  );
-}
-
 export default function Dashboard() {
   const { tenantId, tenant } = useAuth();
   const { t, language } = useLanguage();
@@ -232,175 +201,270 @@ export default function Dashboard() {
   const greeting = getGreeting();
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <div className="space-y-6">
       <style>{`
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .fade-in-up { animation: fadeInUp 0.5s ease-out forwards; opacity: 0; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-in-up { animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
+        @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+        .float-anim { animation: float 3s ease-in-out infinite; }
+        @keyframes gradientMove { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        @keyframes scoreRing { from { stroke-dasharray: 0 251.2; } }
+        .score-ring-anim { animation: scoreRing 1.5s ease-out forwards; }
+        @keyframes countPop { 0% { transform: scale(0.8); opacity: 0; } 60% { transform: scale(1.05); } 100% { transform: scale(1); opacity: 1; } }
+        .count-pop { animation: countPop 0.5s ease-out forwards; }
       `}</style>
-      
-      {/* Page Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-heading font-bold text-gray-900 dark:text-white flex items-center gap-3">
-            {greeting.emoji} {greeting.text}, {tenant?.ownerName?.split(' ')[0] || 'Boss'}!
-            {isLive && (
-              <span className="relative flex h-3 w-3 mt-1" title="Live from Firestore">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-green opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-3 w-3 bg-brand-green"></span>
-              </span>
+
+      {/* ═══════════════════ HERO BANNER ═══════════════════ */}
+      <div className="relative overflow-hidden rounded-2xl p-6 md:p-8"
+        style={{ background: 'linear-gradient(-45deg, #1E0A3C, #2D1266, #1A0D3F, #0F0A1E)', backgroundSize: '400% 400%', animation: 'gradientMove 12s ease infinite' }}>
+        {/* Floating decorative orbs */}
+        <div className="absolute top-4 right-12 w-32 h-32 rounded-full opacity-20" style={{ background: 'radial-gradient(circle, #7C3AED, transparent)' }} />
+        <div className="absolute bottom-2 left-8 w-24 h-24 rounded-full opacity-15" style={{ background: 'radial-gradient(circle, #F59E0B, transparent)' }} />
+        <div className="absolute top-1/2 right-1/3 w-16 h-16 rounded-full opacity-10" style={{ background: 'radial-gradient(circle, #10B981, transparent)' }} />
+
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div>
+            <h1 className="text-2xl md:text-3xl font-heading font-bold text-white flex items-center gap-3 mb-1">
+              <span className="text-3xl float-anim">{greeting.emoji}</span>
+              <span>{greeting.text}, <span className="text-transparent bg-clip-text" style={{ backgroundImage: 'linear-gradient(135deg, #C4B5FD, #F9A8D4)' }}>{tenant?.ownerName?.split(' ')[0] || 'Boss'}</span>!</span>
+              {isLive && (
+                <span className="relative flex h-2.5 w-2.5 mt-1">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-400" />
+                </span>
+              )}
+            </h1>
+            <p className="text-sm text-purple-300/70 font-heading">
+              {new Intl.DateTimeFormat('hi-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }).format(new Date())}
+            </p>
+          </div>
+
+          <div className="flex items-center gap-3">
+            {!seeded && (
+              <button onClick={handleSeed} disabled={seeding}
+                className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all hover:scale-105 active:scale-95"
+                style={{ background: 'rgba(124, 58, 237, 0.2)', border: '1px solid rgba(124, 58, 237, 0.3)', color: '#C4B5FD' }}>
+                <Sprout size={15} />
+                {seeding ? 'Loading...' : '🎲 Demo Data'}
+              </button>
             )}
-          </h1>
-          <p className="text-sm text-gray-500 mt-1">
-            {new Intl.DateTimeFormat('hi-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }).format(new Date())}
-          </p>
-        </div>
-        {!seeded && (
-          <button
-            onClick={handleSeed}
-            disabled={seeding}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl border border-brand-purple/30 text-brand-purple text-sm font-medium hover:bg-brand-purple/10 transition-all"
-          >
-            <Sprout size={15} />
-            {seeding ? 'Loading demo data...' : 'Load Demo Data'}
-          </button>
-        )}
-      </div>
-
-      {/* ROW 1: Stat Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-2">
-        <div className="fade-in-up" style={{ animationDelay: '0ms' }}>
-          <StatCard primary title={t('todaySales')} value={<AnimatedNumber value={todaySales} prefix="₹" />} sub={`${todayInvoices.length} invoices today`} subColor="text-brand-green"
-            icon={TrendingUp} iconColor="text-brand-purple" iconBg="bg-brand-purple/10" onClick={() => navigate('/analytics')} />
-        </div>
-        <div className="fade-in-up" style={{ animationDelay: '100ms' }}>
-          <StatCard title={t('pendingPayments')} value={<AnimatedNumber value={pendingTotal} prefix="₹" />} sub={`${pendingCount} invoices pending`} subColor="text-brand-gold"
-            icon={AlertTriangle} iconColor="text-brand-gold" iconBg="bg-brand-gold/10" onClick={() => navigate('/payments')} />
-        </div>
-        <div className="fade-in-up" style={{ animationDelay: '200ms' }}>
-          <StatCard title={t('lowStock')} value={<><AnimatedNumber value={lowStockProducts.length} /> Products</>} sub={lowStockProducts.length > 0 ? 'Reorder needed' : 'All stocked'} subColor={lowStockProducts.length > 0 ? 'text-red-500' : 'text-brand-green'}
-            icon={Package} iconColor="text-red-500" iconBg="bg-red-50" onClick={() => navigate('/inventory')} />
-        </div>
-        <div className="fade-in-up" style={{ animationDelay: '300ms' }}>
-          <StatCard title={t('newCustomers')} value={<><AnimatedNumber value={newCustomersToday} /> {language === 'hi' ? 'Naye' : 'New'}</>} sub={`${todayInvoices.filter(i => !i.customerId).length} walk-ins today`} subColor="text-blue-500"
-            icon={Users} iconColor="text-blue-500" iconBg="bg-blue-50" onClick={() => navigate('/customers')} />
+            <button onClick={() => navigate('/billing/new')}
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold text-white transition-all hover:scale-105 active:scale-95 btn-pulse"
+              style={{ background: 'linear-gradient(135deg, #7C3AED, #6D28D9)' }}>
+              <Plus size={16} /> {t('createBill').split('&')[0]}
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* ROW 2: Charts */}
+      {/* ═══════════════════ STAT CARDS ═══════════════════ */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* Today Sales — Purple Gradient */}
+        <div className="fade-in-up rounded-2xl p-5 cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-xl group"
+          style={{ animationDelay: '0ms', background: 'linear-gradient(135deg, #7C3AED 0%, #6D28D9 50%, #5B21B6 100%)', boxShadow: '0 8px 32px rgba(124, 58, 237, 0.3)' }}
+          onClick={() => navigate('/analytics')}>
+          <div className="flex items-start justify-between mb-3">
+            <div className="w-11 h-11 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
+              <TrendingUp size={20} className="text-white" />
+            </div>
+            <ArrowUpRight size={14} className="text-white/40 group-hover:text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+          </div>
+          <div className="text-2xl font-bold font-heading text-white mb-0.5 count-pop"><AnimatedNumber value={todaySales} prefix="₹" /></div>
+          <div className="text-xs text-white/80 font-medium">{t('todaySales')}</div>
+          <div className="text-[10px] text-white/50 mt-1">{todayInvoices.length} बिल आज</div>
+        </div>
+
+        {/* Pending — Amber/Orange */}
+        <div className="fade-in-up rounded-2xl p-5 cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-xl group"
+          style={{ animationDelay: '100ms', background: 'linear-gradient(135deg, #F59E0B 0%, #D97706 50%, #B45309 100%)', boxShadow: '0 8px 32px rgba(245, 158, 11, 0.25)' }}
+          onClick={() => navigate('/payments')}>
+          <div className="flex items-start justify-between mb-3">
+            <div className="w-11 h-11 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
+              <AlertTriangle size={20} className="text-white" />
+            </div>
+            <ArrowUpRight size={14} className="text-white/40 group-hover:text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+          </div>
+          <div className="text-2xl font-bold font-heading text-white mb-0.5 count-pop"><AnimatedNumber value={pendingTotal} prefix="₹" /></div>
+          <div className="text-xs text-white/80 font-medium">{t('pendingPayments')}</div>
+          <div className="text-[10px] text-white/50 mt-1">{pendingCount} बिल बाकी</div>
+        </div>
+
+        {/* Low Stock — Red/Rose */}
+        <div className="fade-in-up rounded-2xl p-5 cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-xl group"
+          style={{ animationDelay: '200ms', background: lowStockProducts.length > 0 ? 'linear-gradient(135deg, #EF4444 0%, #DC2626 50%, #B91C1C 100%)' : 'linear-gradient(135deg, #10B981 0%, #059669 50%, #047857 100%)', boxShadow: lowStockProducts.length > 0 ? '0 8px 32px rgba(239, 68, 68, 0.25)' : '0 8px 32px rgba(16, 185, 129, 0.25)' }}
+          onClick={() => navigate('/inventory')}>
+          <div className="flex items-start justify-between mb-3">
+            <div className="w-11 h-11 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
+              <Package size={20} className="text-white" />
+            </div>
+            <ArrowUpRight size={14} className="text-white/40 group-hover:text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+          </div>
+          <div className="text-2xl font-bold font-heading text-white mb-0.5 count-pop"><AnimatedNumber value={lowStockProducts.length} /></div>
+          <div className="text-xs text-white/80 font-medium">{t('lowStock')}</div>
+          <div className="text-[10px] text-white/50 mt-1">{lowStockProducts.length > 0 ? '⚠️ Reorder करो' : '✅ सब ठीक'}</div>
+        </div>
+
+        {/* New Customers — Blue */}
+        <div className="fade-in-up rounded-2xl p-5 cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-xl group"
+          style={{ animationDelay: '300ms', background: 'linear-gradient(135deg, #3B82F6 0%, #2563EB 50%, #1D4ED8 100%)', boxShadow: '0 8px 32px rgba(59, 130, 246, 0.25)' }}
+          onClick={() => navigate('/customers')}>
+          <div className="flex items-start justify-between mb-3">
+            <div className="w-11 h-11 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
+              <Users size={20} className="text-white" />
+            </div>
+            <ArrowUpRight size={14} className="text-white/40 group-hover:text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+          </div>
+          <div className="text-2xl font-bold font-heading text-white mb-0.5 count-pop"><AnimatedNumber value={newCustomersToday} /></div>
+          <div className="text-xs text-white/80 font-medium">{t('newCustomers')}</div>
+          <div className="text-[10px] text-white/50 mt-1">कुल {customers.length} ग्राहक</div>
+        </div>
+      </div>
+
+      {/* ═══════════════════ CHARTS ROW ═══════════════════ */}
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
         {/* Sales Trend */}
-        <div className="lg:col-span-3 chart-container p-6">
-          <div className="flex items-center justify-between mb-4">
+        <div className="lg:col-span-3 glass-card card-glow p-6 fade-in-up" style={{ animationDelay: '400ms' }}>
+          <div className="flex items-center justify-between mb-5">
             <div>
-              <h2 className="font-heading font-semibold text-gray-900 dark:text-white">{t('salesTrend')}</h2>
-              <p className="text-xs text-gray-400 mt-0.5">Bikri ka Rujhan</p>
+              <h2 className="font-heading font-bold text-gray-900 dark:text-white text-base">{t('salesTrend')}</h2>
+              <p className="text-[11px] text-gray-400 mt-0.5">📈 बिक्री का रुझान</p>
             </div>
-            <div className="flex gap-1 bg-gray-100 dark:bg-gray-800 rounded-lg p-1">
+            <div className="flex gap-1 bg-gray-100 dark:bg-gray-800/80 rounded-xl p-1">
               {(['7D', '30D'] as const).map(p => (
                 <button key={p} onClick={() => setChartPeriod(p)}
-                  className={`px-3 py-1 rounded-md text-xs font-medium transition-all ${chartPeriod === p ? 'bg-brand-purple text-white shadow' : 'text-gray-500 hover:text-gray-700'}`}>
-                  {p}
+                  className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${chartPeriod === p ? 'bg-brand-purple text-white shadow-md shadow-purple-500/30' : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'}`}>
+                  {p === '7D' ? '7 दिन' : '30 दिन'}
                 </button>
               ))}
             </div>
           </div>
           {chartData.length > 0 ? (
-            <ResponsiveContainer width="100%" height={220}>
+            <ResponsiveContainer width="100%" height={230}>
               <LineChart data={chartData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(124,58,237,0.08)" />
+                <defs>
+                  <linearGradient id="salesFill" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#7C3AED" stopOpacity={0.15}/>
+                    <stop offset="95%" stopColor="#7C3AED" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(124,58,237,0.06)" vertical={false} />
                 <XAxis dataKey="day" tick={{ fontSize: 10, fill: '#9CA3AF' }} tickLine={false} axisLine={false}
                   interval={chartPeriod === '30D' ? 4 : 0} />
                 <YAxis tick={{ fontSize: 10, fill: '#9CA3AF' }} tickLine={false} axisLine={false}
-                  tickFormatter={v => `₹${v/1000}k`} />
-                <Tooltip formatter={(v: any) => [formatINR(v), 'Sales']}
-                  contentStyle={{ background: '#1A1035', border: '1px solid rgba(124,58,237,0.3)', borderRadius: 12 }}
-                  labelStyle={{ color: '#E8E0FF', fontSize: 12 }} itemStyle={{ color: '#7C3AED' }} />
-                <Line type="monotone" dataKey="sales" stroke="#7C3AED" strokeWidth={2.5}
-                  dot={false} activeDot={{ r: 5, fill: '#7C3AED', stroke: 'white', strokeWidth: 2 }} />
+                  tickFormatter={v => `₹${v/1000}k`} width={50} />
+                <Tooltip formatter={(v: any) => [formatINR(v), 'बिक्री']}
+                  contentStyle={{ background: 'rgba(26,16,53,0.95)', border: '1px solid rgba(124,58,237,0.3)', borderRadius: 14, backdropFilter: 'blur(10px)' }}
+                  labelStyle={{ color: '#C4B5FD', fontSize: 11, fontWeight: 600 }} itemStyle={{ color: '#A78BFA' }} />
+                <Line type="monotone" dataKey="sales" stroke="url(#lineGrad)" strokeWidth={3}
+                  dot={false} activeDot={{ r: 6, fill: '#7C3AED', stroke: 'white', strokeWidth: 3 }} />
+                <defs>
+                  <linearGradient id="lineGrad" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stopColor="#6D28D9" />
+                    <stop offset="50%" stopColor="#7C3AED" />
+                    <stop offset="100%" stopColor="#A78BFA" />
+                  </linearGradient>
+                </defs>
               </LineChart>
             </ResponsiveContainer>
           ) : (
-            <div className="flex items-center justify-center h-[220px] text-gray-400 text-sm">
-              {language === 'hi' ? 'Data load ho raha hai... Demo data load karein ↗' : 'No data yet — Load Demo Data above ↗'}
+            <div className="flex flex-col items-center justify-center h-[230px] text-gray-400 text-sm gap-2">
+              <span className="text-4xl">📊</span>
+              <span>अभी कोई data नहीं — Demo Data लोड करें ↗</span>
             </div>
           )}
         </div>
 
         {/* Category Pie */}
-        <div className="lg:col-span-2 chart-container p-6">
-          <h2 className="font-heading font-semibold text-gray-900 dark:text-white mb-1">{t('revenueByCategory')}</h2>
-          <p className="text-xs text-gray-400 mb-3">Category wise</p>
+        <div className="lg:col-span-2 glass-card card-glow p-6 fade-in-up" style={{ animationDelay: '500ms' }}>
+          <h2 className="font-heading font-bold text-gray-900 dark:text-white text-base mb-1">{t('revenueByCategory')}</h2>
+          <p className="text-[11px] text-gray-400 mb-4">🏷️ श्रेणी अनुसार</p>
           {categoryData.length > 0 ? (
             <>
               <ResponsiveContainer width="100%" height={160}>
                 <PieChart>
-                  <Pie data={categoryData} cx="50%" cy="50%" innerRadius={45} outerRadius={70}
-                    paddingAngle={3} dataKey="value">
+                  <Pie data={categoryData} cx="50%" cy="50%" innerRadius={48} outerRadius={72}
+                    paddingAngle={4} dataKey="value" stroke="none">
                     {categoryData.map((entry, i) => <Cell key={i} fill={entry.color} />)}
                   </Pie>
                   <Tooltip formatter={(v: any) => [`${v}%`, '']}
-                    contentStyle={{ background: '#1A1035', border: '1px solid rgba(124,58,237,0.3)', borderRadius: 10 }} />
+                    contentStyle={{ background: 'rgba(26,16,53,0.95)', border: '1px solid rgba(124,58,237,0.3)', borderRadius: 12 }} />
                 </PieChart>
               </ResponsiveContainer>
-              <div className="space-y-1.5 mt-2">
+              <div className="space-y-2 mt-2">
                 {categoryData.map(c => (
-                  <div key={c.name} className="flex items-center justify-between text-xs">
-                    <div className="flex items-center gap-2">
-                      <div className="w-2.5 h-2.5 rounded-full" style={{ background: c.color }} />
-                      <span className="text-gray-600 dark:text-gray-400">{c.name}</span>
+                  <div key={c.name} className="flex items-center justify-between text-xs group cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-lg px-2 py-1 -mx-2 transition-colors">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-3 h-3 rounded-full shadow-sm" style={{ background: c.color }} />
+                      <span className="text-gray-600 dark:text-gray-400 font-medium">{c.name}</span>
                     </div>
-                    <span className="font-medium text-gray-900 dark:text-gray-200">{c.value}%</span>
+                    <span className="font-bold text-gray-900 dark:text-gray-200">{c.value}%</span>
                   </div>
                 ))}
               </div>
             </>
           ) : (
-            <div className="flex items-center justify-center h-[200px] text-gray-400 text-sm">No products yet</div>
+            <div className="flex flex-col items-center justify-center h-[200px] text-gray-400 text-sm gap-2">
+              <span className="text-4xl">📦</span>
+              <span>कोई product नहीं</span>
+            </div>
           )}
         </div>
       </div>
 
-      {/* ROW 3: Top Products + Recent Invoices */}
+      {/* ═══════════════════ TOP PRODUCTS + RECENT INVOICES ═══════════════════ */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Top Products */}
-        <div className="chart-container p-6">
-          <h2 className="font-heading font-semibold text-gray-900 dark:text-white mb-4">{t('topProducts')}</h2>
+        <div className="glass-card card-glow p-6 fade-in-up" style={{ animationDelay: '600ms' }}>
+          <h2 className="font-heading font-bold text-gray-900 dark:text-white text-base mb-1">🏆 {t('topProducts')}</h2>
+          <p className="text-[11px] text-gray-400 mb-4">सबसे ज़्यादा बिकने वाले</p>
           {topProducts.length > 0 ? (
             <ResponsiveContainer width="100%" height={200}>
-              <BarChart data={topProducts} layout="vertical" barSize={10}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(124,58,237,0.08)" horizontal={false} />
+              <BarChart data={topProducts} layout="vertical" barSize={12}>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(124,58,237,0.06)" horizontal={false} />
                 <XAxis type="number" tick={{ fontSize: 10, fill: '#9CA3AF' }} tickLine={false} axisLine={false}
                   tickFormatter={v => `₹${v/1000}k`} />
                 <YAxis type="category" dataKey="name" tick={{ fontSize: 11, fill: '#6B7280' }} tickLine={false} axisLine={false} width={110} />
                 <Tooltip formatter={(v: any) => [formatINR(v), 'Revenue']}
-                  contentStyle={{ background: '#1A1035', border: '1px solid rgba(124,58,237,0.3)', borderRadius: 10 }} />
-                <Bar dataKey="revenue" radius={[0, 6, 6, 0]}
-                  fill="url(#purpleGradient)" />
+                  contentStyle={{ background: 'rgba(26,16,53,0.95)', border: '1px solid rgba(124,58,237,0.3)', borderRadius: 12 }} />
+                <Bar dataKey="revenue" radius={[0, 8, 8, 0]} fill="url(#purpleGradient)" />
                 <defs>
                   <linearGradient id="purpleGradient" x1="0" y1="0" x2="1" y2="0">
                     <stop offset="0%" stopColor="#6D28D9" />
-                    <stop offset="100%" stopColor="#8B5CF6" />
+                    <stop offset="100%" stopColor="#A78BFA" />
                   </linearGradient>
                 </defs>
               </BarChart>
             </ResponsiveContainer>
           ) : (
-            <div className="flex items-center justify-center h-[200px] text-gray-400 text-sm">No invoice data yet</div>
+            <div className="flex flex-col items-center justify-center h-[200px] text-gray-400 text-sm gap-2">
+              <span className="text-4xl">🏪</span>
+              <span>अभी कोई data नहीं</span>
+            </div>
           )}
         </div>
 
         {/* Recent Invoices */}
-        <div className="glass-card p-6">
+        <div className="glass-card card-glow p-6 fade-in-up" style={{ animationDelay: '700ms' }}>
           <div className="flex items-center justify-between mb-4">
-            <h2 className="font-heading font-semibold text-gray-900 dark:text-white">{t('recentInvoices')}</h2>
-            <button onClick={() => navigate('/payments')} className="text-xs text-brand-purple hover:underline font-medium">View all →</button>
+            <div>
+              <h2 className="font-heading font-bold text-gray-900 dark:text-white text-base">🧾 {t('recentInvoices')}</h2>
+              <p className="text-[11px] text-gray-400 mt-0.5">हाल के बिल</p>
+            </div>
+            <button onClick={() => navigate('/payments')} className="text-xs text-brand-purple hover:text-brand-purple-light font-semibold transition-colors">
+              सब देखें →
+            </button>
           </div>
-          <div className="space-y-3">
-            {recentInvoices.length > 0 ? recentInvoices.map(inv => (
-              <div key={inv.id} className="flex items-center justify-between py-2 border-b border-gray-50 dark:border-gray-800 last:border-0 table-row-hover rounded-lg px-2 cursor-pointer">
-                <div>
-                  <div className="text-sm font-medium text-gray-900 dark:text-gray-100 font-heading">{inv.id}</div>
-                  <div className="text-xs text-gray-400">{inv.customer} · {inv.date}</div>
+          <div className="space-y-2">
+            {recentInvoices.length > 0 ? recentInvoices.map((inv, i) => (
+              <div key={inv.id} className="flex items-center justify-between py-2.5 px-3 rounded-xl border border-transparent hover:border-brand-purple/10 hover:bg-brand-purple/[0.03] transition-all cursor-pointer fade-in-up" style={{ animationDelay: `${700 + i * 80}ms` }}>
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-lg bg-brand-purple/10 flex items-center justify-center text-brand-purple text-xs font-bold">
+                    {inv.id.slice(-3)}
+                  </div>
+                  <div>
+                    <div className="text-sm font-semibold text-gray-900 dark:text-gray-100 font-heading">{inv.customer || 'Walk-in'}</div>
+                    <div className="text-[10px] text-gray-400">{inv.date}</div>
+                  </div>
                 </div>
                 <div className="flex items-center gap-3">
                   <span className="text-sm font-bold font-heading text-gray-900 dark:text-white">{formatINR(inv.amount)}</span>
@@ -408,22 +472,27 @@ export default function Dashboard() {
                 </div>
               </div>
             )) : (
-              <div className="text-center py-6 text-gray-400 text-sm">No invoices yet</div>
+              <div className="text-center py-8 text-gray-400 text-sm">
+                <span className="text-4xl block mb-2">📄</span>
+                कोई बिल नहीं — पहला बिल बनाओ!
+              </div>
             )}
           </div>
         </div>
       </div>
 
-      {/* ROW 4: Quick Actions */}
-      <div className="glass-card p-6">
-        <h2 className="font-heading font-semibold text-gray-900 dark:text-white mb-4">{t('quickActions')}</h2>
+      {/* ═══════════════════ QUICK ACTIONS ═══════════════════ */}
+      <div className="glass-card card-glow p-6 fade-in-up" style={{ animationDelay: '800ms' }}>
+        <h2 className="font-heading font-bold text-gray-900 dark:text-white text-base mb-4">⚡ {t('quickActions')}</h2>
         <div className="grid grid-cols-4 md:grid-cols-8 gap-3">
-          {quickActions.map(action => (
-            <button key={action.label} onClick={() => navigate(action.path)} className="quick-action hover:scale-105 transition-transform duration-200">
-              <div className={`w-10 h-10 rounded-xl flex items-center justify-center bg-gray-50 dark:bg-gray-800 group-hover:bg-brand-purple/10`}>
-                <action.icon size={20} className={action.color} />
+          {quickActions.map((action, i) => (
+            <button key={action.label} onClick={() => navigate(action.path)}
+              className="quick-action group hover:scale-105 active:scale-95 transition-all duration-200 fade-in-up"
+              style={{ animationDelay: `${800 + i * 60}ms` }}>
+              <div className={`w-11 h-11 rounded-xl flex items-center justify-center bg-gray-50 dark:bg-gray-800/80 group-hover:bg-brand-purple/10 transition-all duration-200 group-hover:shadow-md`}>
+                <action.icon size={20} className={`${action.color} transition-transform group-hover:scale-110`} />
               </div>
-              <span className="text-[11px] font-medium text-gray-600 dark:text-gray-400 text-center leading-tight font-heading">
+              <span className="text-[10px] font-semibold text-gray-600 dark:text-gray-400 text-center leading-tight font-heading">
                 {language === 'hi' ? action.labelHi : action.label}
               </span>
             </button>
@@ -431,62 +500,68 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* VYAPAAR SCORE Panel */}
-      <div className="glass-card overflow-hidden">
-        <button
-          onClick={() => setScoreOpen(!scoreOpen)}
-          className="w-full flex items-center justify-between p-6 hover:bg-brand-purple/5 transition-colors"
-        >
+      {/* ═══════════════════ VYAPAAR SCORE ═══════════════════ */}
+      <div className="glass-card card-glow overflow-hidden fade-in-up" style={{ animationDelay: '900ms' }}>
+        <button onClick={() => setScoreOpen(!scoreOpen)}
+          className="w-full flex items-center justify-between p-6 hover:bg-brand-purple/5 transition-colors">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-brand-purple/10 flex items-center justify-center">
-              <Star size={22} className="text-brand-gold" />
+            <div className="w-14 h-14 rounded-2xl flex items-center justify-center relative"
+              style={{ background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(124, 58, 237, 0.15))' }}>
+              <Star size={24} className="text-brand-gold" />
+              <div className="absolute inset-0 rounded-2xl" style={{ background: 'linear-gradient(135deg, transparent, rgba(245, 158, 11, 0.1))', animation: 'pulse 2s ease-in-out infinite' }} />
             </div>
             <div className="text-left">
-              <div className="font-heading font-bold text-gray-900 dark:text-white">{t('vyapaarScore')} — {vyapaarScore}/1000</div>
-              <div className="text-xs text-gray-400">Click to see breakdown</div>
+              <div className="font-heading font-bold text-lg text-gray-900 dark:text-white">{t('vyapaarScore')}</div>
+              <div className="text-xs text-gray-400 flex items-center gap-2">
+                आपके व्यापार की सेहत
+                <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${vyapaarScore >= 600 ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' : vyapaarScore >= 400 ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400' : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'}`}>
+                  {vyapaarScore >= 600 ? '🟢 अच्छा' : vyapaarScore >= 400 ? '🟡 ठीक-ठाक' : '🔴 सुधारो'}
+                </span>
+              </div>
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <span className={vyapaarScore >= 600 ? 'badge-green' : vyapaarScore >= 400 ? 'badge-amber' : 'badge-red'}>
-              {vyapaarScore >= 600 ? 'Good ↑' : vyapaarScore >= 400 ? 'Average' : 'Needs Work'}
-            </span>
+            <span className="text-2xl font-bold font-heading text-brand-purple">{vyapaarScore}<span className="text-sm text-gray-400 font-normal">/1000</span></span>
             {scoreOpen ? <ChevronUp size={18} className="text-gray-400" /> : <ChevronDown size={18} className="text-gray-400" />}
           </div>
         </button>
 
         {scoreOpen && (
           <div className="px-6 pb-6 animate-slide-up">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Circular Score */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {/* Animated Circular Score */}
               <div className="flex flex-col items-center justify-center">
-                <div className="relative w-40 h-40">
+                <div className="relative w-44 h-44">
                   <svg viewBox="0 0 100 100" className="w-full h-full -rotate-90">
-                    <circle cx="50" cy="50" r="40" fill="none" stroke="rgba(124,58,237,0.1)" strokeWidth="8" />
-                    <circle cx="50" cy="50" r="40" fill="none" stroke="#7C3AED" strokeWidth="8"
-                      strokeDasharray={`${(vyapaarScore/1000)*251.2} 251.2`} strokeLinecap="round" />
+                    <circle cx="50" cy="50" r="40" fill="none" stroke="rgba(124,58,237,0.08)" strokeWidth="7" />
+                    <circle cx="50" cy="50" r="40" fill="none" strokeWidth="7" strokeLinecap="round"
+                      className="score-ring-anim"
+                      style={{ stroke: vyapaarScore >= 600 ? '#10B981' : vyapaarScore >= 400 ? '#F59E0B' : '#EF4444', strokeDasharray: `${(vyapaarScore/1000)*251.2} 251.2` }} />
                   </svg>
                   <div className="absolute inset-0 flex flex-col items-center justify-center">
-                    <span className="text-3xl font-bold font-heading text-gray-900 dark:text-white">{vyapaarScore}</span>
-                    <span className="text-xs text-gray-400">out of 1000</span>
+                    <span className="text-4xl font-bold font-heading text-gray-900 dark:text-white">{vyapaarScore}</span>
+                    <span className="text-[10px] text-gray-400 font-medium mt-0.5">1000 में से</span>
                   </div>
                 </div>
               </div>
               {/* Breakdown */}
-              <div className="space-y-3">
-                {scoreBreakdown.map(item => (
-                  <div key={item.label}>
-                    <div className="flex justify-between text-sm mb-1">
-                      <span className="text-gray-600 dark:text-gray-400">{item.label}</span>
-                      <span className="font-medium font-heading" style={{ color: item.color }}>{item.score}/100</span>
+              <div className="space-y-4">
+                {scoreBreakdown.map((item, i) => (
+                  <div key={item.label} className="fade-in-up" style={{ animationDelay: `${i * 100}ms` }}>
+                    <div className="flex justify-between text-sm mb-1.5">
+                      <span className="text-gray-600 dark:text-gray-400 font-medium">{item.label}</span>
+                      <span className="font-bold font-heading" style={{ color: item.color }}>{item.score}%</span>
                     </div>
-                    <div className="progress-bar h-1.5">
-                      <div className="h-full rounded-full transition-all duration-700" style={{ width: `${item.score}%`, background: item.color }} />
+                    <div className="h-2 rounded-full bg-gray-100 dark:bg-gray-800 overflow-hidden">
+                      <div className="h-full rounded-full transition-all duration-1000 ease-out"
+                        style={{ width: `${item.score}%`, background: `linear-gradient(90deg, ${item.color}, ${item.color}dd)` }} />
                     </div>
                   </div>
                 ))}
-                <div className="mt-4 p-3 rounded-xl bg-brand-purple/5 border border-brand-purple/10">
+                <div className="mt-4 p-3.5 rounded-xl border border-brand-purple/10"
+                  style={{ background: 'linear-gradient(135deg, rgba(124, 58, 237, 0.05), rgba(245, 158, 11, 0.03))' }}>
                   <p className="text-xs text-gray-600 dark:text-gray-400">
-                    💡 <strong>Tip:</strong> {pendingCount} pending invoices remind karein → <span className="text-brand-purple font-medium">+15 pts</span>
+                    💡 <strong>टिप:</strong> {pendingCount} बाकी बिल remind करो → <span className="text-brand-purple font-bold">+15 pts</span>
                   </p>
                 </div>
               </div>
