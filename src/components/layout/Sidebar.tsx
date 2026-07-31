@@ -3,7 +3,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, FileText, Package, Users, CreditCard, Gift,
   BarChart3, Receipt, Settings, LogOut, MessageCircle, ChevronLeft,
-  ChevronRight, Store, Menu, ShoppingBag
+  ChevronRight, Store, Menu, ShoppingBag, Wallet
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useLanguage } from '../../contexts/LanguageContext';
@@ -17,6 +17,7 @@ const navItems = [
   { path: '/payments', icon: CreditCard, key: 'payments' },
   { path: '/loyalty', icon: Gift, key: 'loyalty' },
   { path: '/analytics', icon: BarChart3, key: 'analytics' },
+  { path: '/expenses', icon: Wallet, key: 'expenses' },
   { path: '/gst', icon: Receipt, key: 'gst' },
   { path: '/settings', icon: Settings, key: 'settings' },
 ];

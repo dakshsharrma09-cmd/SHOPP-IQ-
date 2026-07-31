@@ -17,8 +17,10 @@ import Analytics from './pages/Analytics';
 import GST from './pages/GST';
 import Settings from './pages/Settings';
 import Loyalty from './pages/Loyalty';
+import Expenses from './pages/Expenses';
 import WhatsAppChat from './pages/WhatsAppChat';
 import OfflineBanner from './components/OfflineBanner';
+import Landing from './pages/Landing';
 
 export default function App() {
   const [appReady, setAppReady] = useState(false);
@@ -34,6 +36,7 @@ export default function App() {
           <BrowserRouter>
           <OfflineBanner />
           <Routes>
+            <Route path="/landing" element={<Landing />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={
               <AuthGuard><Register /></AuthGuard>
@@ -51,11 +54,12 @@ export default function App() {
               <Route path="payments" element={<Payments />} />
               <Route path="loyalty" element={<Loyalty />} />
               <Route path="analytics" element={<Analytics />} />
+              <Route path="expenses" element={<Expenses />} />
               <Route path="gst" element={<GST />} />
               <Route path="settings" element={<Settings />} />
               <Route path="whatsapp" element={<WhatsAppChat />} />
             </Route>
-            <Route path="*" element={<Navigate to="/dashboard" replace />} />
+            <Route path="*" element={<Navigate to="/landing" replace />} />
           </Routes>
           </BrowserRouter>
         </AuthProvider>

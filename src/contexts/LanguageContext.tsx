@@ -16,6 +16,7 @@ const strings: Record<Language, Translations> = {
     payments: 'Payments',
     loyalty: 'Loyalty',
     analytics: 'Analytics',
+    expenses: 'Expenses',
     gst: 'GST',
     settings: 'Settings',
 
@@ -183,6 +184,7 @@ const strings: Record<Language, Translations> = {
     payments: 'भुगतान',
     loyalty: 'लॉयल्टी',
     analytics: 'व्यापार विवरण',
+    expenses: 'खर्चे',
     gst: 'GST',
     settings: 'सेटिंग्स',
 
