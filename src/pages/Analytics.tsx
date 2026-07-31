@@ -212,24 +212,35 @@ export default function Analytics() {
   }, [pnl, revenueData, topProductsData, customerSegments, totalCGST, totalSGST, period]);
 
   return (
-    <div className="space-y-6 animate-fade-in">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
-        <h1 className="text-2xl font-heading font-bold text-gray-900 dark:text-white">{t('analytics')} 📊</h1>
-        <div className="flex items-center gap-3">
+    <div className="space-y-6">
+      <style>{`
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-in-up { animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
+      `}</style>
+      <div className="p-8 rounded-3xl bg-gradient-to-r from-[#1A1035] via-[#2A1558] to-[#1A1035] relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6 shadow-2xl border border-white/10 fade-in-up" style={{ animationDelay: '0.1s' }}>
+        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-overlay"></div>
+        <div className="absolute -top-24 -right-24 w-64 h-64 bg-brand-purple rounded-full blur-[100px] opacity-40"></div>
+        <div className="relative z-10">
+          <h1 className="text-3xl font-heading font-extrabold text-white mb-2 tracking-tight flex items-center gap-3">
+            {t('analytics')} 📊
+          </h1>
+          <p className="text-purple-300 text-sm font-medium tracking-widest uppercase">व्यापार विश्लेषण</p>
+        </div>
+        <div className="relative z-10 flex flex-wrap items-center gap-3">
           {/* Export CSV */}
           <button
             onClick={handleExportCSV}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl border border-brand-purple/20 text-brand-purple text-sm font-medium hover:bg-brand-purple/10 transition-all"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl border border-purple-500/30 text-white text-sm font-medium hover:bg-white/10 backdrop-blur-md transition-all shadow-lg"
           >
             <FileSpreadsheet size={15} />
             Export CSV
           </button>
           {/* Period Selector */}
-          <div className="flex gap-1 bg-gray-100 dark:bg-gray-800 rounded-xl p-1">
+          <div className="flex gap-1 bg-black/40 backdrop-blur-md rounded-xl p-1 border border-white/10">
             {(['7d', '30d', '90d'] as const).map(p => (
               <button key={p} onClick={() => setPeriod(p)}
                 className={cn('px-4 py-2 rounded-lg text-sm font-medium transition-all',
-                  period === p ? 'bg-white dark:bg-brand-dark-card text-brand-purple shadow' : 'text-gray-500')}>
+                  period === p ? 'bg-gradient-to-r from-purple-600 to-purple-800 text-white shadow-lg' : 'text-gray-300 hover:text-white')}>
                 {p === '7d' ? '7 Days' : p === '30d' ? '30 Days' : '90 Days'}
               </button>
             ))}
@@ -240,23 +251,26 @@ export default function Analytics() {
       {/* Stat Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { title: t('totalRevenue'), value: formatINR(Math.round(pnl.revenue)), icon: TrendingUp, color: 'text-brand-purple', bg: 'bg-brand-purple/10' },
-          { title: 'Gross Profit', value: formatINR(Math.round(pnl.grossProfit)), icon: DollarSign, color: 'text-brand-green', bg: 'bg-green-50' },
-          { title: 'Avg. Order Value', value: formatINR(aov), icon: Package, color: 'text-brand-gold', bg: 'bg-amber-50' },
-          { title: 'Active Customers', value: String(activeCustomerCount), icon: Users, color: 'text-blue-500', bg: 'bg-blue-50' },
-        ].map(s => (
-          <div key={s.title} className="stat-card">
-            <div className={cn('w-10 h-10 rounded-xl flex items-center justify-center mb-3', s.bg)}>
-              <s.icon size={20} className={s.color} />
+          { title: t('totalRevenue'), value: formatINR(Math.round(pnl.revenue)), icon: TrendingUp, gradient: 'linear-gradient(135deg, #7C3AED, #5B21B6)' },
+          { title: 'Gross Profit', value: formatINR(Math.round(pnl.grossProfit)), icon: DollarSign, gradient: 'linear-gradient(135deg, #059669, #047857)' },
+          { title: 'Avg. Order Value', value: formatINR(aov), icon: Package, gradient: 'linear-gradient(135deg, #D97706, #B45309)' },
+          { title: 'Active Customers', value: String(activeCustomerCount), icon: Users, gradient: 'linear-gradient(135deg, #2563EB, #1D4ED8)' },
+        ].map((s, i) => (
+          <div key={s.title} className="stat-card border-none relative overflow-hidden group fade-in-up" style={{ animationDelay: `${0.2 + i * 0.1}s`, background: s.gradient }}>
+            <div className="absolute -right-6 -top-6 text-white/10 transform group-hover:scale-110 transition-transform duration-500">
+              <s.icon size={100} />
             </div>
-            <div className="text-xl font-bold font-heading text-gray-900 dark:text-white">{s.value}</div>
-            <div className="text-sm text-gray-500">{s.title}</div>
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-3 bg-white/20 backdrop-blur-sm border border-white/20 relative z-10">
+              <s.icon size={20} className="text-white" />
+            </div>
+            <div className="text-2xl font-bold font-heading text-white relative z-10 drop-shadow-md">{s.value}</div>
+            <div className="text-sm text-white/90 font-medium relative z-10">{s.title}</div>
           </div>
         ))}
       </div>
 
       {/* Revenue Trend — Area Chart */}
-      <div className="chart-container p-6">
+      <div className="chart-container card-glow p-6 fade-in-up" style={{ animationDelay: '0.6s' }}>
         <h2 className="font-heading font-semibold text-gray-900 dark:text-white mb-4">
           {language === 'hi' ? 'Revenue Trend' : 'Revenue Trend'}
           <span className="text-xs text-gray-400 font-normal ml-2">Last {periodDays} days</span>
@@ -288,7 +302,7 @@ export default function Analytics() {
       </div>
 
       {/* P&L Statement */}
-      <div className="chart-container p-6">
+      <div className="chart-container card-glow p-6 fade-in-up" style={{ animationDelay: '0.7s' }}>
         <h2 className="font-heading font-semibold text-gray-900 dark:text-white mb-4">
           {language === 'hi' ? 'Profit & Loss' : 'Profit & Loss'}
           <span className="text-xs text-gray-400 font-normal ml-2">Last {periodDays} days</span>
@@ -344,7 +358,7 @@ export default function Analytics() {
 
       {/* Top Products + Category Breakdown */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <div className="chart-container p-6">
+        <div className="chart-container card-glow p-6 fade-in-up" style={{ animationDelay: '0.8s' }}>
           <h2 className="font-heading font-semibold text-gray-900 dark:text-white mb-4">{t('topProducts')}</h2>
           {topProductsData.length > 0 ? (
             <ResponsiveContainer width="100%" height={250}>
@@ -361,7 +375,7 @@ export default function Analytics() {
           )}
         </div>
 
-        <div className="chart-container p-6">
+        <div className="chart-container card-glow p-6 fade-in-up" style={{ animationDelay: '0.9s' }}>
           <h2 className="font-heading font-semibold text-gray-900 dark:text-white mb-4">{t('revenueByCategory')}</h2>
           {categoryDonut.length > 0 ? (
             <>
@@ -390,7 +404,7 @@ export default function Analytics() {
 
       {/* Customer Segments + GST */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <div className="chart-container p-6">
+        <div className="chart-container card-glow p-6 fade-in-up" style={{ animationDelay: '1.0s' }}>
           <h2 className="font-heading font-semibold text-gray-900 dark:text-white mb-4">Customer Segments</h2>
           {customerSegments.length > 0 ? (
             <div className="space-y-3">
@@ -421,7 +435,7 @@ export default function Analytics() {
           )}
         </div>
 
-        <div className="chart-container p-6">
+        <div className="chart-container card-glow p-6 fade-in-up" style={{ animationDelay: '1.1s' }}>
           <h2 className="font-heading font-semibold text-gray-900 dark:text-white mb-4">GST Summary</h2>
           <div className="space-y-3">
             {[

@@ -184,7 +184,11 @@ export default function GST() {
   };
 
   return (
-    <div className="space-y-6 animate-fade-in" id="gst-report">
+    <div className="space-y-6" id="gst-report">
+      <style>{`
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-in-up { animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
+      `}</style>
       {/* ── Print-only header (hidden on screen) ──────────── */}
       <div className="print-header hidden">
         <div style={{ borderBottom: '2px solid #7C3AED', paddingBottom: 12, marginBottom: 16 }}>
@@ -197,22 +201,29 @@ export default function GST() {
       </div>
 
       {/* ── Screen header ─────────────────────────────────── */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3" data-print-hide>
-        <h1 className="text-2xl font-heading font-bold text-gray-900 dark:text-white">{t('gst')} 🧾</h1>
-        <div className="flex gap-2">
+      <div className="p-8 rounded-3xl bg-gradient-to-r from-[#1e1b4b] via-[#312e81] to-[#1e1b4b] relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6 shadow-2xl border border-white/10 fade-in-up" style={{ animationDelay: '0.1s' }} data-print-hide>
+        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-overlay"></div>
+        <div className="absolute -top-24 -right-24 w-64 h-64 bg-indigo-500 rounded-full blur-[100px] opacity-40"></div>
+        <div className="relative z-10">
+          <h1 className="text-3xl font-heading font-extrabold text-white mb-2 tracking-tight flex items-center gap-3">
+            {t('gst')} 🧾
+          </h1>
+          <p className="text-indigo-300 text-sm font-medium tracking-widest uppercase">जीएसटी रिपोर्ट</p>
+        </div>
+        <div className="relative z-10 flex gap-2">
           <select value={month} onChange={e => setMonth(Number(e.target.value))}
-            className="px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-brand-dark text-sm outline-none focus:border-brand-purple">
-            {months.map((m, i) => <option key={i} value={i}>{m}</option>)}
+            className="px-4 py-2.5 rounded-xl border border-indigo-500/30 bg-black/40 backdrop-blur-md text-white text-sm outline-none focus:border-indigo-400 font-medium">
+            {months.map((m, i) => <option key={i} value={i} className="bg-brand-dark text-white">{m}</option>)}
           </select>
           <select value={year} onChange={e => setYear(Number(e.target.value))}
-            className="px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-brand-dark text-sm outline-none focus:border-brand-purple">
-            {[2024, 2025, 2026, 2027].map(y => <option key={y} value={y}>{y}</option>)}
+            className="px-4 py-2.5 rounded-xl border border-indigo-500/30 bg-black/40 backdrop-blur-md text-white text-sm outline-none focus:border-indigo-400 font-medium">
+            {[2024, 2025, 2026, 2027].map(y => <option key={y} value={y} className="bg-brand-dark text-white">{y}</option>)}
           </select>
         </div>
       </div>
 
       {/* ── Business Info Banner ──────────────────────────── */}
-      <div className="glass-card p-4 flex flex-col md:flex-row md:items-center justify-between gap-2">
+      <div className="glass-card card-glow p-4 flex flex-col md:flex-row md:items-center justify-between gap-2 fade-in-up" style={{ animationDelay: '0.2s' }}>
         <div>
           <div className="text-sm font-heading font-semibold text-gray-900 dark:text-white">{tenant?.businessName || 'Your Business'}</div>
           <div className="text-xs text-gray-400">GSTIN: <span className="font-mono text-brand-purple">{tenant?.gstin || 'Not set — update in Settings'}</span></div>
@@ -227,15 +238,15 @@ export default function GST() {
       {/* ── GST Stat Cards ────────────────────────────────── */}
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
         {[
-          { label: 'Total Invoices', value: String(monthInvoices.length), color: 'text-brand-purple' },
-          { label: 'Taxable Value', value: formatINR(Math.round(totalTaxable)), color: 'text-gray-900 dark:text-white' },
-          { label: 'CGST', value: formatINR(Math.round(totalCGST)), color: 'text-blue-500' },
-          { label: 'SGST', value: formatINR(Math.round(totalSGST)), color: 'text-brand-green' },
-          { label: 'Total Tax', value: formatINR(Math.round(totalTax)), color: 'text-brand-gold' },
-        ].map(s => (
-          <div key={s.label} className="stat-card">
-            <div className="text-xs text-gray-400 mb-1">{s.label}</div>
-            <div className={cn('text-lg font-bold font-heading', s.color)}>{s.value}</div>
+          { label: 'Total Invoices', value: String(monthInvoices.length), gradient: 'linear-gradient(135deg, #6366f1, #4338ca)' },
+          { label: 'Taxable Value', value: formatINR(Math.round(totalTaxable)), gradient: 'linear-gradient(135deg, #475569, #334155)' },
+          { label: 'CGST', value: formatINR(Math.round(totalCGST)), gradient: 'linear-gradient(135deg, #3b82f6, #1d4ed8)' },
+          { label: 'SGST', value: formatINR(Math.round(totalSGST)), gradient: 'linear-gradient(135deg, #10b981, #047857)' },
+          { label: 'Total Tax', value: formatINR(Math.round(totalTax)), gradient: 'linear-gradient(135deg, #f59e0b, #b45309)' },
+        ].map((s, i) => (
+          <div key={s.label} className="stat-card border-none relative overflow-hidden fade-in-up" style={{ animationDelay: `${0.3 + i * 0.1}s`, background: s.gradient }}>
+            <div className="text-xs text-white/80 font-medium mb-1 relative z-10">{s.label}</div>
+            <div className="text-xl font-bold font-heading text-white relative z-10 drop-shadow-md">{s.value}</div>
           </div>
         ))}
       </div>
@@ -255,7 +266,7 @@ export default function GST() {
           TAB 1: GSTR-1 Summary (B2B / B2C / Nil)
           ═══════════════════════════════════════════════════════ */}
       {tab === 'gstr1' && (
-        <div className="glass-card overflow-hidden">
+        <div className="glass-card card-glow overflow-hidden fade-in-up" style={{ animationDelay: '0.8s' }}>
           <table className="w-full text-sm">
             <thead>
               <tr className="bg-gray-50 dark:bg-gray-800/50">
@@ -296,7 +307,7 @@ export default function GST() {
           TAB 2: GST Rate Slab Breakdown
           ═══════════════════════════════════════════════════════ */}
       {tab === 'slabs' && (
-        <div className="glass-card overflow-hidden">
+        <div className="glass-card card-glow overflow-hidden fade-in-up" style={{ animationDelay: '0.8s' }}>
           <table className="w-full text-sm">
             <thead>
               <tr className="bg-gray-50 dark:bg-gray-800/50">
@@ -351,7 +362,7 @@ export default function GST() {
           TAB 3: HSN Summary
           ═══════════════════════════════════════════════════════ */}
       {tab === 'hsn' && (
-        <div className="glass-card overflow-hidden">
+        <div className="glass-card card-glow overflow-hidden fade-in-up" style={{ animationDelay: '0.8s' }}>
           <table className="w-full text-sm">
             <thead>
               <tr className="bg-gray-50 dark:bg-gray-800/50">
@@ -396,20 +407,20 @@ export default function GST() {
       )}
 
       {/* ── Action Buttons ────────────────────────────────── */}
-      <div className="flex flex-wrap gap-3" data-print-hide>
-        <button onClick={handleWhatsAppCA} className="btn-whatsapp px-6 py-3 rounded-xl text-sm">
+      <div className="flex flex-wrap gap-3 fade-in-up" style={{ animationDelay: '0.9s' }} data-print-hide>
+        <button onClick={handleWhatsAppCA} className="flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-green-500 to-green-600 text-white text-sm font-medium hover:scale-105 hover:shadow-[0_0_20px_rgba(34,197,94,0.4)] transition-all">
           <MessageCircle size={16} /> {language === 'hi' ? 'CA ko WhatsApp Bhejo' : 'WhatsApp to CA'}
         </button>
-        <button onClick={handlePrintPDF} className="flex items-center gap-2 px-6 py-3 rounded-xl bg-brand-purple text-white text-sm font-medium hover:bg-brand-purple/90 transition-all shadow-lg shadow-brand-purple/20">
+        <button onClick={handlePrintPDF} className="flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-brand-purple to-purple-600 text-white text-sm font-medium hover:scale-105 hover:shadow-[0_0_20px_rgba(124,58,237,0.4)] transition-all">
           <Printer size={16} /> {language === 'hi' ? 'PDF Download Karo' : 'Download PDF'}
         </button>
-        <button onClick={handleDownloadJSON} className="flex items-center gap-2 px-6 py-3 rounded-xl border border-brand-purple/30 text-brand-purple text-sm font-medium hover:bg-brand-purple/10 transition-all">
+        <button onClick={handleDownloadJSON} className="flex items-center gap-2 px-6 py-3 rounded-xl bg-white/10 border border-brand-purple/30 text-brand-purple dark:text-purple-300 text-sm font-medium hover:bg-brand-purple/10 transition-all">
           <FileDown size={16} /> Download GSTR-1 JSON
         </button>
       </div>
 
       {/* ── Tax Liability Summary (always visible) ────────── */}
-      <div className="glass-card p-6">
+      <div className="glass-card card-glow p-6 fade-in-up" style={{ animationDelay: '1.0s' }}>
         <h2 className="font-heading font-semibold text-gray-900 dark:text-white mb-4">
           {language === 'hi' ? 'Tax Liability Summary' : 'Tax Liability Summary'}
         </h2>

@@ -5,8 +5,8 @@
  */
 
 import {
-  collection, doc, addDoc, updateDoc, getDoc,
-  query, orderBy, where, limit, onSnapshot, Timestamp, writeBatch,
+  collection, doc, addDoc, updateDoc, getDoc, deleteDoc,
+  query, orderBy, where, limit, onSnapshot, Timestamp, writeBatch, serverTimestamp,
   increment, runTransaction, type Unsubscribe
 } from 'firebase/firestore';
 import { db } from './firebase';
@@ -425,4 +425,14 @@ export function subscribeExpenses(
     const expenses = snap.docs.map(d => ({ id: d.id, ...d.data() } as Expense));
     callback(expenses);
   });
+}
+
+export async function addExpense(tenantId: string, data: Omit<Expense, 'id' | 'createdAt'>): Promise<string> {
+  const ref = collection(db, 'tenants', tenantId, 'expenses');
+  const docRef = await addDoc(ref, { ...data, createdAt: serverTimestamp() });
+  return docRef.id;
+}
+
+export async function deleteExpense(tenantId: string, expenseId: string): Promise<void> {
+  await deleteDoc(doc(db, 'tenants', tenantId, 'expenses', expenseId));
 }

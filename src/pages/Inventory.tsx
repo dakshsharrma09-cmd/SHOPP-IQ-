@@ -150,6 +150,11 @@ export default function Inventory() {
 
   return (
     <div className="animate-fade-in">
+      <style>{`
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-in-up { animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
+      `}</style>
+
       {/* Low Stock Banner */}
       {lowStockCount > 0 && (
         <div className="flex items-center gap-3 px-4 py-3 mb-4 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700/30">
@@ -161,17 +166,42 @@ export default function Inventory() {
         </div>
       )}
 
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-4">
-        <h1 className="text-2xl font-heading font-bold text-gray-900 dark:text-white">{t('inventory')} 📦</h1>
+      {/* Header Banner */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 p-6 rounded-2xl shadow-lg" style={{ background: 'linear-gradient(135deg, #4c1d95, #7c3aed)' }}>
+        <div>
+          <h1 className="text-2xl md:text-3xl font-heading font-bold text-white mb-1 flex items-center gap-2">
+            {t('inventory')} 📦
+          </h1>
+          <p className="text-purple-200 text-sm">{language === 'hi' ? 'Apne stock aur products ko manage karein' : 'Manage your stock and products'}</p>
+        </div>
         <div className="flex gap-2">
-          <button className="flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 dark:border-gray-700 text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all">
+          <button className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/10 text-white hover:bg-white/20 border border-white/20 backdrop-blur-sm transition-all text-sm font-medium">
             <Upload size={15} /> {t('bulkImport')}
           </button>
           <button onClick={openAddProduct}
-            className="btn-primary text-sm px-4 py-2">
+            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white text-brand-purple hover:bg-gray-50 transition-all text-sm font-bold shadow-md">
             <Plus size={15} /> {language === 'hi' ? 'Product Jodein' : 'Add Product'}
           </button>
+        </div>
+      </div>
+
+      {/* Stat Cards */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+        <div className="fade-in-up p-5 rounded-2xl shadow-lg text-white" style={{ background: 'linear-gradient(135deg, #7C3AED, #5B21B6)', animationDelay: '0.1s' }}>
+          <div className="text-purple-200 text-xs font-medium mb-1 uppercase tracking-wider">Total Products</div>
+          <div className="text-2xl font-bold font-heading">{products.length}</div>
+        </div>
+        <div className="fade-in-up p-5 rounded-2xl shadow-lg text-white" style={{ background: 'linear-gradient(135deg, #EF4444, #991B1B)', animationDelay: '0.2s' }}>
+          <div className="text-red-200 text-xs font-medium mb-1 uppercase tracking-wider">Low Stock</div>
+          <div className="text-2xl font-bold font-heading">{lowStockCount}</div>
+        </div>
+        <div className="fade-in-up p-5 rounded-2xl shadow-lg text-white" style={{ background: 'linear-gradient(135deg, #3B82F6, #1E40AF)', animationDelay: '0.3s' }}>
+          <div className="text-blue-200 text-xs font-medium mb-1 uppercase tracking-wider">Categories</div>
+          <div className="text-2xl font-bold font-heading">{categories.length}</div>
+        </div>
+        <div className="fade-in-up p-5 rounded-2xl shadow-lg text-white" style={{ background: 'linear-gradient(135deg, #10B981, #065F46)', animationDelay: '0.4s' }}>
+          <div className="text-green-200 text-xs font-medium mb-1 uppercase tracking-wider">Total Value</div>
+          <div className="text-2xl font-bold font-heading">{formatINR(products.reduce((acc, p) => acc + (p.currentStock * p.purchasePrice), 0))}</div>
         </div>
       </div>
 
@@ -218,7 +248,7 @@ export default function Inventory() {
 
           {/* Product Table */}
           {viewMode === 'table' ? (
-            <div className="glass-card overflow-hidden">
+            <div className="glass-card card-glow overflow-hidden">
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
@@ -274,7 +304,7 @@ export default function Inventory() {
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {filteredProducts.map(p => (
-                <div key={p.id} className="glass-card p-4 hover:shadow-card-hover transition-all cursor-pointer group" onClick={() => openEditProduct(p)}>
+                <div key={p.id} className="glass-card card-glow p-4 hover:shadow-card-hover transition-all cursor-pointer group" onClick={() => openEditProduct(p)}>
                   <div className="w-full h-20 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center mb-3">
                     <span className="text-2xl">📦</span>
                   </div>
@@ -292,7 +322,7 @@ export default function Inventory() {
       )}
 
       {tab === 'movements' && (
-        <div className="glass-card overflow-hidden">
+        <div className="glass-card card-glow overflow-hidden">
           <table className="w-full text-sm">
             <thead>
               <tr className="bg-gray-50 dark:bg-gray-800/50">

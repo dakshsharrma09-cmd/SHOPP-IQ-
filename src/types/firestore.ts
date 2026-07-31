@@ -83,6 +83,7 @@ export interface Customer {
   lastPurchaseAt?: Timestamp;
   customerSegment: 'regular' | 'vip' | 'new' | 'at_risk';
   isActive: boolean;
+  notes?: string;
   createdAt: Timestamp;
 }
 

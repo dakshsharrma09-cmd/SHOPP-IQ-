@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useState } from 'react';
 import { AuthProvider } from './contexts/AuthContext';
 import { LanguageProvider } from './contexts/LanguageContext';
+import { ToastProvider } from './components/Toast';
 import AuthGuard from './components/AuthGuard';
 import LoadingScreen from './components/LoadingScreen';
 import DashboardLayout from './components/layout/DashboardLayout';
@@ -27,9 +28,10 @@ export default function App() {
   }
 
   return (
-    <LanguageProvider>
-      <AuthProvider>
-        <BrowserRouter>
+    <ToastProvider>
+      <LanguageProvider>
+        <AuthProvider>
+          <BrowserRouter>
           <OfflineBanner />
           <Routes>
             <Route path="/login" element={<Login />} />
@@ -55,8 +57,9 @@ export default function App() {
             </Route>
             <Route path="*" element={<Navigate to="/dashboard" replace />} />
           </Routes>
-        </BrowserRouter>
-      </AuthProvider>
-    </LanguageProvider>
+          </BrowserRouter>
+        </AuthProvider>
+      </LanguageProvider>
+    </ToastProvider>
   );
 }

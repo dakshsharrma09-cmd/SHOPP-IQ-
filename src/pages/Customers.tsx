@@ -116,9 +116,42 @@ export default function Customers() {
 
   return (
     <div className="animate-fade-in">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-4">
-        <h1 className="text-2xl font-heading font-bold text-gray-900 dark:text-white">{t('customers')} 👥</h1>
-        <button onClick={() => setShowAddModal(true)} className="btn-primary text-sm px-4 py-2"><Plus size={15} /> {language === 'hi' ? 'Naya Grahak' : 'New Customer'}</button>
+      <style>{`
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-in-up { animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
+      `}</style>
+
+      {/* Header Banner */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 p-6 rounded-2xl shadow-lg" style={{ background: 'linear-gradient(135deg, #1e3a8a, #4c1d95)' }}>
+        <div>
+          <h1 className="text-2xl md:text-3xl font-heading font-bold text-white mb-1 flex items-center gap-2">
+            {t('customers')} 👥
+          </h1>
+          <p className="text-blue-200 text-sm">{language === 'hi' ? 'Apne grahakon aur unke khate manage karein' : 'Manage your customers and their accounts'}</p>
+        </div>
+        <button onClick={() => setShowAddModal(true)} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white text-blue-900 hover:bg-gray-50 transition-all text-sm font-bold shadow-md w-fit">
+          <Plus size={15} /> {language === 'hi' ? 'Naya Grahak' : 'New Customer'}
+        </button>
+      </div>
+
+      {/* Stat Cards */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+        <div className="fade-in-up p-5 rounded-2xl shadow-lg text-white" style={{ background: 'linear-gradient(135deg, #7C3AED, #5B21B6)', animationDelay: '0.1s' }}>
+          <div className="text-purple-200 text-xs font-medium mb-1 uppercase tracking-wider">Total Customers</div>
+          <div className="text-2xl font-bold font-heading">{customers.length}</div>
+        </div>
+        <div className="fade-in-up p-5 rounded-2xl shadow-lg text-white" style={{ background: 'linear-gradient(135deg, #10B981, #065F46)', animationDelay: '0.2s' }}>
+          <div className="text-green-200 text-xs font-medium mb-1 uppercase tracking-wider">Active (Regular)</div>
+          <div className="text-2xl font-bold font-heading">{customers.filter(c => c.customerSegment === 'regular').length}</div>
+        </div>
+        <div className="fade-in-up p-5 rounded-2xl shadow-lg text-white" style={{ background: 'linear-gradient(135deg, #EAB308, #854D0E)', animationDelay: '0.3s' }}>
+          <div className="text-yellow-200 text-xs font-medium mb-1 uppercase tracking-wider">VIP Customers</div>
+          <div className="text-2xl font-bold font-heading">{customers.filter(c => c.customerSegment === 'vip').length}</div>
+        </div>
+        <div className="fade-in-up p-5 rounded-2xl shadow-lg text-white" style={{ background: 'linear-gradient(135deg, #3B82F6, #1E40AF)', animationDelay: '0.4s' }}>
+          <div className="text-blue-200 text-xs font-medium mb-1 uppercase tracking-wider">New Customers</div>
+          <div className="text-2xl font-bold font-heading">{customers.filter(c => c.customerSegment === 'new').length}</div>
+        </div>
       </div>
 
       {/* Segment Tabs */}
@@ -141,7 +174,7 @@ export default function Customers() {
       </div>
 
       {/* Table */}
-      <div className="glass-card overflow-hidden">
+      <div className="glass-card card-glow overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
@@ -157,7 +190,7 @@ export default function Customers() {
             </thead>
             <tbody>
               {filtered.map(c => (
-                <tr key={c.id} onClick={() => setSelectedCustomer(c)}
+                <tr key={c.id} onClick={() => { setSelectedCustomer(c); setCustomerNotes(c.notes || ''); setProfileTab('purchases'); }}
                   className="border-b border-gray-50 dark:border-gray-800 table-row-hover cursor-pointer">
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-3">
@@ -300,7 +333,19 @@ export default function Customers() {
                     placeholder={language === 'hi' ? 'Customer ke baare mein notes likhen...' : 'Write notes about this customer...'}
                     className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-brand-dark-card text-sm resize-none outline-none focus:border-brand-purple"
                   />
-                  <p className="text-xs text-gray-400 mt-2">Notes are stored locally in this session.</p>
+                  <button
+                    onClick={async () => {
+                      if (!tenantId || !selectedCustomer) return;
+                      try {
+                        await updateCustomer(tenantId, selectedCustomer.id, { notes: customerNotes });
+                        setSelectedCustomer(prev => prev ? { ...prev, notes: customerNotes } : null);
+                      } catch (e) { console.error('Notes save failed', e); }
+                    }}
+                    className="mt-3 px-4 py-2 rounded-xl text-sm font-semibold text-white transition-all hover:scale-105 active:scale-95"
+                    style={{ background: 'linear-gradient(135deg, #7C3AED, #6D28D9)' }}>
+                    💾 {language === 'hi' ? 'Notes सेव करो' : 'Save Notes'}
+                  </button>
+                  <p className="text-xs text-gray-400 mt-2">✅ {language === 'hi' ? 'Notes Firestore mein save hoti hain' : 'Notes are saved to cloud'}</p>
                 </div>
               )}
 

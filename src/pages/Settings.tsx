@@ -74,21 +74,34 @@ export default function Settings() {
   ];
 
   return (
-    <div className="animate-fade-in">
-      <h1 className="text-2xl font-heading font-bold text-gray-900 dark:text-white mb-4">{t('settings')} ⚙️</h1>
+    <div className="space-y-6">
+      <style>{`
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-in-up { animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
+      `}</style>
+      <div className="p-8 rounded-3xl bg-gradient-to-r from-[#18181b] via-[#27272a] to-[#18181b] relative overflow-hidden shadow-2xl border border-white/10 fade-in-up mb-6" style={{ animationDelay: '0.1s' }}>
+        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-overlay"></div>
+        <div className="absolute -top-24 -right-24 w-64 h-64 bg-gray-500 rounded-full blur-[100px] opacity-20"></div>
+        <div className="relative z-10">
+          <h1 className="text-3xl font-heading font-extrabold text-white mb-2 tracking-tight flex items-center gap-3">
+            {t('settings')} ⚙️
+          </h1>
+          <p className="text-gray-400 text-sm font-medium tracking-widest uppercase">सेटिंग्स</p>
+        </div>
+      </div>
 
       <div className="flex gap-1 p-1 bg-gray-100 dark:bg-gray-800 rounded-xl w-fit mb-6 overflow-x-auto">
         {tabs.map(tb => (
           <button key={tb.id} onClick={() => setTab(tb.id as any)}
-            className={cn('px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-all',
-              tab === tb.id ? 'bg-white dark:bg-brand-dark-card text-brand-purple shadow' : 'text-gray-500')}>
+            className={cn('px-5 py-2.5 rounded-xl text-sm font-semibold whitespace-nowrap transition-all duration-300',
+              tab === tb.id ? 'bg-gradient-to-r from-brand-purple to-purple-700 text-white shadow-[0_0_15px_rgba(124,58,237,0.4)]' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white')}>
             {tb.label}
           </button>
         ))}
       </div>
 
       {tab === 'profile' && (
-        <div className="glass-card p-6 max-w-2xl animate-fade-in">
+        <div className="glass-card card-glow p-6 max-w-2xl fade-in-up" style={{ animationDelay: '0.2s' }}>
           <div className="flex items-center gap-4 mb-6">
             <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-brand-purple to-purple-400 flex items-center justify-center text-white text-3xl font-bold font-heading">
               {(form.businessName || 'S').charAt(0)}
@@ -142,9 +155,9 @@ export default function Settings() {
       )}
 
       {tab === 'subscription' && (
-        <div className="animate-fade-in">
+        <div className="fade-in-up" style={{ animationDelay: '0.2s' }}>
           {/* Current Plan */}
-          <div className="glass-card p-5 mb-6 flex items-center justify-between">
+          <div className="glass-card card-glow p-5 mb-6 flex items-center justify-between">
             <div>
               <div className="text-sm text-gray-500">Current Plan</div>
               <div className="text-xl font-bold font-heading text-gray-900 dark:text-white capitalize">{tenant?.subscriptionPlan || 'Free'} Plan</div>
@@ -168,8 +181,8 @@ export default function Settings() {
           {/* Plan Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {plans.map(plan => (
-              <div key={plan.id} className={cn('glass-card p-6 relative transition-all hover:shadow-card-hover',
-                plan.popular && 'border-brand-purple ring-2 ring-brand-purple/20')}>
+              <div key={plan.id} className={cn('glass-card p-6 relative transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl',
+                plan.popular ? 'gradient-border shadow-[0_0_30px_rgba(124,58,237,0.3)] ring-0' : '')}>
                 {plan.popular && (
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-brand-purple text-white text-[10px] font-bold">
                     POPULAR ⭐
@@ -203,7 +216,7 @@ export default function Settings() {
       )}
 
       {tab === 'users' && (
-        <div className="glass-card p-6 max-w-xl text-center animate-fade-in">
+        <div className="glass-card card-glow p-6 max-w-xl text-center fade-in-up" style={{ animationDelay: '0.2s' }}>
           <div className="text-4xl mb-4">👥</div>
           <h3 className="font-heading font-bold text-gray-900 dark:text-white mb-2">
             {language === 'hi' ? 'Team Management jald aa raha hai' : 'Team Management Coming Soon'}
@@ -213,7 +226,7 @@ export default function Settings() {
       )}
 
       {tab === 'whatsapp' && (
-        <div className="glass-card p-6 max-w-xl animate-fade-in">
+        <div className="glass-card card-glow p-6 max-w-xl fade-in-up" style={{ animationDelay: '0.2s' }}>
           <div className="flex items-center gap-3 mb-6">
             <div className="w-12 h-12 rounded-2xl bg-brand-whatsapp/10 flex items-center justify-center">
               <MessageCircle size={22} className="text-brand-whatsapp" />
@@ -242,7 +255,7 @@ export default function Settings() {
 
       {/* ── Install App Card (shown on all tabs when PWA install is available) ── */}
       {canInstall && (
-        <div className="glass-card p-6 max-w-xl mt-6 animate-fade-in border-2 border-brand-purple/20">
+        <div className="glass-card card-glow p-6 max-w-xl mt-6 fade-in-up border-2 border-brand-purple/20" style={{ animationDelay: '0.4s' }}>
           <div className="flex items-center gap-4">
             <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-brand-purple to-purple-600 flex items-center justify-center flex-shrink-0">
               <Smartphone size={26} className="text-white" />

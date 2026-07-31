@@ -162,7 +162,7 @@ export default function Billing() {
         productId: item.productId,
         productName: item.productName,
         quantity: item.quantity,
-        unit: 'piece' as const,
+        unit: products.find(p => p.id === item.productId)?.unit || 'piece',
         unitPrice: item.unitPrice,
         discountPercent: item.discountPercent,
         gstRate: item.gstRate,
@@ -192,6 +192,7 @@ export default function Billing() {
         loyaltyPointsEarned,
         whatsappSent: false,
         createdBy: tenantId,
+        notes,
       }, invoiceItems);
 
       setShowSuccess(true);
@@ -200,7 +201,7 @@ export default function Billing() {
       setInvoiceNumber(nextNum);
     } catch (err) {
       console.error('Failed to create invoice:', err);
-      alert('Failed to create bill. Please try again.');
+      console.log('Failed to create bill. Please try again.');
     } finally {
       setSaving(false);
     }
@@ -241,10 +242,10 @@ export default function Billing() {
             </div>
           )}
           <div className="flex gap-3 mt-2">
-            <button className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 text-sm font-medium transition-all">
+            <button onClick={() => window.print()} className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 text-sm font-medium transition-all">
               <Printer size={16} /> Print
             </button>
-            <button className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 text-sm font-medium transition-all">
+            <button onClick={() => { alert('PDF download coming soon'); }} className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 text-sm font-medium transition-all">
               <Download size={16} /> PDF
             </button>
             <button onClick={handleWhatsAppSend} className="flex-1 btn-whatsapp justify-center py-3 rounded-xl text-sm">

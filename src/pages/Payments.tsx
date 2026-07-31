@@ -91,12 +91,23 @@ export default function Payments() {
 
   return (
     <div className="animate-fade-in">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-4">
-        <h1 className="text-2xl font-heading font-bold text-gray-900 dark:text-white">{t('payments')} 💰</h1>
+      <style>{`
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-in-up { animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
+      `}</style>
+
+      {/* Header Banner */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 p-6 rounded-2xl shadow-lg" style={{ background: 'linear-gradient(135deg, #065f46, #4c1d95)' }}>
+        <div>
+          <h1 className="text-2xl md:text-3xl font-heading font-bold text-white mb-1 flex items-center gap-2">
+            {t('payments')} 💰
+          </h1>
+          <p className="text-green-200 text-sm">{language === 'hi' ? 'Apne len-den aur bakaaya rashi manage karein' : 'Manage your transactions and outstandings'}</p>
+        </div>
         <div className="flex items-center gap-3">
-          <div className="glass-card px-4 py-2">
-            <span className="text-xs text-gray-400">Total Outstanding</span>
-            <span className="text-lg font-bold font-heading text-red-500 ml-2">{formatINR(totalOutstanding)}</span>
+          <div className="bg-white/10 backdrop-blur-sm border border-white/20 px-5 py-3 rounded-xl">
+            <span className="text-xs text-green-100 uppercase tracking-wider font-medium">Total Outstanding</span>
+            <div className="text-xl font-bold font-heading text-white mt-1">{formatINR(totalOutstanding)}</div>
           </div>
         </div>
       </div>
@@ -121,7 +132,7 @@ export default function Payments() {
       </div>
 
       {tab === 'recent' && (
-        <div className="glass-card overflow-hidden">
+        <div className="glass-card card-glow overflow-hidden">
           <table className="w-full text-sm">
             <thead>
               <tr className="bg-gray-50 dark:bg-gray-800/50">
@@ -133,15 +144,19 @@ export default function Payments() {
               </tr>
             </thead>
             <tbody>
-              {recentPayments.map(p => {
+              {recentPayments.map((p, index) => {
                 const inv = getInvoiceForPayment(p);
                 return (
-                  <tr key={p.id} className="border-b border-gray-50 dark:border-gray-800 table-row-hover">
+                  <tr key={p.id} className="border-b border-gray-50 dark:border-gray-800 table-row-hover fade-in-up" style={{ animationDelay: `${index * 0.05}s` }}>
                     <td className="px-4 py-3 font-medium text-brand-purple font-mono text-xs">{inv?.invoiceNumber || p.invoiceId.slice(0, 8)}</td>
                     <td className="px-4 py-3 text-gray-700 dark:text-gray-300">{inv?.customerName || '—'}</td>
                     <td className="px-4 py-3 text-right font-bold text-brand-green">{formatINR(p.amount)}</td>
                     <td className="px-4 py-3 text-center">
-                      <span className="badge-blue capitalize">{p.paymentMethod}</span>
+                      <span className={cn('capitalize px-2 py-1 rounded-full text-xs font-medium', 
+                        p.paymentMethod === 'cash' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 
+                        p.paymentMethod === 'upi' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' : 
+                        'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400'
+                      )}>{p.paymentMethod}</span>
                     </td>
                     <td className="px-4 py-3 text-gray-400 text-xs">
                       {p.createdAt ? new Date(p.createdAt.seconds * 1000).toLocaleDateString('en-IN') : ''}
@@ -158,7 +173,7 @@ export default function Payments() {
       )}
 
       {tab === 'outstanding' && (
-        <div className="glass-card overflow-hidden">
+        <div className="glass-card card-glow overflow-hidden">
           <table className="w-full text-sm">
             <thead>
               <tr className="bg-gray-50 dark:bg-gray-800/50">
@@ -170,8 +185,8 @@ export default function Payments() {
               </tr>
             </thead>
             <tbody>
-              {outstandingInvoices.map(inv => (
-                <tr key={inv.id} className="border-b border-gray-50 dark:border-gray-800 table-row-hover">
+              {outstandingInvoices.map((inv, index) => (
+                <tr key={inv.id} className="border-b border-gray-50 dark:border-gray-800 table-row-hover fade-in-up" style={{ animationDelay: `${index * 0.05}s` }}>
                   <td className="px-4 py-3 font-medium text-brand-purple font-mono text-xs">{inv.invoiceNumber}</td>
                   <td className="px-4 py-3">
                     <div className="text-gray-700 dark:text-gray-300">{inv.customerName}</div>

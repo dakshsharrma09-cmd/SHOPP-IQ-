@@ -346,6 +346,11 @@ export default function Dashboard() {
                     <stop offset="5%" stopColor="#7C3AED" stopOpacity={0.15}/>
                     <stop offset="95%" stopColor="#7C3AED" stopOpacity={0}/>
                   </linearGradient>
+                  <linearGradient id="lineGrad" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stopColor="#6D28D9" />
+                    <stop offset="50%" stopColor="#7C3AED" />
+                    <stop offset="100%" stopColor="#A78BFA" />
+                  </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(124,58,237,0.06)" vertical={false} />
                 <XAxis dataKey="day" tick={{ fontSize: 10, fill: '#9CA3AF' }} tickLine={false} axisLine={false}
@@ -357,13 +362,6 @@ export default function Dashboard() {
                   labelStyle={{ color: '#C4B5FD', fontSize: 11, fontWeight: 600 }} itemStyle={{ color: '#A78BFA' }} />
                 <Line type="monotone" dataKey="sales" stroke="url(#lineGrad)" strokeWidth={3}
                   dot={false} activeDot={{ r: 6, fill: '#7C3AED', stroke: 'white', strokeWidth: 3 }} />
-                <defs>
-                  <linearGradient id="lineGrad" x1="0" y1="0" x2="1" y2="0">
-                    <stop offset="0%" stopColor="#6D28D9" />
-                    <stop offset="50%" stopColor="#7C3AED" />
-                    <stop offset="100%" stopColor="#A78BFA" />
-                  </linearGradient>
-                </defs>
               </LineChart>
             </ResponsiveContainer>
           ) : (
