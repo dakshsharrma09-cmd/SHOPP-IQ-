@@ -1,13 +1,14 @@
 {
-  "name": "ShoppIQ",
+  "name": "ShoppIQ — Dukaan se Digital tak",
   "short_name": "ShoppIQ",
-  "description": "India's WhatsApp-native AI-powered business management platform. Dukaan se Digital tak.",
+  "description": "India's #1 AI-powered business management app for kirana stores & MSMEs. GST billing, inventory, CRM, payments — sab ek jagah.",
   "theme_color": "#7C3AED",
   "background_color": "#0F0A1E",
   "display": "standalone",
   "orientation": "portrait",
   "scope": "/",
   "start_url": "/dashboard",
+  "id": "/",
   "icons": [
     {
       "src": "/icons/icon-192.png",
@@ -22,7 +23,31 @@
       "purpose": "any maskable"
     }
   ],
+  "shortcuts": [
+    {
+      "name": "New Bill",
+      "short_name": "Bill",
+      "description": "Create a new invoice",
+      "url": "/billing/new",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Dashboard",
+      "short_name": "Home",
+      "description": "View business dashboard",
+      "url": "/dashboard",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Inventory",
+      "short_name": "Stock",
+      "description": "Manage products & stock",
+      "url": "/inventory",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    }
+  ],
   "categories": ["business", "finance", "productivity"],
   "lang": "en-IN",
-  "dir": "ltr"
+  "dir": "ltr",
+  "prefer_related_applications": false
 }

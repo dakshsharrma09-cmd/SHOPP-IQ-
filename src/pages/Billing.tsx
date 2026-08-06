@@ -12,6 +12,8 @@ import {
   Smartphone, Banknote, HandCoins, MessageCircle, Printer,
   Download, Check, ChevronDown, Gift
 } from 'lucide-react';
+import { InvoiceReceipt } from '../components/InvoiceReceipt';
+import '../styles/print.css';
 
 interface CartItem {
   productId: string;
@@ -224,6 +226,21 @@ export default function Billing() {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fade-in">
         <div className="bg-white dark:bg-brand-dark-card rounded-3xl p-8 max-w-md w-full mx-4 text-center animate-scale-in shadow-2xl">
+          <InvoiceReceipt 
+            data={{
+              items: items.map(i => ({ productName: i.productName, quantity: i.quantity, unitPrice: i.unitPrice, totalAmount: i.totalAmount })),
+              subtotal: totals.subtotal,
+              discount: totals.discount,
+              cgst: totals.cgst,
+              sgst: totals.sgst,
+              grandTotal: totals.grand,
+              customerName: selectedCustomer?.fullName || 'Walk-in Customer',
+              customerPhone: selectedCustomer?.phoneNumber || '',
+              invoiceNumber,
+              date: invoiceDate,
+              paymentMethod,
+            }}
+          />
           <div className="w-20 h-20 rounded-full bg-brand-green/20 flex items-center justify-center mx-auto mb-4">
             <Check size={40} className="text-brand-green" />
           </div>

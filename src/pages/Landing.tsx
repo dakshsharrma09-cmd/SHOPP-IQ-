@@ -252,8 +252,8 @@ export default function Landing() {
             <p className="text-gray-400 text-sm">Dukaan se Digital tak.</p>
           </div>
           <div className="flex gap-8 text-sm text-gray-400">
-            <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
+            <Link to="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
+            <Link to="/terms" className="hover:text-white transition-colors">Terms of Service</Link>
             <a href="#" className="hover:text-white transition-colors">Contact Us</a>
           </div>
         </div>

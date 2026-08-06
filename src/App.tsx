@@ -23,6 +23,9 @@ const GST = lazy(() => import('./pages/GST'));
 const Settings = lazy(() => import('./pages/Settings'));
 const Loyalty = lazy(() => import('./pages/Loyalty'));
 const WhatsAppChat = lazy(() => import('./pages/WhatsAppChat'));
+const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'));
+const Terms = lazy(() => import('./pages/Terms'));
+const NotFound = lazy(() => import('./pages/NotFound'));
 
 function PageLoader() {
   return (
@@ -78,7 +81,9 @@ export default function App() {
               <Route path="settings" element={<Settings />} />
               <Route path="whatsapp" element={<WhatsAppChat />} />
             </Route>
-            <Route path="*" element={<Navigate to="/landing" replace />} />
+            <Route path="/privacy" element={<PrivacyPolicy />} />
+            <Route path="/terms" element={<Terms />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
           </Suspense>
           </BrowserRouter>

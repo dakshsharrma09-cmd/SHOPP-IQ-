@@ -1,0 +1,117 @@
+/* /Users/daksh/Documents/SHOPP IQ OFFICIAL/src/styles/print.css */
+
+.print-receipt {
+  display: none;
+}
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  
+  .print-receipt {
+    display: block !important;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    background: white;
+    color: black;
+    font-family: monospace, sans-serif;
+  }
+
+  .print-receipt, .print-receipt * {
+    visibility: visible;
+  }
+  
+  @page {
+    margin: 0;
+  }
+
+  /* Thermal 58mm layout */
+  .print-receipt.thermal {
+    max-width: 58mm;
+    font-size: 12px;
+    line-height: 1.2;
+    padding: 5px;
+  }
+
+  /* A4 layout option */
+  .print-receipt.a4 {
+    max-width: 210mm;
+    margin: 0 auto;
+    font-size: 14px;
+    padding: 20px;
+  }
+
+  .print-header {
+    text-align: center;
+    margin-bottom: 10px;
+  }
+
+  .print-store-name {
+    font-weight: bold;
+    font-size: 1.2em;
+    margin-bottom: 5px;
+  }
+
+  .print-divider {
+    border-top: 1px dashed black;
+    margin: 8px 0;
+  }
+
+  .print-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 10px;
+  }
+
+  .print-table th, .print-table td {
+    text-align: left;
+    padding: 2px 0;
+  }
+
+  .print-table th:last-child, .print-table td:last-child {
+    text-align: right;
+  }
+
+  .print-table th:nth-child(2), .print-table td:nth-child(2) {
+    text-align: center;
+  }
+
+  .print-totals {
+    margin-top: 10px;
+  }
+
+  .print-total-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2px;
+  }
+
+  .print-grand-total {
+    font-weight: bold;
+    font-size: 1.2em;
+    border-top: 1px dashed black;
+    border-bottom: 1px dashed black;
+    padding: 5px 0;
+    margin: 5px 0;
+  }
+
+  .print-footer {
+    text-align: center;
+    margin-top: 15px;
+  }
+
+  .print-barcode {
+    height: 40px;
+    margin-top: 10px;
+    border: 1px solid black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    letter-spacing: 2px;
+  }
+}
