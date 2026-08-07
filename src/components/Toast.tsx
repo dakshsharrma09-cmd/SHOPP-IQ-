@@ -56,6 +56,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
             
             <button
               onClick={() => removeToast(toast.id)}
+              aria-label="Dismiss notification"
               className="ml-auto text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
             >
               <X size={16} />

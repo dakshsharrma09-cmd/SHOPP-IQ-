@@ -254,7 +254,7 @@ export default function Landing() {
           <div className="flex gap-8 text-sm text-gray-400">
             <Link to="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
             <Link to="/terms" className="hover:text-white transition-colors">Terms of Service</Link>
-            <a href="#" className="hover:text-white transition-colors">Contact Us</a>
+            <a href="mailto:support@shoppiq.in" className="hover:text-white transition-colors">Contact Us</a>
           </div>
         </div>
         <div className="max-w-7xl mx-auto text-center border-t border-white/10 pt-8 text-gray-500 text-sm">

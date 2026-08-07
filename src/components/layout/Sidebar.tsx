@@ -175,6 +175,7 @@ export default function Sidebar({ collapsed, onCollapse }: SidebarProps) {
         {/* Collapse Toggle */}
         <button
           onClick={() => onCollapse(!collapsed)}
+          aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
           className="absolute -right-3 top-20 w-6 h-6 rounded-full bg-brand-purple text-white flex items-center justify-center shadow-purple-glow-sm hover:scale-110 transition-transform z-50"
         >
           {collapsed ? <ChevronRight size={12} /> : <ChevronLeft size={12} />}

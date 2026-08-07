@@ -85,10 +85,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const result = await signInWithPhoneNumber(auth, fullPhone, verifier);
       return result;
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Only clear verifier on specific errors, not on rate-limit
-      if (error?.code !== 'auth/too-many-requests') {
-        try { verifier.clear(); } catch { /* ignore */ }
+      const firebaseError = error as { code?: string };
+      if (firebaseError?.code !== 'auth/too-many-requests') {
+        try { verifier.clear(); } catch (_e) { /* recaptcha cleanup */ }
         (window as any).__recaptchaVerifier = null;
       }
       throw error;

@@ -198,6 +198,7 @@ export default function Header({ sidebarCollapsed }: HeaderProps) {
               onChange={(e) => { setSearchQuery(e.target.value); setShowResults(true); }}
               onFocus={() => searchQuery.length >= 2 && setShowResults(true)}
               placeholder={t('search') + '... (Press /)'}
+              aria-label="Search products, customers, invoices"
               className={cn(
                 'w-full pl-9 pr-4 py-2.5 text-sm rounded-xl border bg-gray-50 dark:bg-brand-dark border-gray-200 dark:border-brand-dark-border',
                 'text-gray-900 dark:text-gray-100 placeholder:text-gray-400',
@@ -208,6 +209,7 @@ export default function Header({ sidebarCollapsed }: HeaderProps) {
               <button
                 onClick={() => { setSearchQuery(''); setShowResults(false); }}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                aria-label="Clear search"
               >
                 <X size={14} />
               </button>
