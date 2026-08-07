@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { formatINR, cn } from '../lib/formatters';
+import { useToast } from '../components/Toast';
 import {
   subscribeProducts, subscribeCategories, subscribeStockMovements,
   addProduct, updateProduct, deleteProduct, adjustStock
@@ -40,6 +41,7 @@ export default function Inventory() {
   const [loaded, setLoaded] = useState(false);
 
   // Firestore state
+  const { showToast } = useToast();
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [stockMovements, setStockMovements] = useState<StockMovement[]>([]);
@@ -113,8 +115,7 @@ export default function Inventory() {
       }
       setShowSlideOver(false);
     } catch (err) {
-      console.error('Save failed:', err);
-      alert('Failed to save product');
+      showToast('Product save nahi hua. Dobara try karo.', 'error');
     } finally {
       setSaving(false);
     }
@@ -126,8 +127,7 @@ export default function Inventory() {
       await deleteProduct(tenantId, productId);
       setShowDeleteConfirm(null);
     } catch (err) {
-      console.error('Delete failed:', err);
-      alert('Failed to delete product');
+      showToast('Product delete nahi hua.', 'error');
     }
   };
 
@@ -135,7 +135,7 @@ export default function Inventory() {
     if (!tenantId || !stockProduct || stockAdjustQty <= 0) return;
     // Prevent negative stock
     if (stockAdjustType === 'remove' && stockAdjustQty > stockProduct.currentStock) {
-      alert(`Cannot remove ${stockAdjustQty} units. Only ${stockProduct.currentStock} in stock.`);
+      showToast(`${stockAdjustQty} units remove nahi ho sakte. Sirf ${stockProduct.currentStock} stock mein hai.`, 'error');
       return;
     }
     setSaving(true);
@@ -149,8 +149,7 @@ export default function Inventory() {
       setStockAdjustQty(0);
       setStockAdjustNotes('');
     } catch (err) {
-      console.error('Stock adjust failed:', err);
-      alert('Failed to adjust stock');
+      showToast('Stock adjust nahi hua.', 'error');
     } finally {
       setSaving(false);
     }

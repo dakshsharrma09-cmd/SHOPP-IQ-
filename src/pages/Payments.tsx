@@ -72,7 +72,7 @@ export default function Payments() {
     if (!tenantId || !selectedInvoice || !payAmount) return;
     const amount = Number(payAmount);
     if (amount > selectedInvoice.amountPending) {
-      alert(`Amount ₹${amount} exceeds pending ₹${selectedInvoice.amountPending}`);
+      showToast(`₹${amount} zyada hai! Pending sirf ₹${selectedInvoice.amountPending} hai.`, 'error');
       return;
     }
     setSaving(true);

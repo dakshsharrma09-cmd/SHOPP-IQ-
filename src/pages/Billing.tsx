@@ -264,7 +264,7 @@ export default function Billing() {
             <button onClick={() => window.print()} className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 text-sm font-medium transition-all">
               <Printer size={16} /> Print
             </button>
-            <button onClick={() => { alert('PDF download coming soon'); }} className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 text-sm font-medium transition-all">
+            <button onClick={() => { showToast('PDF download jaldi aa raha hai!', 'info'); }} className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 text-sm font-medium transition-all">
               <Download size={16} /> PDF
             </button>
             <button onClick={handleWhatsAppSend} className="flex-1 btn-whatsapp justify-center py-3 rounded-xl text-sm">
