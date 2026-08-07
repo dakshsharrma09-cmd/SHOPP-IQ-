@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { useToast } from '../components/Toast';
 import { useLanguage } from '../contexts/LanguageContext';
 import { formatINR, cn } from '../lib/formatters';
 import { updateTenantProfile } from '../lib/firestoreService';
@@ -33,6 +34,7 @@ const plans = [
 export default function Settings() {
   const { tenantId, tenant } = useAuth();
   const { t, language } = useLanguage();
+  const { showToast } = useToast();
   const [tab, setTab] = useState<'profile' | 'users' | 'subscription' | 'whatsapp'>('profile');
   const [annual, setAnnual] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -57,10 +59,10 @@ export default function Settings() {
     try {
       await updateTenantProfile(tenantId, form);
       setSaved(true);
+      showToast('✅ Settings save ho gaye!', 'success');
       setTimeout(() => setSaved(false), 2000);
     } catch (err) {
-      console.error('Save failed:', err);
-      alert('Failed to save profile');
+      showToast('Settings save nahi hua.', 'error');
     } finally {
       setSaving(false);
     }

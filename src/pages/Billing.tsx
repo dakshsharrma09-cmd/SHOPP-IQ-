@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { useToast } from '../components/Toast';
 import { useLanguage } from '../contexts/LanguageContext';
 import { formatINR, cn } from '../lib/formatters';
 import {
@@ -31,6 +32,7 @@ interface CartItem {
 export default function Billing() {
   const { tenantId } = useAuth();
   const { t, language } = useLanguage();
+  const { showToast } = useToast();
 
   // Firestore state
   const [products, setProducts] = useState<Product[]>([]);
@@ -198,12 +200,12 @@ export default function Billing() {
       }, invoiceItems);
 
       setShowSuccess(true);
+      showToast('✅ Bill safalta se ban gaya!', 'success');
       // Get next invoice number for the next bill
       const nextNum = await getNextInvoiceNumber(tenantId);
       setInvoiceNumber(nextNum);
     } catch (err) {
-      console.error('Failed to create invoice:', err);
-      console.log('Failed to create bill. Please try again.');
+      showToast('Bill banane mein error aaya. Dobara try karo.', 'error');
     } finally {
       setSaving(false);
     }

@@ -65,6 +65,9 @@ export default function Register() {
       if (!formData.businessName.trim()) newErrors.businessName = 'Business name is required';
       if (!formData.businessType) newErrors.businessType = 'Select a business type';
       if (!formData.city.trim()) newErrors.city = 'City is required';
+      if (formData.gstin && !/^\d{2}[A-Z]{5}\d{4}[A-Z]{1}[A-Z\d]{1}[Z]{1}[A-Z\d]{1}$/.test(formData.gstin)) {
+        newErrors.gstin = 'Invalid GSTIN format (e.g. 22AAAAA0000A1Z5)';
+      }
     }
     if (s === 3) {
       if (!formData.ownerName.trim()) newErrors.ownerName = 'Owner name is required';
@@ -383,6 +386,7 @@ export default function Register() {
                     {formData.gstin.length}/15
                   </p>
                 )}
+                {errors.gstin && <p className="text-xs mt-1 text-red-400">{errors.gstin}</p>}
               </div>
 
               <div>

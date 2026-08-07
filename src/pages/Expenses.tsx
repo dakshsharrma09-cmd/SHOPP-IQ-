@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { useToast } from '../components/Toast';
 import { useLanguage } from '../contexts/LanguageContext';
 import { formatINR, cn } from '../lib/formatters';
 import { subscribeExpenses, addExpense, deleteExpense } from '../lib/firestoreService';
@@ -7,6 +8,8 @@ import type { Expense } from '../types/firestore';
 import { Plus, X, Trash2, Search } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { Timestamp } from 'firebase/firestore';
+import { PageSkeleton } from '../components/Skeleton';
+import { EmptyState } from '../components/EmptyState';
 
 const CATEGORIES = ['Rent', 'Salary', 'Electricity', 'Transport', 'Raw Material', 'Maintenance', 'Marketing', 'Other'];
 const PAYMENT_METHODS = ['Cash', 'UPI', 'Bank Transfer'];
@@ -15,6 +18,7 @@ const COLORS = ['#ef4444', '#f59e0b', '#10b981', '#3b82f6', '#8b5cf6', '#ec4899'
 export default function Expenses() {
   const { tenantId } = useAuth();
   const { language } = useLanguage();
+  const { showToast } = useToast();
   
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -27,10 +31,16 @@ export default function Expenses() {
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const [method, setMethod] = useState(PAYMENT_METHODS[0]);
   const [saving, setSaving] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     if (!tenantId) return;
-    const unsub = subscribeExpenses(tenantId, setExpenses);
+    const unsub = subscribeExpenses(tenantId, (data) => {
+      setExpenses(data);
+      setLoading(false);
+      setLoaded(true);
+    });
     return () => unsub();
   }, [tenantId]);
 
@@ -49,9 +59,9 @@ export default function Expenses() {
       setShowAddModal(false);
       setAmount('');
       setDescription('');
+      showToast('✅ Expense add ho gaya!', 'success');
     } catch (error) {
-      console.error('Failed to add expense', error);
-      alert('Failed to add expense');
+      showToast('Expense add nahi hua.', 'error');
     } finally {
       setSaving(false);
     }
@@ -62,8 +72,9 @@ export default function Expenses() {
     if (confirm(language === 'hi' ? 'क्या आप सच में इसे मिटाना चाहते हैं?' : 'Are you sure you want to delete this?')) {
       try {
         await deleteExpense(tenantId, id);
+        showToast('Expense delete ho gaya.', 'info');
       } catch (error) {
-        console.error('Failed to delete expense', error);
+        showToast('Expense delete nahi hua.', 'error');
       }
     }
   };
@@ -108,6 +119,20 @@ export default function Expenses() {
       .map(([name, value]) => ({ name, value }))
       .sort((a, b) => b.value - a.value);
   }, [expenses]);
+
+  if (loading) return <PageSkeleton />;
+
+  if (loaded && expenses.length === 0) {
+    return (
+      <EmptyState
+        icon="💸"
+        title="Koi expense nahi hai"
+        subtitle="Apna pehla kharcha add karo!"
+        actionLabel="+ Expense Add Karo"
+        onAction={() => setShowAddModal(true)}
+      />
+    );
+  }
 
   return (
     <div className="animate-fade-in">

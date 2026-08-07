@@ -1,14 +1,18 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { useToast } from '../components/Toast';
 import { useLanguage } from '../contexts/LanguageContext';
 import { formatINR, cn, whatsappLink } from '../lib/formatters';
 import { subscribeInvoices, subscribePayments, recordPayment } from '../lib/firestoreService';
 import type { Invoice, Payment } from '../types/firestore';
 import { Search, MessageCircle, Plus, X, CreditCard, Smartphone, Banknote } from 'lucide-react';
+import { PageSkeleton } from '../components/Skeleton';
+import { EmptyState } from '../components/EmptyState';
 
 export default function Payments() {
   const { tenantId } = useAuth();
   const { t, language } = useLanguage();
+  const { showToast } = useToast();
   const [tab, setTab] = useState<'recent' | 'outstanding'>('recent');
   const [search, setSearch] = useState('');
   const [showRecordModal, setShowRecordModal] = useState(false);
@@ -17,6 +21,8 @@ export default function Payments() {
   const [payMethod, setPayMethod] = useState<Payment['paymentMethod']>('cash');
   const [payNotes, setPayNotes] = useState('');
   const [saving, setSaving] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [loaded, setLoaded] = useState(false);
 
   // Firestore state
   const [invoices, setInvoices] = useState<Invoice[]>([]);
@@ -25,7 +31,11 @@ export default function Payments() {
   useEffect(() => {
     if (!tenantId) return;
     const unsub1 = subscribeInvoices(tenantId, setInvoices, 200);
-    const unsub2 = subscribePayments(tenantId, setPayments);
+    const unsub2 = subscribePayments(tenantId, (data) => {
+      setPayments(data);
+      setLoading(false);
+      setLoaded(true);
+    });
     return () => { unsub1(); unsub2(); };
   }, [tenantId]);
 
@@ -72,9 +82,9 @@ export default function Payments() {
         payMethod, payNotes, tenantId
       );
       setShowRecordModal(false);
+      showToast('✅ Payment record ho gaya!', 'success');
     } catch (err) {
-      console.error('Payment failed:', err);
-      alert('Failed to record payment');
+      showToast('Payment record nahi hua. Dobara try karo.', 'error');
     } finally {
       setSaving(false);
     }
@@ -88,6 +98,18 @@ export default function Payments() {
   };
 
   const getInvoiceForPayment = (p: Payment) => invoices.find(i => i.id === p.invoiceId);
+
+  if (loading) return <PageSkeleton />;
+
+  if (loaded && payments.length === 0) {
+    return (
+      <EmptyState
+        icon="💰"
+        title="Koi payment record nahi hai"
+        subtitle="Billing se payment automatically track hoga"
+      />
+    );
+  }
 
   return (
     <div className="animate-fade-in">

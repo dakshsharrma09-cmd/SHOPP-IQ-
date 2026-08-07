@@ -1,11 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { useToast } from '../components/Toast';
 import { useLanguage } from '../contexts/LanguageContext';
 import { formatINR, cn, whatsappLink } from '../lib/formatters';
 import { subscribeCustomers, subscribeInvoices, addCustomer, updateCustomer } from '../lib/firestoreService';
 import type { Customer, Invoice } from '../types/firestore';
 import { Search, Plus, X, FileText, CreditCard, MessageCircle, Pencil } from 'lucide-react';
+import { PageSkeleton } from '../components/Skeleton';
+import { EmptyState } from '../components/EmptyState';
 
 const segments = ['all', 'vip', 'regular', 'new', 'at_risk'] as const;
 const segmentLabels: Record<string, { en: string; hi: string }> = {
@@ -17,6 +20,7 @@ const segmentLabels: Record<string, { en: string; hi: string }> = {
 export default function Customers() {
   const { tenantId } = useAuth();
   const { t, language } = useLanguage();
+  const { showToast } = useToast();
   const navigate = useNavigate();
   const [segment, setSegment] = useState<string>('all');
   const [search, setSearch] = useState('');
@@ -28,6 +32,8 @@ export default function Customers() {
   const [editingCustomer, setEditingCustomer] = useState(false);
   const [editForm, setEditForm] = useState({ fullName: '', phoneNumber: '', city: '', creditLimit: 0 });
   const [customerNotes, setCustomerNotes] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [loaded, setLoaded] = useState(false);
 
   // Firestore state
   const [customers, setCustomers] = useState<Customer[]>([]);
@@ -35,7 +41,11 @@ export default function Customers() {
 
   useEffect(() => {
     if (!tenantId) return;
-    const unsub1 = subscribeCustomers(tenantId, setCustomers);
+    const unsub1 = subscribeCustomers(tenantId, (data) => {
+      setCustomers(data);
+      setLoading(false);
+      setLoaded(true);
+    });
     const unsub2 = subscribeInvoices(tenantId, setInvoices, 200);
     return () => { unsub1(); unsub2(); };
   }, [tenantId]);
@@ -67,9 +77,9 @@ export default function Customers() {
       });
       setShowAddModal(false);
       setNewCust({ fullName: '', phoneNumber: '', city: '', creditLimit: 5000 });
+      showToast('✅ Naya customer add ho gaya!', 'success');
     } catch (err) {
-      console.error('Add customer failed:', err);
-      alert('Failed to add customer');
+      showToast('Customer add nahi hua. Dobara try karo.', 'error');
     } finally {
       setSaving(false);
     }
@@ -107,12 +117,25 @@ export default function Customers() {
       // Update local selected customer to reflect changes
       setSelectedCustomer(prev => prev ? { ...prev, ...editForm } : null);
     } catch (err) {
-      console.error('Update customer failed:', err);
-      alert('Failed to update customer');
+      showToast('Customer update nahi hua.', 'error');
     } finally {
       setSaving(false);
     }
   };
+
+  if (loading) return <PageSkeleton />;
+
+  if (loaded && customers.length === 0) {
+    return (
+      <EmptyState
+        icon="👥"
+        title="Koi customer nahi hai"
+        subtitle="Apna pehla customer add karo!"
+        actionLabel="+ Customer Add Karo"
+        onAction={() => setShowAddModal(true)}
+      />
+    );
+  }
 
   return (
     <div className="animate-fade-in">
@@ -339,7 +362,8 @@ export default function Customers() {
                       try {
                         await updateCustomer(tenantId, selectedCustomer.id, { notes: customerNotes });
                         setSelectedCustomer(prev => prev ? { ...prev, notes: customerNotes } : null);
-                      } catch (e) { console.error('Notes save failed', e); }
+                        showToast('✅ Notes save ho gaye!', 'success');
+                      } catch (e) { showToast('Notes save nahi hua.', 'error'); }
                     }}
                     className="mt-3 px-4 py-2 rounded-xl text-sm font-semibold text-white transition-all hover:scale-105 active:scale-95"
                     style={{ background: 'linear-gradient(135deg, #7C3AED, #6D28D9)' }}>

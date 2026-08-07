@@ -11,6 +11,8 @@ import {
   Search, Plus, Upload, LayoutGrid, LayoutList, AlertTriangle, X,
   Pencil, Trash2, PlusCircle
 } from 'lucide-react';
+import { PageSkeleton } from '../components/Skeleton';
+import { EmptyState } from '../components/EmptyState';
 
 const defaultForm = {
   name: '', nameHindi: '', barcode: '', sku: '', hsnCode: '',
@@ -34,6 +36,8 @@ export default function Inventory() {
   const [stockProduct, setStockProduct] = useState<Product | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [loaded, setLoaded] = useState(false);
 
   // Firestore state
   const [products, setProducts] = useState<Product[]>([]);
@@ -49,7 +53,11 @@ export default function Inventory() {
 
   useEffect(() => {
     if (!tenantId) return;
-    const unsub1 = subscribeProducts(tenantId, setProducts);
+    const unsub1 = subscribeProducts(tenantId, (data) => {
+      setProducts(data);
+      setLoading(false);
+      setLoaded(true);
+    });
     const unsub2 = subscribeCategories(tenantId, setCategories);
     const unsub3 = subscribeStockMovements(tenantId, setStockMovements);
     return () => { unsub1(); unsub2(); unsub3(); };
@@ -147,6 +155,20 @@ export default function Inventory() {
       setSaving(false);
     }
   };
+
+  if (loading) return <PageSkeleton />;
+
+  if (loaded && products.length === 0) {
+    return (
+      <EmptyState
+        icon="📦"
+        title="Koi product nahi hai"
+        subtitle="Apna pehla product add karo!"
+        actionLabel="+ Product Add Karo"
+        onAction={() => setShowSlideOver(true)}
+      />
+    );
+  }
 
   return (
     <div className="animate-fade-in">
