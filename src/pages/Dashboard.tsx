@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { formatINR, formatDate } from '../lib/formatters';
+import { useToast } from '../components/Toast';
 import { seedFirestore } from '../lib/seedData';
 import {
   subscribeDailySnapshots, subscribeInvoices, subscribeProducts, subscribeCustomers
@@ -52,6 +53,7 @@ function StatusBadge({ status }: { status: string }) {
 
 export default function Dashboard() {
   const { tenantId, tenant } = useAuth();
+  const { showToast } = useToast();
   const { t, language } = useLanguage();
   const navigate = useNavigate();
   const [chartPeriod, setChartPeriod] = useState<'7D' | '30D'>('30D');
@@ -199,7 +201,7 @@ export default function Dashboard() {
       await seedFirestore(tenantId);
       setSeeded(true);
     } catch (err) {
-      console.error(err);
+      showToast('Demo data load nahi hua. Dobara try karo.', 'error');
     } finally {
       setSeeding(false);
     }
