@@ -152,8 +152,8 @@ export default function Analytics() {
   }, [periodInvoices, products]);
 
   // ── GST summary ────────────────────────────────────────────
-  const totalCGST = periodInvoices.reduce((s, i) => s + i.cgstTotal, 0);
-  const totalSGST = periodInvoices.reduce((s, i) => s + i.sgstTotal, 0);
+  const totalCGST = periodInvoices.reduce((s, i) => s + (i.cgstTotal || 0), 0);
+  const totalSGST = periodInvoices.reduce((s, i) => s + (i.sgstTotal || 0), 0);
 
   // ── Stat cards ─────────────────────────────────────────────
   const aov = periodInvoices.length > 0 ? Math.round(pnl.revenue / periodInvoices.length) : 0;

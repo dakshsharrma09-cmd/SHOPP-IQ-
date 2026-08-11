@@ -5,7 +5,7 @@
  */
 
 import {
-  collection, doc, addDoc, updateDoc, getDoc, deleteDoc,
+  collection, doc, addDoc, updateDoc, deleteDoc,
   query, orderBy, where, limit, onSnapshot, Timestamp, writeBatch, serverTimestamp,
   increment, runTransaction, type Unsubscribe
 } from 'firebase/firestore';
@@ -300,31 +300,34 @@ export async function recordPayment(
   notes: string,
   recordedBy: string
 ): Promise<void> {
-  const batch = writeBatch(db);
   const now = Timestamp.now();
-
-  // 1. Create payment record
-  const paymentRef = doc(tenantCol(tenantId, 'payments'));
-  batch.set(paymentRef, {
-    invoiceId,
-    amount,
-    paymentMethod,
-    paymentDate: now,
-    notes,
-    recordedBy,
-    createdAt: now,
-  });
-
-  // 2. Update invoice
   const invoiceRef = tenantDoc(tenantId, 'invoices', invoiceId);
-  const invoiceSnap = await getDoc(invoiceRef);
-  if (invoiceSnap.exists()) {
+  const paymentRef = doc(tenantCol(tenantId, 'payments'));
+
+  await runTransaction(db, async (transaction) => {
+    const invoiceSnap = await transaction.get(invoiceRef);
+    if (!invoiceSnap.exists()) {
+      throw new Error('Invoice not found');
+    }
+    
     const inv = invoiceSnap.data() as Invoice;
     const newPaid = inv.amountPaid + amount;
     const newPending = inv.grandTotal - newPaid;
     const newStatus = newPending <= 0 ? 'paid' : 'partial';
 
-    batch.update(invoiceRef, {
+    // 1. Create payment record
+    transaction.set(paymentRef, {
+      invoiceId,
+      amount,
+      paymentMethod,
+      paymentDate: now,
+      notes,
+      recordedBy,
+      createdAt: now,
+    });
+
+    // 2. Update invoice
+    transaction.update(invoiceRef, {
       amountPaid: newPaid,
       amountPending: Math.max(0, newPending),
       paymentStatus: newStatus,
@@ -332,13 +335,16 @@ export async function recordPayment(
 
     // 3. Update customer outstanding
     if (inv.customerId) {
-      batch.update(tenantDoc(tenantId, 'customers', inv.customerId), {
-        currentOutstanding: increment(-amount),
-      });
+      const customerRef = tenantDoc(tenantId, 'customers', inv.customerId);
+      const customerSnap = await transaction.get(customerRef);
+      if (customerSnap.exists()) {
+        const customerData = customerSnap.data() as Customer;
+        transaction.update(customerRef, {
+          currentOutstanding: Math.max(0, (customerData.currentOutstanding || 0) - amount),
+        });
+      }
     }
-  }
-
-  await batch.commit();
+  });
 }
 
 // ============================================================

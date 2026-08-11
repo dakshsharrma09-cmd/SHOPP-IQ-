@@ -24,9 +24,16 @@ function CountUp({ target, prefix = '', suffix = '', isFloat = false }: { target
 }
 
 export default function Login() {
-  const { sendOTP, verifyOTP } = useAuth();
+  const { sendOTP, verifyOTP, user, tenant } = useAuth();
   const { language, setLanguage, t } = useLanguage();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user) {
+      if (tenant) navigate('/dashboard', { replace: true });
+      else navigate('/register', { replace: true });
+    }
+  }, [user, tenant, navigate]);
 
   const [step, setStep] = useState<'phone' | 'otp'>('phone');
   const [phone, setPhone] = useState('');

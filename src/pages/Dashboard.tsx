@@ -84,12 +84,14 @@ export default function Dashboard() {
   const chartData = chartPeriod === '7D' ? salesData7 : salesData30;
 
   // === STAT 1: Aaj ki Bikri — sum of today's invoice grandTotal ===
-  const todayStr = new Date().toISOString().split('T')[0];
-  const todayInvoices = useMemo(() => invoices.filter(inv => {
-    if (!inv.invoiceDate) return false;
-    const d = inv.invoiceDate.toDate().toISOString().split('T')[0];
-    return d === todayStr;
-  }), [invoices, todayStr]);
+  const todayInvoices = useMemo(() => {
+    const todayStart = new Date();
+    todayStart.setHours(0, 0, 0, 0);
+    return invoices.filter(inv => {
+      if (!inv.invoiceDate) return false;
+      return inv.invoiceDate.toDate() >= todayStart;
+    });
+  }, [invoices]);
   const todaySales = todayInvoices.reduce((s, inv) => s + inv.grandTotal, 0);
 
   // === STAT 2: Pending Payments — invoices with status unpaid/partial/overdue ===
@@ -193,9 +195,14 @@ export default function Dashboard() {
   const handleSeed = async () => {
     if (!tenantId) return;
     setSeeding(true);
-    await seedFirestore(tenantId);
-    setSeeded(true);
-    setSeeding(false);
+    try {
+      await seedFirestore(tenantId);
+      setSeeded(true);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setSeeding(false);
+    }
   };
 
   const greeting = getGreeting();

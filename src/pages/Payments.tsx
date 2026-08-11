@@ -71,6 +71,10 @@ export default function Payments() {
   const handleRecordPayment = async () => {
     if (!tenantId || !selectedInvoice || !payAmount) return;
     const amount = Number(payAmount);
+    if (amount <= 0) {
+      showToast('Amount 0 se zyada hona chahiye', 'error');
+      return;
+    }
     if (amount > selectedInvoice.amountPending) {
       showToast(`₹${amount} zyada hai! Pending sirf ₹${selectedInvoice.amountPending} hai.`, 'error');
       return;

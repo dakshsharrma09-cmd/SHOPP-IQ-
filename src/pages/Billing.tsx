@@ -128,11 +128,12 @@ export default function Billing() {
   };
 
   const updateDiscount = (productId: string, disc: number) => {
+    const validDisc = Math.max(0, Math.min(100, disc));
     setItems(prev => prev.map(item => {
       if (item.productId !== productId) return item;
-      const basePrice = item.unitPrice * item.quantity * (1 - disc / 100);
+      const basePrice = item.unitPrice * item.quantity * (1 - validDisc / 100);
       const gst = calcGst(basePrice, item.gstRate, item.isGstInclusive);
-      return { ...item, discountPercent: disc, cgstAmount: gst.cgst, sgstAmount: gst.sgst, totalAmount: gst.total };
+      return { ...item, discountPercent: validDisc, cgstAmount: gst.cgst, sgstAmount: gst.sgst, totalAmount: gst.total };
     }));
   };
 

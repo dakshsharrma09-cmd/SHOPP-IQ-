@@ -196,7 +196,7 @@ export default function Inventory() {
           <p className="text-purple-200 text-sm">{language === 'hi' ? 'Apne stock aur products ko manage karein' : 'Manage your stock and products'}</p>
         </div>
         <div className="flex gap-2">
-          <button className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/10 text-white hover:bg-white/20 border border-white/20 backdrop-blur-sm transition-all text-sm font-medium">
+          <button onClick={() => showToast('Bulk import jaldi aa raha hai!', 'info')} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/10 text-white hover:bg-white/20 border border-white/20 backdrop-blur-sm transition-all text-sm font-medium">
             <Upload size={15} /> {t('bulkImport')}
           </button>
           <button onClick={openAddProduct}

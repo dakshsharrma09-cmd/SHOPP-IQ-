@@ -72,6 +72,11 @@ export default function Register() {
     if (s === 3) {
       if (!formData.ownerName.trim()) newErrors.ownerName = 'Owner name is required';
     }
+    if (s === 4) {
+      if (formData.whatsappNumber && formData.whatsappNumber.replace(/\D/g, '').length !== 10) {
+        newErrors.whatsappNumber = 'Enter a valid 10-digit WhatsApp number';
+      }
+    }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
