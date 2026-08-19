@@ -33,20 +33,22 @@ const plans = [
 
 export default function Settings() {
   const { tenantId, tenant } = useAuth();
-  const { t, language } = useLanguage();
+  const { t, language, setLanguage } = useLanguage();
   const { showToast } = useToast();
-  const [tab, setTab] = useState<'profile' | 'users' | 'subscription' | 'whatsapp'>('profile');
+  const [tab, setTab] = useState<'profile' | 'users' | 'subscription' | 'whatsapp' | 'preferences'>('profile');
   const [annual, setAnnual] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const { canInstall, promptInstall } = usePWAInstall();
 
-  // Profile form state
   const [form, setForm] = useState({
     businessName: tenant?.businessName || '',
     ownerName: tenant?.ownerName || '',
     phoneNumber: tenant?.phoneNumber || '',
     whatsappNumber: tenant?.whatsappNumber || '',
+    email: tenant?.email || '',
+    address: tenant?.address || '',
+    pincode: tenant?.pincode || '',
     gstin: tenant?.gstin || '',
     city: tenant?.city || '',
     state: tenant?.state || 'Rajasthan',
@@ -73,6 +75,7 @@ export default function Settings() {
     { id: 'users', label: t('users') },
     { id: 'subscription', label: t('subscription') },
     { id: 'whatsapp', label: t('whatsappConfig') },
+    { id: 'preferences', label: 'Preferences' },
   ];
 
   return (
@@ -121,6 +124,9 @@ export default function Settings() {
               { label: 'Owner Name', key: 'ownerName', placeholder: 'Rajesh Sharma' },
               { label: 'Phone Number', key: 'phoneNumber', placeholder: '+91 98765 43210' },
               { label: 'WhatsApp Number', key: 'whatsappNumber', placeholder: '+91 98765 43210' },
+              { label: 'Email', key: 'email', placeholder: 'shop@example.com' },
+              { label: 'Address', key: 'address', placeholder: 'Shop No. 1, Main Market' },
+              { label: 'Pincode', key: 'pincode', placeholder: '302001' },
               { label: 'GSTIN', key: 'gstin', placeholder: '08ABCDE1234F1Z5' },
               { label: 'City', key: 'city', placeholder: 'Jaipur' },
             ].map(f => (
@@ -250,6 +256,64 @@ export default function Settings() {
             <div className="flex items-center justify-between p-4 rounded-xl border border-gray-200 dark:border-gray-700">
               <div><div className="text-sm font-medium text-gray-900 dark:text-white">Daily Summary Report</div><div className="text-xs text-gray-400">Send sales summary at 9 PM</div></div>
               <div className="w-10 h-5 rounded-full bg-gray-300 relative"><div className="absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white" /></div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {tab === 'preferences' && (
+        <div className="glass-card card-glow p-6 max-w-xl fade-in-up" style={{ animationDelay: '0.2s' }}>
+          <h3 className="font-heading font-bold text-gray-900 dark:text-white mb-6">App Preferences</h3>
+          
+          <div className="space-y-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-900 dark:text-white mb-2">Language / भाषा</label>
+              <div className="flex gap-4">
+                <button 
+                  onClick={() => {
+                    localStorage.setItem('lang', 'en');
+                    if (setLanguage) setLanguage('en');
+                    else window.location.reload();
+                  }}
+                  className={cn("px-4 py-2 rounded-xl border text-sm font-medium", language === 'en' ? "border-brand-purple bg-brand-purple/10 text-brand-purple" : "border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400")}
+                >
+                  English
+                </button>
+                <button 
+                  onClick={() => {
+                    localStorage.setItem('lang', 'hi');
+                    if (setLanguage) setLanguage('hi');
+                    else window.location.reload();
+                  }}
+                  className={cn("px-4 py-2 rounded-xl border text-sm font-medium", language === 'hi' ? "border-brand-purple bg-brand-purple/10 text-brand-purple" : "border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400")}
+                >
+                  हिंदी (Hindi)
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-900 dark:text-white mb-2">Theme</label>
+              <div className="flex gap-4">
+                <button 
+                  onClick={() => {
+                    document.body.classList.remove('dark');
+                    localStorage.setItem('theme', 'light');
+                  }}
+                  className="px-4 py-2 rounded-xl border border-gray-200 text-gray-600 text-sm font-medium bg-white"
+                >
+                  Light Mode
+                </button>
+                <button 
+                  onClick={() => {
+                    document.body.classList.add('dark');
+                    localStorage.setItem('theme', 'dark');
+                  }}
+                  className="px-4 py-2 rounded-xl border border-gray-700 text-gray-300 text-sm font-medium bg-gray-900"
+                >
+                  Dark Mode
+                </button>
+              </div>
             </div>
           </div>
         </div>

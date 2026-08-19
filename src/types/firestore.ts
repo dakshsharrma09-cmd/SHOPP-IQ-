@@ -15,6 +15,8 @@ export interface Tenant {
   city: string;
   state: string;
   pincode: string;
+  email?: string;
+  address?: string;
   subscriptionPlan: 'free' | 'starter' | 'pro';
   trialEndsAt?: Timestamp;
   logoUrl?: string;

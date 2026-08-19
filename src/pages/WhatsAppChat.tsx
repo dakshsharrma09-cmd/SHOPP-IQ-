@@ -224,6 +224,47 @@ export default function WhatsAppChat() {
       return;
     }
 
+    // Report / summary
+    if (cmd.includes('report') || cmd.includes('summary')) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const todayInvoices = invoices.filter(inv => {
+        const invDate = inv.invoiceDate?.seconds ? new Date(inv.invoiceDate.seconds * 1000) : new Date();
+        return invDate >= today;
+      });
+      const todaySales = todayInvoices.reduce((sum, inv) => sum + inv.grandTotal, 0);
+      const invoiceCount = todayInvoices.length;
+
+      const lowStockCount = products.filter(p => p.currentStock <= p.minimumStockAlert && p.isActive).length;
+
+      const pendingInvoices = invoices.filter(inv => inv.paymentStatus === 'unpaid' || inv.paymentStatus === 'partial' || inv.paymentStatus === 'overdue');
+      const pendingTotal = pendingInvoices.reduce((sum, inv) => sum + inv.amountPending, 0);
+      const pendingCount = pendingInvoices.length;
+
+      const customerCount = new Set(invoices.map(inv => inv.customerName).filter(Boolean)).size;
+
+      // Top product
+      const productSales: Record<string, number> = {};
+      todayInvoices.forEach(inv => {
+        inv.items?.forEach(item => {
+          productSales[item.productName] = (productSales[item.productName] || 0) + item.totalAmount;
+        });
+      });
+      const sortedProducts = Object.entries(productSales).sort((a, b) => b[1] - a[1]);
+      const topProductName = sortedProducts.length > 0 ? sortedProducts[0][0] : 'None';
+
+      const msg = `📊 Daily Report — ShoppIQ
+━━━━━━━━━━━━━━━━━
+💰 Aaj ki bikri: ₹${todaySales} (${invoiceCount} bills)
+📦 Low stock: ${lowStockCount} products
+💳 Pending payment: ₹${pendingTotal} (${pendingCount} invoices)
+👥 Total customers: ${customerCount}
+⭐ Top product: ${topProductName}
+━━━━━━━━━━━━━━━━━`;
+      addBotMessage(msg);
+      return;
+    }
+
     // Unknown
     addBotMessage(
       `🤔 समझ नहीं आया: "${input}"\n\n💡 "help" लिखो सब कमांड देखने के लिए, या नीचे बटन दबाओ!`,

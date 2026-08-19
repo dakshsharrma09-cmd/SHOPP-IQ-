@@ -7,6 +7,8 @@ import {
   subscribeProducts, subscribeCategories, subscribeStockMovements,
   addProduct, updateProduct, deleteProduct, adjustStock
 } from '../lib/firestoreService';
+import { collection, doc, setDoc, Timestamp } from 'firebase/firestore';
+import { db } from '../lib/firebase';
 import type { Product, Category, StockMovement } from '../types/firestore';
 import {
   Search, Plus, Upload, LayoutGrid, LayoutList, AlertTriangle, X,
@@ -31,6 +33,7 @@ export default function Inventory() {
   const [viewMode, setViewMode] = useState<'table' | 'grid'>('table');
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [stockFilter, setStockFilter] = useState<'all' | 'low' | 'out' | 'normal'>('all');
+  const [sortBy, setSortBy] = useState<'name' | 'price' | 'stock' | 'category'>('name');
   const [showSlideOver, setShowSlideOver] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [showStockModal, setShowStockModal] = useState(false);
@@ -48,6 +51,8 @@ export default function Inventory() {
 
   // Form state
   const [form, setForm] = useState(defaultForm);
+  const [isAddingCategory, setIsAddingCategory] = useState(false);
+  const [newCategoryName, setNewCategoryName] = useState('');
   const [stockAdjustType, setStockAdjustType] = useState<'add' | 'remove'>('add');
   const [stockAdjustQty, setStockAdjustQty] = useState(0);
   const [stockAdjustReason, setStockAdjustReason] = useState('purchase');
@@ -69,13 +74,26 @@ export default function Inventory() {
   const lowStockCount = activeProducts.filter(p => p.currentStock <= p.minimumStockAlert).length;
 
   const filteredProducts = activeProducts.filter(p => {
-    const matchSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase()) || (p.nameHindi || '').includes(searchQuery);
+    const matchSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                        (p.nameHindi || '').includes(searchQuery) ||
+                        (p.barcode || '').includes(searchQuery) ||
+                        (p.sku || '').toLowerCase().includes(searchQuery.toLowerCase());
     const matchCategory = categoryFilter === 'all' || p.categoryId === categoryFilter;
     const matchStock = stockFilter === 'all' ||
       (stockFilter === 'low' && p.currentStock <= p.minimumStockAlert && p.currentStock > 0) ||
       (stockFilter === 'out' && p.currentStock === 0) ||
       (stockFilter === 'normal' && p.currentStock > p.minimumStockAlert);
     return matchSearch && matchCategory && matchStock;
+  });
+
+  const sortedProducts = [...filteredProducts].sort((a, b) => {
+    switch (sortBy) {
+      case 'name': return a.name.localeCompare(b.name);
+      case 'price': return (b.sellingPrice || 0) - (a.sellingPrice || 0);
+      case 'stock': return (a.currentStock || 0) - (b.currentStock || 0);
+      case 'category': return (a.categoryName || '').localeCompare(b.categoryName || '');
+      default: return 0;
+    }
   });
 
   const getStockBadge = (stock: number, min: number) => {
@@ -94,12 +112,31 @@ export default function Inventory() {
     setEditingProduct(p);
     setForm({
       name: p.name, nameHindi: p.nameHindi || '', barcode: p.barcode || '', sku: p.sku || '', hsnCode: p.hsnCode || '',
-      categoryId: p.categoryId, categoryName: p.categoryName || '', unit: p.unit as typeof defaultForm.unit,
+      categoryId: p.categoryId, categoryName: p.categoryName || '', unit: (p.unit as typeof defaultForm.unit) || 'piece',
       purchasePrice: p.purchasePrice, sellingPrice: p.sellingPrice, mrp: p.mrp, gstRate: p.gstRate,
       isGstInclusive: p.isGstInclusive, currentStock: p.currentStock, minimumStockAlert: p.minimumStockAlert,
       reorderQuantity: p.reorderQuantity, isActive: true,
     });
     setShowSlideOver(true);
+  };
+
+  const handleAddCategory = async () => {
+    if (!tenantId || !newCategoryName.trim()) return;
+    try {
+      const catRef = doc(collection(db, 'tenants', tenantId, 'categories'));
+      await setDoc(catRef, { 
+        name: newCategoryName.trim(), 
+        displayOrder: categories.length + 1, 
+        isActive: true, 
+        createdAt: Timestamp.now() 
+      });
+      setIsAddingCategory(false);
+      setNewCategoryName('');
+      setForm(prev => ({ ...prev, categoryId: catRef.id }));
+      showToast('Category added', 'success');
+    } catch (err) {
+      showToast('Category add nahi hua', 'error');
+    }
   };
 
   const handleSaveProduct = async () => {
@@ -257,6 +294,13 @@ export default function Inventory() {
               <option value="out">{t('outOfStock')}</option>
               <option value="normal">{t('normalStock')}</option>
             </select>
+            <select value={sortBy} onChange={e => setSortBy(e.target.value as any)}
+              className="px-3 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-brand-dark text-sm outline-none focus:border-brand-purple">
+              <option value="name">Sort by Name</option>
+              <option value="price">Sort by Price</option>
+              <option value="stock">Sort by Stock</option>
+              <option value="category">Sort by Category</option>
+            </select>
             <div className="flex border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
               <button onClick={() => setViewMode('table')} className={cn('p-2.5', viewMode === 'table' ? 'bg-brand-purple text-white' : 'text-gray-400')}>
                 <LayoutList size={16} />
@@ -285,7 +329,7 @@ export default function Inventory() {
                     </tr>
                   </thead>
                   <tbody>
-                    {filteredProducts.map(p => (
+                    {sortedProducts.map(p => (
                       <tr key={p.id} className="border-b border-gray-50 dark:border-gray-800 table-row-hover">
                         <td className="px-4 py-3">
                           <div className="font-medium text-gray-900 dark:text-gray-100">{p.name}</div>
@@ -315,7 +359,7 @@ export default function Inventory() {
                         </td>
                       </tr>
                     ))}
-                    {filteredProducts.length === 0 && (
+                    {sortedProducts.length === 0 && (
                       <tr><td colSpan={8} className="px-4 py-8 text-center text-gray-400">No products found</td></tr>
                     )}
                   </tbody>
@@ -324,7 +368,7 @@ export default function Inventory() {
             </div>
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {filteredProducts.map(p => (
+              {sortedProducts.map(p => (
                 <div key={p.id} className="glass-card card-glow p-4 hover:shadow-card-hover transition-all cursor-pointer group" onClick={() => openEditProduct(p)}>
                   <div className="w-full h-20 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center mb-3">
                     <span className="text-2xl">📦</span>
@@ -406,10 +450,38 @@ export default function Inventory() {
               ))}
               <div>
                 <label className="block text-xs text-gray-500 font-heading mb-1">Category</label>
-                <select value={form.categoryId} onChange={e => setForm(prev => ({ ...prev, categoryId: e.target.value }))}
+                {!isAddingCategory ? (
+                  <select value={form.categoryId} onChange={e => {
+                    if (e.target.value === 'ADD_NEW') setIsAddingCategory(true);
+                    else setForm(prev => ({ ...prev, categoryId: e.target.value }));
+                  }}
+                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-brand-dark text-sm outline-none focus:border-brand-purple">
+                    <option value="">Select Category</option>
+                    {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                    <option value="ADD_NEW" className="font-bold text-brand-purple">+ Add New Category</option>
+                  </select>
+                ) : (
+                  <div className="flex gap-2">
+                    <input autoFocus value={newCategoryName} onChange={e => setNewCategoryName(e.target.value)}
+                      placeholder="New category name" className="flex-1 px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-brand-dark text-sm outline-none focus:border-brand-purple" />
+                    <button onClick={handleAddCategory} className="px-3 py-2 bg-brand-purple text-white rounded-xl text-sm font-medium">Save</button>
+                    <button onClick={() => setIsAddingCategory(false)} className="px-3 py-2 bg-gray-200 text-gray-700 rounded-xl text-sm font-medium">Cancel</button>
+                  </div>
+                )}
+              </div>
+              <div>
+                <label className="block text-xs text-gray-500 font-heading mb-1">Unit</label>
+                <select value={form.unit} onChange={e => setForm(prev => ({ ...prev, unit: e.target.value as any }))}
                   className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-brand-dark text-sm outline-none focus:border-brand-purple">
-                  <option value="">Select Category</option>
-                  {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                  <option value="piece">Piece</option>
+                  <option value="packet">Packet</option>
+                  <option value="kg">KG</option>
+                  <option value="gram">Gram</option>
+                  <option value="litre">Litre</option>
+                  <option value="ml">ML</option>
+                  <option value="box">Box</option>
+                  <option value="dozen">Dozen</option>
+                  <option value="meter">Meter</option>
                 </select>
               </div>
               <div className="grid grid-cols-3 gap-3">

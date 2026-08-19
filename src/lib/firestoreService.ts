@@ -274,6 +274,18 @@ export async function createInvoice(
     });
   }
 
+  // 5. Update daily snapshot
+  const jsNow = new Date();
+  const dateKey = `${jsNow.getFullYear()}-${String(jsNow.getMonth()+1).padStart(2,'0')}-${String(jsNow.getDate()).padStart(2,'0')}`;
+  const snapshotRef = doc(tenantCol(tenantId, 'dailySnapshots'), dateKey);
+  batch.set(snapshotRef, {
+    totalSales: increment(invoiceData.grandTotal),
+    invoiceCount: increment(1),
+    cashCollected: increment(invoiceData.paymentMethod === 'cash' ? invoiceData.grandTotal : 0),
+    upiCollected: increment(invoiceData.paymentMethod === 'upi' ? invoiceData.grandTotal : 0),
+    createdAt: now,
+  }, { merge: true });
+
   await batch.commit();
   return invoiceRef.id;
 }

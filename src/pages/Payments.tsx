@@ -50,13 +50,18 @@ export default function Payments() {
   , [payments, invoices, search]);
 
   // Outstanding invoices
-  const outstandingInvoices = useMemo(() =>
-    invoices.filter(inv => inv.amountPending > 0).filter(inv => {
+  const outstandingInvoices = useMemo(() => {
+    const filtered = invoices.filter(inv => inv.amountPending > 0).filter(inv => {
       if (!search) return true;
       return inv.customerName.toLowerCase().includes(search.toLowerCase()) ||
         inv.invoiceNumber.includes(search);
-    })
-  , [invoices, search]);
+    });
+    return filtered.sort((a, b) => {
+      const aDate = a.invoiceDate?.toDate?.() || new Date();
+      const bDate = b.invoiceDate?.toDate?.() || new Date();
+      return aDate.getTime() - bDate.getTime();
+    });
+  }, [invoices, search]);
 
   const totalOutstanding = outstandingInvoices.reduce((s, inv) => s + inv.amountPending, 0);
 
@@ -211,18 +216,22 @@ export default function Payments() {
               </tr>
             </thead>
             <tbody>
-              {outstandingInvoices.map((inv, index) => (
-                <tr key={inv.id} className="border-b border-gray-50 dark:border-gray-800 table-row-hover fade-in-up" style={{ animationDelay: `${index * 0.05}s` }}>
-                  <td className="px-4 py-3 font-medium text-brand-purple font-mono text-xs">{inv.invoiceNumber}</td>
-                  <td className="px-4 py-3">
-                    <div className="text-gray-700 dark:text-gray-300">{inv.customerName}</div>
-                    <div className="text-xs text-gray-400">{inv.customerPhone}</div>
-                  </td>
-                  <td className="px-4 py-3 text-right font-bold text-red-500">{formatINR(inv.amountPending)}</td>
-                  <td className="px-4 py-3 text-center text-gray-400 text-xs">
-                    {inv.invoiceDate ? new Date(inv.invoiceDate.seconds * 1000).toLocaleDateString('en-IN') : ''}
-                  </td>
-                  <td className="px-4 py-3">
+              {outstandingInvoices.map((inv, index) => {
+                const daysSince = Math.floor((Date.now() - (inv.invoiceDate?.toDate?.()?.getTime() || Date.now())) / 86400000);
+                const colorClass = daysSince > 30 ? 'text-red-500 bg-red-500/10' : daysSince > 7 ? 'text-amber-500 bg-amber-500/10' : 'text-gray-400';
+                
+                return (
+                  <tr key={inv.id} className={`border-b border-gray-50 dark:border-gray-800 table-row-hover fade-in-up`} style={{ animationDelay: `${index * 0.05}s` }}>
+                    <td className="px-4 py-3 font-medium text-brand-purple font-mono text-xs">{inv.invoiceNumber}</td>
+                    <td className="px-4 py-3">
+                      <div className="text-gray-700 dark:text-gray-300">{inv.customerName}</div>
+                      <div className="text-xs text-gray-400">{inv.customerPhone}</div>
+                    </td>
+                    <td className={`px-4 py-3 text-right font-bold ${colorClass.split(' ')[0]} ${colorClass.includes('bg') ? colorClass.split(' ')[1] : ''}`}>{formatINR(inv.amountPending)}</td>
+                    <td className="px-4 py-3 text-center text-gray-400 text-xs">
+                      {inv.invoiceDate ? new Date(inv.invoiceDate.seconds * 1000).toLocaleDateString('en-IN') : ''}
+                    </td>
+                    <td className="px-4 py-3">
                     <div className="flex items-center justify-center gap-1">
                       <button onClick={() => openRecordPayment(inv)}
                         className="px-3 py-1.5 rounded-lg bg-brand-purple/10 text-brand-purple text-xs font-medium hover:bg-brand-purple/20 transition-colors">
@@ -237,7 +246,8 @@ export default function Payments() {
                     </div>
                   </td>
                 </tr>
-              ))}
+              );
+              })}
               {outstandingInvoices.length === 0 && (
                 <tr><td colSpan={5} className="px-4 py-8 text-center text-brand-green font-medium">✅ No outstanding payments!</td></tr>
               )}

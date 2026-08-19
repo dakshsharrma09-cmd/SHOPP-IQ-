@@ -11,7 +11,7 @@ import {
 import type { Invoice, Product, DailySnapshot, Customer } from '../types/firestore';
 import {
   TrendingUp, AlertTriangle, Users, Package,
-  FileText, Plus, CreditCard, MessageSquare,
+  FileText, Plus, CreditCard, MessageSquare, MessageCircle,
   Receipt, DollarSign, Star, ChevronDown, ChevronUp, ArrowUpRight, Sprout
 } from 'lucide-react';
 import {
@@ -150,6 +150,7 @@ export default function Dashboard() {
     invoices.slice(0, 5).map(inv => ({
       id: inv.invoiceNumber,
       customer: inv.customerName,
+      customerPhone: inv.customerPhone,
       amount: inv.grandTotal,
       status: inv.paymentStatus,
       date: inv.invoiceDate ? formatDate(inv.invoiceDate.toDate()) : '',
@@ -166,33 +167,41 @@ export default function Dashboard() {
     { icon: DollarSign, label: 'Add Expense', labelHi: 'Kharcha Jodein', path: '/payments', color: 'text-red-500' },
     { icon: Star, label: 'Vyapaar Score', labelHi: 'Vyapaar Score', path: '/analytics', color: 'text-brand-gold' },
   ];
-
-  const vyapaarScore = tenant?.vyapaarScore || 0;
-
   const scoreBreakdown = useMemo(() => {
-    const invoiceHealth = invoices.length > 0
-      ? Math.round((invoices.filter(i => i.paymentStatus === 'paid').length / invoices.length) * 100) : 0;
-    const collectionsRate = invoices.length > 0
-      ? Math.round((invoices.reduce((s, i) => s + i.amountPaid, 0) / Math.max(1, invoices.reduce((s, i) => s + i.grandTotal, 0))) * 100) : 0;
-    const inventoryMgmt = products.length > 0
-      ? Math.round(((products.filter(p => p.isActive && p.currentStock > p.minimumStockAlert).length) / Math.max(1, products.filter(p => p.isActive).length)) * 100) : 0;
-    // Customer Retention: % of customers with 2+ visits (repeat buyers)
-    const activeCustomers = customers.filter(c => c.visitCount > 0);
-    const repeatCustomers = customers.filter(c => c.visitCount >= 2);
-    const customerRetention = activeCustomers.length > 0
-      ? Math.round((repeatCustomers.length / activeCustomers.length) * 100) : 0;
-    // GST Compliance: % of invoices that have non-zero GST applied
-    const gstInvoices = invoices.filter(i => (i.cgstTotal + i.sgstTotal) > 0);
-    const gstCompliance = invoices.length > 0
-      ? Math.round((gstInvoices.length / invoices.length) * 100) : 0;
+    // Invoice regularity (200 pts): invoices in last 7 days
+    const weekAgo = new Date(); weekAgo.setDate(weekAgo.getDate() - 7);
+    const weekInvoices = invoices.filter(inv => inv.invoiceDate && inv.invoiceDate.toDate() >= weekAgo);
+    const invoiceHealth = Math.min(200, Math.round((weekInvoices.length / 7) * 200));
+
+    // Collections rate (250 pts): paid / total
+    const paidInvoices = invoices.filter(inv => inv.paymentStatus === 'paid').length;
+    const collectionsRate = invoices.length > 0 ? Math.round((paidInvoices / invoices.length) * 250) : 0;
+
+    // Inventory health (200 pts): normal stock / total
+    const activeProds = products.filter(p => p.isActive !== false);
+    const normalStock = activeProds.filter(p => (p.currentStock || 0) > (p.minimumStockAlert || 0)).length;
+    const inventoryMgmt = activeProds.length > 0 ? Math.round((normalStock / activeProds.length) * 200) : 0;
+
+    // Customer retention (200 pts): repeat customers / total
+    const repeatCustomers = customers.filter(c => (c.visitCount || 0) > 1).length;
+    const customerRetention = customers.length > 0 ? Math.round((repeatCustomers / customers.length) * 200) : 0;
+
+    // GST compliance (150 pts): invoices with GST / total
+    const gstInvoices = invoices.filter(inv => (inv.cgstTotal || 0) + (inv.sgstTotal || 0) > 0).length;
+    const gstCompliance = invoices.length > 0 ? Math.round((gstInvoices / invoices.length) * 150) : 0;
+
     return [
-      { label: 'Invoice Health', score: invoiceHealth, color: '#10B981' },
-      { label: 'Collections Rate', score: collectionsRate, color: '#3B82F6' },
+      { label: 'Invoice Health', score: invoiceHealth, color: '#3B82F6' },
+      { label: 'Collections Rate', score: collectionsRate, color: '#EC4899' },
       { label: 'Inventory Mgmt', score: inventoryMgmt, color: '#F59E0B' },
       { label: 'Customer Retention', score: customerRetention, color: '#8B5CF6' },
       { label: 'GST Compliance', score: gstCompliance, color: '#10B981' },
     ];
   }, [invoices, products, customers]);
+
+  const vyapaarScore = useMemo(() => {
+    return scoreBreakdown.reduce((sum, item) => sum + item.score, 0);
+  }, [scoreBreakdown]);
 
   const handleSeed = async () => {
     if (!tenantId) return;
@@ -476,6 +485,18 @@ export default function Dashboard() {
                 <div className="flex items-center gap-3">
                   <span className="text-sm font-bold font-heading text-gray-900 dark:text-white">{formatINR(inv.amount)}</span>
                   <StatusBadge status={inv.status} />
+                  {inv.customerPhone && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        window.open(`https://wa.me/91${inv.customerPhone}?text=${encodeURIComponent(`Namaste ${inv.customer}! Aapka bill ${inv.id} ready hai. Total: ${formatINR(inv.amount)}. - ShoppIQ`)}`, '_blank');
+                      }}
+                      className="text-green-500 hover:text-green-400 transition-colors"
+                      title="WhatsApp"
+                    >
+                      <MessageCircle size={16} />
+                    </button>
+                  )}
                 </div>
               </div>
             )) : (

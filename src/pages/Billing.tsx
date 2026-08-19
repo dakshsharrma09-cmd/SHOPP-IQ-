@@ -50,6 +50,7 @@ export default function Billing() {
   const [showCustomerDropdown, setShowCustomerDropdown] = useState(false);
   const [productSearch, setProductSearch] = useState('');
   const [showProductDropdown, setShowProductDropdown] = useState(false);
+  const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const [items, setItems] = useState<CartItem[]>([]);
   const [paymentMethod, setPaymentMethod] = useState<'cash' | 'upi' | 'credit' | 'mixed'>('cash');
   const [cashTendered, setCashTendered] = useState('');
@@ -102,8 +103,16 @@ export default function Billing() {
   const addProduct = (prod: Product) => {
     const existing = items.find(i => i.productId === prod.id);
     if (existing) {
+      if (existing.quantity + 1 > prod.currentStock) {
+        showToast('Not enough stock!', 'error');
+        return;
+      }
       updateQuantity(prod.id, existing.quantity + 1);
     } else {
+      if (prod.currentStock < 1) {
+        showToast('Not enough stock!', 'error');
+        return;
+      }
       const gst = calcGst(prod.sellingPrice, prod.gstRate, prod.isGstInclusive);
       setItems(prev => [...prev, {
         productId: prod.id, productName: prod.name, quantity: 1,
@@ -115,15 +124,31 @@ export default function Billing() {
     }
     setProductSearch('');
     setShowProductDropdown(false);
+    setHighlightedIndex(-1);
   };
 
   const updateQuantity = (productId: string, qty: number) => {
     if (qty < 1) return removeItem(productId);
+    const product = products.find(p => p.id === productId);
+    if (product && qty > product.currentStock) {
+      showToast('Not enough stock!', 'error');
+      return;
+    }
     setItems(prev => prev.map(item => {
       if (item.productId !== productId) return item;
       const basePrice = item.unitPrice * qty * (1 - item.discountPercent / 100);
       const gst = calcGst(basePrice, item.gstRate, item.isGstInclusive);
       return { ...item, quantity: qty, cgstAmount: gst.cgst, sgstAmount: gst.sgst, totalAmount: gst.total };
+    }));
+  };
+
+  const updateUnitPrice = (productId: string, newPrice: number) => {
+    if (newPrice < 0) return;
+    setItems(prev => prev.map(item => {
+      if (item.productId !== productId) return item;
+      const basePrice = newPrice * item.quantity * (1 - item.discountPercent / 100);
+      const gst = calcGst(basePrice, item.gstRate, item.isGstInclusive);
+      return { ...item, unitPrice: newPrice, cgstAmount: gst.cgst, sgstAmount: gst.sgst, totalAmount: gst.total };
     }));
   };
 
@@ -348,8 +373,25 @@ export default function Billing() {
             <div className="relative mb-4">
               <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
               <input type="text" value={productSearch}
-                onChange={e => { setProductSearch(e.target.value); setShowProductDropdown(true); }}
+                onChange={e => { setProductSearch(e.target.value); setShowProductDropdown(true); setHighlightedIndex(-1); }}
                 onFocus={() => productSearch && setShowProductDropdown(true)}
+                onKeyDown={(e) => {
+                  if (!showProductDropdown || !filteredProducts.length) return;
+                  if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    setHighlightedIndex(prev => (prev + 1) % filteredProducts.length);
+                  } else if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    setHighlightedIndex(prev => (prev - 1 + filteredProducts.length) % filteredProducts.length);
+                  } else if (e.key === 'Enter') {
+                    e.preventDefault();
+                    if (highlightedIndex >= 0 && highlightedIndex < filteredProducts.length) {
+                      addProduct(filteredProducts[highlightedIndex]);
+                    }
+                  } else if (e.key === 'Escape') {
+                    setShowProductDropdown(false);
+                  }
+                }}
                 placeholder={language === 'hi' ? 'Product dhundho ya barcode scan karo...' : 'Search product or scan barcode...'}
                 className="w-full pl-10 pr-20 py-3 rounded-xl border border-gray-200 dark:border-brand-dark-border bg-white dark:bg-brand-dark text-sm text-gray-900 dark:text-gray-100 focus:border-brand-purple focus:ring-2 focus:ring-brand-purple/20 outline-none transition-all" />
               <button className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1 px-3 py-1.5 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-500 text-xs hover:bg-brand-purple/10 hover:text-brand-purple transition-all">
@@ -357,9 +399,9 @@ export default function Billing() {
               </button>
               {showProductDropdown && productSearch && (
                 <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-brand-dark-card rounded-xl border border-gray-100 dark:border-brand-dark-border shadow-xl z-20 overflow-hidden">
-                  {filteredProducts.length ? filteredProducts.map(p => (
+                  {filteredProducts.length ? filteredProducts.map((p, index) => (
                     <button key={p.id} onClick={() => addProduct(p)}
-                      className="w-full flex items-center justify-between px-4 py-3 hover:bg-brand-purple/5 text-left transition-colors">
+                      className={cn("w-full flex items-center justify-between px-4 py-3 text-left transition-colors", highlightedIndex === index ? 'bg-brand-purple/10' : 'hover:bg-brand-purple/5')}>
                       <div>
                         <div className="text-sm font-medium text-gray-900 dark:text-gray-100">{p.name}</div>
                         <div className="text-xs text-gray-400">{p.nameHindi}</div>
@@ -411,14 +453,19 @@ export default function Billing() {
                               className="w-7 h-7 rounded-lg bg-gray-100 dark:bg-gray-800 flex items-center justify-center hover:bg-brand-purple/10 transition-colors">
                               <Minus size={12} />
                             </button>
-                            <span className="w-8 text-center font-bold">{item.quantity}</span>
+                            <input type="number" min="1" max={products.find(p => p.id === item.productId)?.currentStock || 1}
+                              value={item.quantity} onChange={e => updateQuantity(item.productId, parseInt(e.target.value, 10) || 1)}
+                              className="w-12 text-center font-bold bg-transparent border-b border-gray-200 dark:border-gray-700 outline-none focus:border-brand-purple" />
                             <button onClick={() => updateQuantity(item.productId, item.quantity + 1)}
                               className="w-7 h-7 rounded-lg bg-gray-100 dark:bg-gray-800 flex items-center justify-center hover:bg-brand-purple/10 transition-colors">
                               <Plus size={12} />
                             </button>
                           </div>
                         </td>
-                        <td className="py-3 text-right">{formatINR(item.unitPrice)}</td>
+                        <td className="py-3 text-right">
+                          <input type="number" value={item.unitPrice} onChange={e => updateUnitPrice(item.productId, Number(e.target.value))}
+                            className="w-20 text-right py-1 rounded-lg border border-gray-200 dark:border-gray-700 bg-transparent text-sm outline-none focus:border-brand-purple" />
+                        </td>
                         <td className="py-3">
                           <input type="number" value={item.discountPercent} min={0} max={100}
                             onChange={e => updateDiscount(item.productId, Number(e.target.value))}

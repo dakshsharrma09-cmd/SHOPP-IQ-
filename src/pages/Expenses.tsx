@@ -23,6 +23,7 @@ export default function Expenses() {
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [showAddModal, setShowAddModal] = useState(false);
   const [search, setSearch] = useState('');
+  const [filterCategory, setFilterCategory] = useState('all');
   
   // Form State
   const [category, setCategory] = useState(CATEGORIES[0]);
@@ -80,11 +81,19 @@ export default function Expenses() {
   };
 
   const filteredExpenses = useMemo(() => {
-    return expenses.filter(exp => 
+    let filtered = expenses.filter(exp => 
       exp.description.toLowerCase().includes(search.toLowerCase()) || 
       exp.categoryName.toLowerCase().includes(search.toLowerCase())
     );
-  }, [expenses, search]);
+    if (filterCategory !== 'all') {
+      filtered = filtered.filter(exp => exp.categoryName === filterCategory);
+    }
+    return filtered.sort((a, b) => {
+      const aTime = a.expenseDate?.toDate?.()?.getTime() || a.createdAt?.toDate?.()?.getTime() || 0;
+      const bTime = b.expenseDate?.toDate?.()?.getTime() || b.createdAt?.toDate?.()?.getTime() || 0;
+      return bTime - aTime;
+    });
+  }, [expenses, search, filterCategory]);
 
   const stats = useMemo(() => {
     const now = new Date();
@@ -173,13 +182,18 @@ export default function Expenses() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Main List */}
         <div className="lg:col-span-2">
-          <div className="glass-card card-glow mb-4 p-4">
-            <div className="relative">
+          <div className="glass-card card-glow mb-4 p-4 flex gap-3">
+            <div className="relative flex-1">
               <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
               <input type="text" value={search} onChange={e => setSearch(e.target.value)}
                 placeholder={language === 'hi' ? 'खोजें...' : 'Search expenses...'}
                 className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 dark:border-brand-dark-border bg-white dark:bg-brand-dark text-sm outline-none focus:border-brand-purple transition-all" />
             </div>
+            <select value={filterCategory} onChange={e => setFilterCategory(e.target.value)}
+              className="px-4 py-2.5 rounded-xl border border-gray-200 dark:border-brand-dark-border bg-white dark:bg-brand-dark text-sm outline-none focus:border-brand-purple transition-all">
+              <option value="all">All Categories</option>
+              {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+            </select>
           </div>
 
           <div className="glass-card card-glow overflow-hidden">

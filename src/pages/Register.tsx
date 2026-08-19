@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -30,9 +30,15 @@ const indianStates = [
 ];
 
 export default function Register() {
-  const { registerTenant, user } = useAuth();
+  const { registerTenant, user, tenant } = useAuth();
   const { language, setLanguage, t } = useLanguage();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (tenant) {
+      navigate('/dashboard', { replace: true });
+    }
+  }, [tenant, navigate]);
 
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -44,7 +50,8 @@ export default function Register() {
     businessNameHindi: '',
     businessType: '' as any,
     city: '',
-    state: 'Rajasthan',
+    state: 'Madhya Pradesh',
+    pincode: '',
     ownerName: '',
     gstin: '',
     isMsmeRegistered: false,
@@ -65,6 +72,9 @@ export default function Register() {
       if (!formData.businessName.trim()) newErrors.businessName = 'Business name is required';
       if (!formData.businessType) newErrors.businessType = 'Select a business type';
       if (!formData.city.trim()) newErrors.city = 'City is required';
+      if (formData.pincode && !/^\d{6}$/.test(formData.pincode)) {
+        newErrors.pincode = 'Pincode must be 6 digits';
+      }
       if (formData.gstin && !/^\d{2}[A-Z]{5}\d{4}[A-Z]{1}[A-Z\d]{1}[Z]{1}[A-Z\d]{1}$/.test(formData.gstin)) {
         newErrors.gstin = 'Invalid GSTIN format (e.g. 22AAAAA0000A1Z5)';
       }
@@ -100,7 +110,7 @@ export default function Register() {
         businessType: formData.businessType,
         city: formData.city,
         state: formData.state,
-        pincode: '',
+        pincode: formData.pincode,
         trialEndsAt: null as any,
         logoUrl: '',
         isMsmeRegistered: formData.isMsmeRegistered,
@@ -323,25 +333,39 @@ export default function Register() {
                     type="text"
                     value={formData.city}
                     onChange={(e) => update('city', e.target.value)}
-                    placeholder="e.g. Jaipur"
-                    className="input-field text-white placeholder:text-gray-600"
+                    placeholder="e.g. Indore"
+                    className="input-field text-white placeholder:text-gray-600 w-full"
                     style={{ background: 'rgba(255,255,255,0.05)', borderColor: errors.city ? '#EF4444' : 'rgba(124,58,237,0.3)' }}
                   />
                   {errors.city && <p className="text-red-400 text-xs mt-1">{errors.city}</p>}
                 </div>
                 <div>
                   <label className="block text-xs text-gray-400 mb-1.5 font-heading">
-                    {language === 'hi' ? 'Rajya*' : 'State*'}
+                    Pincode
                   </label>
-                  <select
-                    value={formData.state}
-                    onChange={(e) => update('state', e.target.value)}
-                    className="input-field text-white"
-                    style={{ background: 'rgba(30,15,60,0.9)', borderColor: 'rgba(124,58,237,0.3)' }}
-                  >
-                    {indianStates.map(s => <option key={s} value={s}>{s}</option>)}
-                  </select>
+                  <input
+                    type="text"
+                    value={formData.pincode}
+                    onChange={(e) => update('pincode', e.target.value.replace(/\D/g, '').slice(0, 6))}
+                    placeholder="e.g. 452001"
+                    className="input-field text-white placeholder:text-gray-600 w-full"
+                    style={{ background: 'rgba(255,255,255,0.05)', borderColor: errors.pincode ? '#EF4444' : 'rgba(124,58,237,0.3)' }}
+                  />
+                  {errors.pincode && <p className="text-red-400 text-xs mt-1">{errors.pincode}</p>}
                 </div>
+              </div>
+              <div>
+                <label className="block text-xs text-gray-400 mb-1.5 font-heading">
+                  {language === 'hi' ? 'Rajya*' : 'State*'}
+                </label>
+                <select
+                  value={formData.state}
+                  onChange={(e) => update('state', e.target.value)}
+                  className="input-field text-white w-full"
+                  style={{ background: 'rgba(30,15,60,0.9)', borderColor: 'rgba(124,58,237,0.3)' }}
+                >
+                  {indianStates.map(s => <option key={s} value={s}>{s}</option>)}
+                </select>
               </div>
             </div>
           )}

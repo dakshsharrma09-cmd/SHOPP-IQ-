@@ -28,7 +28,7 @@ export default function Customers() {
   const [profileTab, setProfileTab] = useState<'purchases' | 'loyalty' | 'notes'>('purchases');
   const [showAddModal, setShowAddModal] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [newCust, setNewCust] = useState({ fullName: '', phoneNumber: '', city: '', creditLimit: 5000 });
+  const [newCust, setNewCust] = useState({ fullName: '', phoneNumber: '', city: '', email: '', address: '', creditLimit: 5000 });
   const [editingCustomer, setEditingCustomer] = useState(false);
   const [editForm, setEditForm] = useState({ fullName: '', phoneNumber: '', city: '', creditLimit: 0 });
   const [customerNotes, setCustomerNotes] = useState('');
@@ -72,11 +72,13 @@ export default function Customers() {
         fullName: newCust.fullName,
         phoneNumber: newCust.phoneNumber,
         city: newCust.city,
+        email: newCust.email,
+        address: newCust.address,
         creditLimit: newCust.creditLimit,
         isActive: true,
       });
       setShowAddModal(false);
-      setNewCust({ fullName: '', phoneNumber: '', city: '', creditLimit: 5000 });
+      setNewCust({ fullName: '', phoneNumber: '', city: '', email: '', address: '', creditLimit: 5000 });
       showToast('✅ Naya customer add ho gaya!', 'success');
     } catch (err) {
       showToast('Customer add nahi hua. Dobara try karo.', 'error');
@@ -411,6 +413,10 @@ export default function Customers() {
                 placeholder="Phone Number" className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-brand-dark text-sm outline-none focus:border-brand-purple" />
               <input value={newCust.city} onChange={e => setNewCust(p => ({ ...p, city: e.target.value }))}
                 placeholder="City" className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-brand-dark text-sm outline-none focus:border-brand-purple" />
+              <input type="email" value={newCust.email} onChange={e => setNewCust(p => ({ ...p, email: e.target.value }))}
+                placeholder="Email (Optional)" className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-brand-dark text-sm outline-none focus:border-brand-purple" />
+              <textarea value={newCust.address} onChange={e => setNewCust(p => ({ ...p, address: e.target.value }))}
+                placeholder="Address (Optional)" rows={2} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-brand-dark text-sm outline-none focus:border-brand-purple resize-none" />
               <input type="number" value={newCust.creditLimit} onChange={e => setNewCust(p => ({ ...p, creditLimit: Number(e.target.value) }))}
                 placeholder="Credit Limit ₹" className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-brand-dark text-sm outline-none focus:border-brand-purple" />
               <div className="flex gap-2">

@@ -10,13 +10,13 @@ import type { Invoice, Product, Customer, Expense } from '../types/firestore';
 import { TrendingUp, Package, Users, DollarSign, FileSpreadsheet } from 'lucide-react';
 import {
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  BarChart, Bar, PieChart, Pie, Cell, Area, AreaChart
+  BarChart, Bar, PieChart, Pie, Cell, Area, AreaChart, Legend
 } from 'recharts';
 
 export default function Analytics() {
   const { tenantId } = useAuth();
   const { t, language } = useLanguage();
-  const [period, setPeriod] = useState<'7d' | '30d' | '90d'>('30d');
+  const [period, setPeriod] = useState<'7d' | '30d' | '90d' | '1y'>('30d');
 
   // Firestore state — all real-time via onSnapshot
   const [invoices, setInvoices] = useState<Invoice[]>([]);
@@ -24,7 +24,7 @@ export default function Analytics() {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [expenses, setExpenses] = useState<Expense[]>([]);
 
-  const periodDays = period === '7d' ? 7 : period === '30d' ? 30 : 90;
+  const periodDays = period === '7d' ? 7 : period === '30d' ? 30 : period === '90d' ? 90 : 365;
 
   useEffect(() => {
     if (!tenantId) return;
@@ -237,11 +237,11 @@ export default function Analytics() {
           </button>
           {/* Period Selector */}
           <div className="flex gap-1 bg-black/40 backdrop-blur-md rounded-xl p-1 border border-white/10">
-            {(['7d', '30d', '90d'] as const).map(p => (
+            {(['7d', '30d', '90d', '1y'] as const).map(p => (
               <button key={p} onClick={() => setPeriod(p)}
                 className={cn('px-4 py-2 rounded-lg text-sm font-medium transition-all',
                   period === p ? 'bg-gradient-to-r from-purple-600 to-purple-800 text-white shadow-lg' : 'text-gray-300 hover:text-white')}>
-                {p === '7d' ? '7 Days' : p === '30d' ? '30 Days' : '90 Days'}
+                {p === '7d' ? '7 Days' : p === '30d' ? '30 Days' : p === '90d' ? '90 Days' : '1 Year'}
               </button>
             ))}
           </div>
@@ -406,29 +406,37 @@ export default function Analytics() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div className="chart-container card-glow p-6 fade-in-up" style={{ animationDelay: '1.0s' }}>
           <h2 className="font-heading font-semibold text-gray-900 dark:text-white mb-4">Customer Segments</h2>
-          {customerSegments.length > 0 ? (
-            <div className="space-y-3">
-              {customerSegments.map(seg => {
-                const total = customers.length || 1;
-                const pct = Math.round((seg.value / total) * 100);
+          {customers.length > 0 ? (
+            <div className="h-full flex items-center justify-center pb-6">
+              {(() => {
+                const segmentData = [
+                  { name: 'VIP', value: customers.filter(c => c.customerSegment === 'vip').length, fill: '#8B5CF6' },
+                  { name: 'Regular', value: customers.filter(c => c.customerSegment === 'regular').length, fill: '#3B82F6' },
+                  { name: 'New', value: customers.filter(c => c.customerSegment === 'new').length, fill: '#10B981' },
+                  { name: 'At Risk', value: customers.filter(c => c.customerSegment === 'at_risk').length, fill: '#EF4444' },
+                ].filter(d => d.value > 0);
+
                 return (
-                  <div key={seg.name} className="p-3 rounded-xl border border-gray-100 dark:border-gray-800">
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center gap-3">
-                        <div className="w-3 h-3 rounded-full" style={{ background: seg.color }} />
-                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300 capitalize">{seg.name}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs text-gray-400">{pct}%</span>
-                        <span className="font-bold font-heading text-gray-900 dark:text-white">{seg.value}</span>
-                      </div>
-                    </div>
-                    <div className="h-1.5 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
-                      <div className="h-full rounded-full transition-all duration-500" style={{ width: `${pct}%`, background: seg.color }} />
-                    </div>
-                  </div>
+                  <ResponsiveContainer width="100%" height={250}>
+                    <PieChart>
+                      <Pie
+                        data={segmentData}
+                        cx="50%"
+                        cy="50%"
+                        outerRadius={80}
+                        dataKey="value"
+                        nameKey="name"
+                      >
+                        {segmentData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={entry.fill} />
+                        ))}
+                      </Pie>
+                      <Tooltip formatter={(value: any) => [value, 'Customers']} />
+                      <Legend />
+                    </PieChart>
+                  </ResponsiveContainer>
                 );
-              })}
+              })()}
             </div>
           ) : (
             <div className="flex items-center justify-center h-[200px] text-gray-400">No customers yet</div>
