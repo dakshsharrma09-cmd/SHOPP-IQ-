@@ -201,23 +201,23 @@ export default function GST() {
       </div>
 
       {/* ── Screen header ─────────────────────────────────── */}
-      <div className="p-8 rounded-3xl bg-gradient-to-r from-[#1e1b4b] via-[#312e81] to-[#1e1b4b] relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6 shadow-2xl border border-white/10 fade-in-up" style={{ animationDelay: '0.1s' }} data-print-hide>
+      <div className="p-8 rounded-3xl bg-gradient-to-r from-purple-50 to-pink-50 relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6 shadow-2xl border border-white/10 fade-in-up" style={{ animationDelay: '0.1s' }} data-print-hide>
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-overlay"></div>
         <div className="absolute -top-24 -right-24 w-64 h-64 bg-indigo-500 rounded-full blur-[100px] opacity-40"></div>
         <div className="relative z-10">
-          <h1 className="text-3xl font-heading font-extrabold text-white mb-2 tracking-tight flex items-center gap-3">
+          <h1 className="text-3xl font-heading font-extrabold text-gray-900 mb-2 tracking-tight flex items-center gap-3">
             {t('gst')} 🧾
           </h1>
-          <p className="text-indigo-300 text-sm font-medium tracking-widest uppercase">जीएसटी रिपोर्ट</p>
+          <p className="text-indigo-700 text-sm font-medium tracking-widest uppercase">जीएसटी रिपोर्ट</p>
         </div>
         <div className="relative z-10 flex gap-2">
           <select value={month} onChange={e => setMonth(Number(e.target.value))}
-            className="px-4 py-2.5 rounded-xl border border-indigo-500/30 bg-black/40 backdrop-blur-md text-white text-sm outline-none focus:border-indigo-400 font-medium">
-            {months.map((m, i) => <option key={i} value={i} className="bg-brand-dark text-white">{m}</option>)}
+            className="px-4 py-2.5 rounded-xl border border-indigo-500/30 bg-black/40 backdrop-blur-md text-gray-900 text-sm outline-none focus:border-indigo-400 font-medium">
+            {months.map((m, i) => <option key={i} value={i} className="bg-surface-bg text-gray-900">{m}</option>)}
           </select>
           <select value={year} onChange={e => setYear(Number(e.target.value))}
-            className="px-4 py-2.5 rounded-xl border border-indigo-500/30 bg-black/40 backdrop-blur-md text-white text-sm outline-none focus:border-indigo-400 font-medium">
-            {[2024, 2025, 2026, 2027].map(y => <option key={y} value={y} className="bg-brand-dark text-white">{y}</option>)}
+            className="px-4 py-2.5 rounded-xl border border-indigo-500/30 bg-black/40 backdrop-blur-md text-gray-900 text-sm outline-none focus:border-indigo-400 font-medium">
+            {[2024, 2025, 2026, 2027].map(y => <option key={y} value={y} className="bg-surface-bg text-gray-900">{y}</option>)}
           </select>
         </div>
       </div>
@@ -225,11 +225,11 @@ export default function GST() {
       {/* ── Business Info Banner ──────────────────────────── */}
       <div className="glass-card card-glow p-4 flex flex-col md:flex-row md:items-center justify-between gap-2 fade-in-up" style={{ animationDelay: '0.2s' }}>
         <div>
-          <div className="text-sm font-heading font-semibold text-gray-900 dark:text-white">{tenant?.businessName || 'Your Business'}</div>
-          <div className="text-xs text-gray-400">GSTIN: <span className="font-mono text-brand-purple">{tenant?.gstin || 'Not set — update in Settings'}</span></div>
+          <div className="text-sm text-gray-900 font-heading text-section-heading-white">{tenant?.businessName || 'Your Business'}</div>
+          <div className="text-xs text-gray-500">GSTIN: <span className="font-mono text-brand-purple">{tenant?.gstin || 'Not set — update in Settings'}</span></div>
         </div>
-        <div className="text-xs text-gray-400">
-          Period: <span className="font-medium text-gray-700 dark:text-gray-300">{monthsFull[month]} {year}</span>
+        <div className="text-xs text-gray-500">
+          Period: <span className="font-medium text-gray-700-gray-300">{monthsFull[month]} {year}</span>
           {' • '}B2B: <span className="font-medium text-brand-purple">{b2bInvoices.length}</span>
           {' • '}B2C: <span className="font-medium text-blue-500">{b2cInvoices.length}</span>
         </div>
@@ -245,18 +245,18 @@ export default function GST() {
           { label: 'Total Tax', value: formatINR(Math.round(totalTax)), gradient: 'linear-gradient(135deg, #f59e0b, #b45309)' },
         ].map((s, i) => (
           <div key={s.label} className="stat-card border-none relative overflow-hidden fade-in-up" style={{ animationDelay: `${0.3 + i * 0.1}s`, background: s.gradient }}>
-            <div className="text-xs text-white/80 font-medium mb-1 relative z-10">{s.label}</div>
-            <div className="text-xl font-bold font-heading text-white relative z-10 drop-shadow-md">{s.value}</div>
+            <div className="text-xs text-gray-900/80 font-medium mb-1 relative z-10">{s.label}</div>
+            <div className="text-xl font-bold font-heading text-gray-900 relative z-10 drop-shadow-md">{s.value}</div>
           </div>
         ))}
       </div>
 
       {/* ── Tabs ──────────────────────────────────────────── */}
-      <div className="flex gap-1 p-1 bg-gray-100 dark:bg-gray-800 rounded-xl w-fit" data-print-hide>
+      <div className="flex gap-1 p-1 bg-gray-100-gray-800 rounded-xl w-fit" data-print-hide>
         {(['gstr1', 'slabs', 'hsn'] as const).map(t2 => (
           <button key={t2} onClick={() => setTab(t2)}
             className={cn('px-4 py-2 rounded-lg text-sm font-medium transition-all',
-              tab === t2 ? 'bg-white dark:bg-brand-dark-card text-brand-purple shadow' : 'text-gray-500')}>
+              tab === t2 ? 'bg-white-brand-dark-card text-brand-purple shadow' : 'text-gray-500')}>
             {t2 === 'gstr1' ? 'GSTR-1 Summary' : t2 === 'slabs' ? 'Rate Slabs' : 'HSN Summary'}
           </button>
         ))}
@@ -269,7 +269,7 @@ export default function GST() {
         <div className="glass-card card-glow overflow-hidden fade-in-up" style={{ animationDelay: '0.8s' }}>
           <table className="w-full text-sm">
             <thead>
-              <tr className="bg-gray-50 dark:bg-gray-800/50">
+              <tr className="bg-gray-50 text-gray-500 uppercase text-xs">
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">Type</th>
                 <th className="px-4 py-3 text-center text-xs font-medium text-gray-500">Invoices</th>
                 <th className="px-4 py-3 text-right text-xs font-medium text-gray-500">Taxable Value</th>
@@ -280,20 +280,20 @@ export default function GST() {
             </thead>
             <tbody>
               {gstr1Summary.map(row => (
-                <tr key={row.type} className="border-b border-gray-50 dark:border-gray-800 table-row-hover">
-                  <td className="px-4 py-3 font-medium text-gray-900 dark:text-gray-100">{row.type}</td>
+                <tr key={row.type} className="border-b border-gray-50-gray-800 table-row-hover">
+                  <td className="px-4 py-3 font-medium text-gray-900-gray-100">{row.type}</td>
                   <td className="px-4 py-3 text-center text-gray-500">{row.count}</td>
-                  <td className="px-4 py-3 text-right text-gray-700 dark:text-gray-300">{formatINR(Math.round(row.taxable))}</td>
-                  <td className="px-4 py-3 text-right text-gray-700 dark:text-gray-300">{formatINR(Math.round(row.cgst))}</td>
-                  <td className="px-4 py-3 text-right text-gray-700 dark:text-gray-300">{formatINR(Math.round(row.sgst))}</td>
-                  <td className="px-4 py-3 text-right font-bold text-gray-900 dark:text-white">{formatINR(Math.round(row.total))}</td>
+                  <td className="px-4 py-3 text-right text-gray-700-gray-300">{formatINR(Math.round(row.taxable))}</td>
+                  <td className="px-4 py-3 text-right text-gray-700-gray-300">{formatINR(Math.round(row.cgst))}</td>
+                  <td className="px-4 py-3 text-right text-gray-700-gray-300">{formatINR(Math.round(row.sgst))}</td>
+                  <td className="px-4 py-3 text-right font-bold text-gray-900-white">{formatINR(Math.round(row.total))}</td>
                 </tr>
               ))}
               {/* Totals row */}
-              <tr className="bg-brand-purple/5 dark:bg-brand-purple/10 font-semibold">
-                <td className="px-4 py-3 text-gray-900 dark:text-white">Total</td>
-                <td className="px-4 py-3 text-center text-gray-900 dark:text-white">{monthInvoices.length}</td>
-                <td className="px-4 py-3 text-right text-gray-900 dark:text-white">{formatINR(Math.round(totalTaxable))}</td>
+              <tr className="bg-brand-purple/5-brand-purple/10 font-semibold">
+                <td className="px-4 py-3 text-gray-900-white">Total</td>
+                <td className="px-4 py-3 text-center text-gray-900-white">{monthInvoices.length}</td>
+                <td className="px-4 py-3 text-right text-gray-900-white">{formatINR(Math.round(totalTaxable))}</td>
                 <td className="px-4 py-3 text-right text-brand-purple">{formatINR(Math.round(totalCGST))}</td>
                 <td className="px-4 py-3 text-right text-brand-purple">{formatINR(Math.round(totalSGST))}</td>
                 <td className="px-4 py-3 text-right text-brand-purple font-bold">{formatINR(Math.round(totalTax + totalTaxable))}</td>
@@ -310,7 +310,7 @@ export default function GST() {
         <div className="glass-card card-glow overflow-hidden fade-in-up" style={{ animationDelay: '0.8s' }}>
           <table className="w-full text-sm">
             <thead>
-              <tr className="bg-gray-50 dark:bg-gray-800/50">
+              <tr className="bg-gray-50 text-gray-500 uppercase text-xs">
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">GST Rate</th>
                 <th className="px-4 py-3 text-center text-xs font-medium text-gray-500">Invoices</th>
                 <th className="px-4 py-3 text-right text-xs font-medium text-gray-500">Taxable Value</th>
@@ -322,33 +322,33 @@ export default function GST() {
             <tbody>
               {slabSummary.map(slab => (
                 <tr key={slab.rate} className={cn(
-                  'border-b border-gray-50 dark:border-gray-800 table-row-hover',
+                  'border-b border-gray-50-gray-800 table-row-hover',
                   slab.invoiceCount === 0 && 'opacity-40'
                 )}>
                   <td className="px-4 py-3">
                     <span className={cn(
                       'px-2.5 py-1 rounded-lg text-xs font-bold',
-                      slab.rate === 0 ? 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400' :
-                      slab.rate === 5 ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' :
-                      slab.rate === 12 ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' :
-                      slab.rate === 18 ? 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400' :
-                      'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
+                      slab.rate === 0 ? 'bg-gray-100 text-gray-600-gray-800-gray-400' :
+                      slab.rate === 5 ? 'bg-green-100 text-green-700-green-900/30-green-400' :
+                      slab.rate === 12 ? 'bg-blue-100 text-blue-700-blue-900/30-blue-400' :
+                      slab.rate === 18 ? 'bg-purple-100 text-purple-700-purple-900/30-purple-400' :
+                      'bg-red-100 text-red-700-red-900/30-red-400'
                     )}>
                       {slab.rate}%
                     </span>
                   </td>
                   <td className="px-4 py-3 text-center text-gray-500">{slab.invoiceCount}</td>
-                  <td className="px-4 py-3 text-right text-gray-700 dark:text-gray-300">{formatINR(Math.round(slab.taxable))}</td>
-                  <td className="px-4 py-3 text-right text-gray-700 dark:text-gray-300">{formatINR(Math.round(slab.cgst))}</td>
-                  <td className="px-4 py-3 text-right text-gray-700 dark:text-gray-300">{formatINR(Math.round(slab.sgst))}</td>
-                  <td className="px-4 py-3 text-right font-bold text-gray-900 dark:text-white">{formatINR(Math.round(slab.total))}</td>
+                  <td className="px-4 py-3 text-right text-gray-700-gray-300">{formatINR(Math.round(slab.taxable))}</td>
+                  <td className="px-4 py-3 text-right text-gray-700-gray-300">{formatINR(Math.round(slab.cgst))}</td>
+                  <td className="px-4 py-3 text-right text-gray-700-gray-300">{formatINR(Math.round(slab.sgst))}</td>
+                  <td className="px-4 py-3 text-right font-bold text-gray-900-white">{formatINR(Math.round(slab.total))}</td>
                 </tr>
               ))}
               {/* Totals */}
-              <tr className="bg-brand-purple/5 dark:bg-brand-purple/10 font-semibold">
-                <td className="px-4 py-3 text-gray-900 dark:text-white">All Slabs</td>
-                <td className="px-4 py-3 text-center text-gray-900 dark:text-white">{monthInvoices.length}</td>
-                <td className="px-4 py-3 text-right text-gray-900 dark:text-white">{formatINR(Math.round(slabSummary.reduce((s, r) => s + r.taxable, 0)))}</td>
+              <tr className="bg-brand-purple/5-brand-purple/10 font-semibold">
+                <td className="px-4 py-3 text-gray-900-white">All Slabs</td>
+                <td className="px-4 py-3 text-center text-gray-900-white">{monthInvoices.length}</td>
+                <td className="px-4 py-3 text-right text-gray-900-white">{formatINR(Math.round(slabSummary.reduce((s, r) => s + r.taxable, 0)))}</td>
                 <td className="px-4 py-3 text-right text-brand-purple">{formatINR(Math.round(totalCGST))}</td>
                 <td className="px-4 py-3 text-right text-brand-purple">{formatINR(Math.round(totalSGST))}</td>
                 <td className="px-4 py-3 text-right text-brand-purple font-bold">{formatINR(Math.round(slabSummary.reduce((s, r) => s + r.total, 0)))}</td>
@@ -365,7 +365,7 @@ export default function GST() {
         <div className="glass-card card-glow overflow-hidden fade-in-up" style={{ animationDelay: '0.8s' }}>
           <table className="w-full text-sm">
             <thead>
-              <tr className="bg-gray-50 dark:bg-gray-800/50">
+              <tr className="bg-gray-50 text-gray-500 uppercase text-xs">
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">HSN Code</th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">Description</th>
                 <th className="px-4 py-3 text-center text-xs font-medium text-gray-500">GST %</th>
@@ -377,26 +377,26 @@ export default function GST() {
             </thead>
             <tbody>
               {hsnSummary.map(row => (
-                <tr key={row.hsn} className="border-b border-gray-50 dark:border-gray-800 table-row-hover">
+                <tr key={row.hsn} className="border-b border-gray-50-gray-800 table-row-hover">
                   <td className="px-4 py-3 font-mono text-xs text-brand-purple font-semibold">{row.hsn}</td>
-                  <td className="px-4 py-3 text-gray-700 dark:text-gray-300 text-xs">{row.desc}</td>
+                  <td className="px-4 py-3 text-gray-700-gray-300 text-xs">{row.desc}</td>
                   <td className="px-4 py-3 text-center">
-                    <span className="text-xs px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400">{row.gstRate}%</span>
+                    <span className="text-xs px-2 py-0.5 rounded bg-gray-100-gray-800 text-gray-600-gray-400">{row.gstRate}%</span>
                   </td>
                   <td className="px-4 py-3 text-center text-gray-500">{row.qty}</td>
-                  <td className="px-4 py-3 text-right text-gray-700 dark:text-gray-300">{formatINR(Math.round(row.taxable))}</td>
-                  <td className="px-4 py-3 text-right text-gray-700 dark:text-gray-300">{formatINR(Math.round(row.cgst))}</td>
-                  <td className="px-4 py-3 text-right text-gray-700 dark:text-gray-300">{formatINR(Math.round(row.sgst))}</td>
+                  <td className="px-4 py-3 text-right text-gray-700-gray-300">{formatINR(Math.round(row.taxable))}</td>
+                  <td className="px-4 py-3 text-right text-gray-700-gray-300">{formatINR(Math.round(row.cgst))}</td>
+                  <td className="px-4 py-3 text-right text-gray-700-gray-300">{formatINR(Math.round(row.sgst))}</td>
                 </tr>
               ))}
               {hsnSummary.length === 0 && (
-                <tr><td colSpan={7} className="px-4 py-8 text-center text-gray-400">No data for {months[month]} {year}</td></tr>
+                <tr><td colSpan={7} className="px-4 py-8 text-center text-gray-500">No data for {months[month]} {year}</td></tr>
               )}
               {hsnSummary.length > 0 && (
-                <tr className="bg-brand-purple/5 dark:bg-brand-purple/10 font-semibold">
-                  <td className="px-4 py-3 text-gray-900 dark:text-white" colSpan={3}>Total</td>
-                  <td className="px-4 py-3 text-center text-gray-900 dark:text-white">{hsnSummary.reduce((s, r) => s + r.qty, 0)}</td>
-                  <td className="px-4 py-3 text-right text-gray-900 dark:text-white">{formatINR(Math.round(hsnSummary.reduce((s, r) => s + r.taxable, 0)))}</td>
+                <tr className="bg-brand-purple/5-brand-purple/10 font-semibold">
+                  <td className="px-4 py-3 text-gray-900-white" colSpan={3}>Total</td>
+                  <td className="px-4 py-3 text-center text-gray-900-white">{hsnSummary.reduce((s, r) => s + r.qty, 0)}</td>
+                  <td className="px-4 py-3 text-right text-gray-900-white">{formatINR(Math.round(hsnSummary.reduce((s, r) => s + r.taxable, 0)))}</td>
                   <td className="px-4 py-3 text-right text-brand-purple">{formatINR(Math.round(hsnSummary.reduce((s, r) => s + r.cgst, 0)))}</td>
                   <td className="px-4 py-3 text-right text-brand-purple">{formatINR(Math.round(hsnSummary.reduce((s, r) => s + r.sgst, 0)))}</td>
                 </tr>
@@ -408,37 +408,38 @@ export default function GST() {
 
       {/* ── Action Buttons ────────────────────────────────── */}
       <div className="flex flex-wrap gap-3 fade-in-up" style={{ animationDelay: '0.9s' }} data-print-hide>
-        <button onClick={handleWhatsAppCA} className="flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-green-500 to-green-600 text-white text-sm font-medium hover:scale-105 hover:shadow-[0_0_20px_rgba(34,197,94,0.4)] transition-all">
+        <button onClick={handleWhatsAppCA} className="flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-green-500 to-green-600 text-gray-900 text-sm font-medium hover:scale-105 hover:shadow-[0_0_20px_rgba(34,197,94,0.4)] transition-all">
           <MessageCircle size={16} /> {language === 'hi' ? 'CA ko WhatsApp Bhejo' : 'WhatsApp to CA'}
         </button>
-        <button onClick={handlePrintPDF} className="flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-brand-purple to-purple-600 text-white text-sm font-medium hover:scale-105 hover:shadow-[0_0_20px_rgba(124,58,237,0.4)] transition-all">
+        <button onClick={handlePrintPDF} className="flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-brand-purple to-purple-600 text-gray-900 text-sm font-medium hover:scale-105 hover:shadow-[0_0_20px_rgba(124,58,237,0.4)] transition-all">
           <Printer size={16} /> {language === 'hi' ? 'PDF Download Karo' : 'Download PDF'}
         </button>
-        <button onClick={handleDownloadJSON} className="flex items-center gap-2 px-6 py-3 rounded-xl bg-white/10 border border-brand-purple/30 text-brand-purple dark:text-purple-300 text-sm font-medium hover:bg-brand-purple/10 transition-all">
+        <button onClick={handleDownloadJSON} className="flex items-center gap-2 px-6 py-3 rounded-xl bg-white/10 border border-brand-purple/30 text-brand-purple-purple-300 text-sm font-medium hover:bg-brand-purple/10 transition-all">
           <FileDown size={16} /> Download GSTR-1 JSON
         </button>
       </div>
 
       {/* ── Tax Liability Summary (always visible) ────────── */}
       <div className="glass-card card-glow p-6 fade-in-up" style={{ animationDelay: '1.0s' }}>
-        <h2 className="font-heading font-semibold text-gray-900 dark:text-white mb-4">
+        <h2 className="text-gray-900 font-heading text-section-heading-white mb-4">
           {language === 'hi' ? 'Tax Liability Summary' : 'Tax Liability Summary'}
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="p-4 rounded-xl bg-blue-50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-900/30">
-            <div className="text-xs text-blue-600 dark:text-blue-400 mb-1">CGST Payable</div>
-            <div className="text-2xl font-bold font-heading text-blue-700 dark:text-blue-300">{formatINR(Math.round(totalCGST))}</div>
+          <div className="p-4 rounded-xl bg-blue-50-blue-900/10 border border-blue-100-blue-900/30">
+            <div className="text-xs text-blue-600-blue-400 mb-1">CGST Payable</div>
+            <div className="text-2xl font-bold font-heading text-blue-700-blue-300">{formatINR(Math.round(totalCGST))}</div>
           </div>
-          <div className="p-4 rounded-xl bg-green-50 dark:bg-green-900/10 border border-green-100 dark:border-green-900/30">
-            <div className="text-xs text-green-600 dark:text-green-400 mb-1">SGST Payable</div>
-            <div className="text-2xl font-bold font-heading text-green-700 dark:text-green-300">{formatINR(Math.round(totalSGST))}</div>
+          <div className="p-4 rounded-xl bg-green-50-green-900/10 border border-green-100-green-900/30">
+            <div className="text-xs text-green-600-green-400 mb-1">SGST Payable</div>
+            <div className="text-2xl font-bold font-heading text-green-700-green-300">{formatINR(Math.round(totalSGST))}</div>
           </div>
-          <div className="p-4 rounded-xl bg-gradient-to-br from-brand-purple/10 to-purple-100/50 dark:from-brand-purple/20 dark:to-purple-900/10 border border-brand-purple/20">
+          <div className="p-4 rounded-xl bg-gradient-to-br from-brand-purple/10 to-purple-100/50-brand-purple/20-purple-900/10 border border-brand-purple/20">
             <div className="text-xs text-brand-purple mb-1">Total Tax Liability</div>
             <div className="text-2xl font-bold font-heading text-brand-purple">{formatINR(Math.round(totalTax))}</div>
           </div>
         </div>
       </div>
+      <div className='made-in-india text-center text-sm py-4 text-gray-500'>Made with ❤️ in Jabalpur, India 🇮🇳</div>
     </div>
   );
 }

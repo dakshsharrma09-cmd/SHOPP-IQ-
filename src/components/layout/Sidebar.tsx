@@ -1,41 +1,38 @@
-
 import { NavLink, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, FileText, Package, Users, CreditCard, Gift,
-  BarChart3, Receipt, Settings, LogOut, MessageCircle, ChevronLeft,
-  ChevronRight, Store, Menu, ShoppingBag, Wallet
+  BarChart3, Receipt, Settings, LogOut, MessageCircle, ShoppingBag, Wallet
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useLanguage } from '../../contexts/LanguageContext';
 import { cn } from '../../lib/formatters';
 
-const navItems = [
-  { path: '/dashboard', icon: LayoutDashboard, key: 'dashboard' },
-  { path: '/billing/new', icon: FileText, key: 'billing' },
-  { path: '/inventory', icon: Package, key: 'inventory' },
-  { path: '/customers', icon: Users, key: 'customers' },
-  { path: '/payments', icon: CreditCard, key: 'payments' },
-  { path: '/loyalty', icon: Gift, key: 'loyalty' },
-  { path: '/analytics', icon: BarChart3, key: 'analytics' },
-  { path: '/expenses', icon: Wallet, key: 'expenses' },
-  { path: '/gst', icon: Receipt, key: 'gst' },
-  { path: '/settings', icon: Settings, key: 'settings' },
+const mainNavItems = [
+  { path: '/dashboard', icon: LayoutDashboard, key: 'dashboard', label: 'Dashboard' },
+  { path: '/billing/new', icon: FileText, key: 'billing', label: 'Billing' },
+  { path: '/inventory', icon: Package, key: 'inventory', label: 'Inventory' },
+  { path: '/customers', icon: Users, key: 'customers', label: 'Customers' },
+  { path: '/payments', icon: CreditCard, key: 'payments', label: 'Payments' },
 ];
 
-// Mobile bottom tab items
-const mobileTabItems = [
-  { path: '/dashboard', icon: LayoutDashboard, key: 'dashboard' },
-  { path: '/billing/new', icon: FileText, key: 'billing' },
-  { path: '/inventory', icon: Package, key: 'inventory' },
-  { path: '/customers', icon: Users, key: 'customers' },
+const reportsNavItems = [
+  { path: '/analytics', icon: BarChart3, key: 'analytics', label: 'Analytics' },
+  { path: '/gst', icon: Receipt, key: 'gst', label: 'GST' },
+  { path: '/whatsapp', icon: MessageCircle, key: 'whatsapp', label: 'WhatsApp AI' },
+];
+
+const settingsNavItems = [
+  { path: '/settings', icon: Settings, key: 'settings', label: 'Settings' },
+  { path: '/loyalty', icon: Gift, key: 'loyalty', label: 'Loyalty' },
+  { path: '/expenses', icon: Wallet, key: 'expenses', label: 'Expenses' },
 ];
 
 interface SidebarProps {
-  collapsed: boolean;
-  onCollapse: (v: boolean) => void;
+  isOpen: boolean;
+  onClose: () => void;
 }
 
-export default function Sidebar({ collapsed, onCollapse }: SidebarProps) {
+export default function Sidebar({ isOpen, onClose }: SidebarProps) {
   const { tenant, logout } = useAuth();
   const { t } = useLanguage();
   const navigate = useNavigate();
@@ -45,182 +42,120 @@ export default function Sidebar({ collapsed, onCollapse }: SidebarProps) {
     navigate('/login');
   };
 
-  return (
-    <>
-      {/* Desktop Sidebar */}
-      <aside
-        className={cn(
-          'hidden md:flex flex-col fixed left-0 top-0 h-screen z-40 transition-all duration-300 border-r',
-          'bg-white dark:bg-brand-dark-card border-gray-100 dark:border-brand-dark-border',
-          collapsed ? 'w-16' : 'w-60'
-        )}
-      >
-        {/* Logo */}
-        <div className={cn(
-          'flex items-center gap-3 px-4 py-5 border-b border-gray-100 dark:border-brand-dark-border',
-          collapsed && 'justify-center px-2'
-        )}>
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-purple to-purple-600 flex items-center justify-center flex-shrink-0 shadow-purple-glow-sm animate-pulse-glow">
-            <ShoppingBag size={18} className="text-white" />
-          </div>
-          {!collapsed && (
-            <div className="min-w-0">
-              <div className="font-heading font-extrabold text-brand-purple text-sm tracking-wide leading-tight">SHOPP IQ</div>
-              <div className="text-[10px] text-brand-purple/60 font-heading font-medium leading-tight">
-                Dukaan se Digital tak
-              </div>
-            </div>
-          )}
-        </div>
+  const getInitials = (name: string) => {
+    return name ? name.charAt(0).toUpperCase() : 'S';
+  };
 
-        {/* Nav Items */}
-        <nav className="flex-1 py-4 overflow-y-auto scrollbar-hide">
-          <div className="space-y-1 px-2">
-            {navItems.map((item) => (
+  const SidebarContent = () => (
+    <div className="flex flex-col h-full bg-[#FFFFFF] w-[240px] border-r border-[#E5E7EB]">
+      {/* LOGO AREA */}
+      <div className="h-[64px] flex items-center px-4 border-b border-[#E5E7EB] flex-shrink-0">
+        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-purple-700 flex items-center justify-center mr-3 shadow-sm">
+          <ShoppingBag size={16} className="text-white" />
+        </div>
+        <div className="flex flex-col justify-center">
+          <div className="font-heading text-lg leading-none flex">
+            <span className="font-bold text-[#1E1B4B]">SHOPP</span>
+            <span className="font-bold text-[#DB2777] ml-1">IQ</span>
+          </div>
+          <div className="text-[#9333EA] text-[11px] italic mt-0.5">
+            Dukaan se Digital tak
+          </div>
+        </div>
+      </div>
+
+      {/* NAV SECTIONS */}
+      <div className="flex-1 overflow-y-auto py-4 px-3 flex flex-col gap-6 scrollbar-hide">
+        
+        {/* MAIN SECTION */}
+        <div>
+          <div className="text-[10px] uppercase text-[#9CA3AF] font-bold px-3 mb-2 tracking-wider mt-[16px]">MAIN</div>
+          <div className="space-y-1">
+            {mainNavItems.map((item) => (
               <NavLink
                 key={item.path}
                 to={item.path}
-                className={({ isActive }) =>
-                  cn(
-                    'nav-item group',
-                    isActive && 'active',
-                    collapsed && 'justify-center px-2'
-                  )
-                }
-                title={collapsed ? t(item.key) : undefined}
+                onClick={onClose}
+                className={({ isActive }) => cn('nav-item h-[44px]', isActive && 'active')}
               >
-                {({ isActive }) => (
-                  <>
-                    <item.icon
-                      size={18}
-                      className={cn(
-                        'flex-shrink-0 transition-colors',
-                        isActive ? 'text-white' : 'text-gray-500 group-hover:text-brand-purple'
-                      )}
-                    />
-                    {!collapsed && (
-                      <span className={cn(
-                        'text-sm font-medium transition-colors font-heading',
-                        isActive ? 'text-white' : 'text-gray-600 dark:text-gray-400 group-hover:text-brand-purple'
-                      )}>
-                        {t(item.key)}
-                      </span>
-                    )}
-                  </>
-                )}
+                <item.icon size={20} />
+                <span className="font-medium text-sm">{t(item.key) || item.label}</span>
               </NavLink>
             ))}
           </div>
-        </nav>
-
-        {/* WhatsApp Chat */}
-        {!collapsed && (
-          <div className="px-3 pb-2">
-            <NavLink
-              to="/whatsapp"
-              className={({ isActive }) =>
-                `w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-colors ${
-                  isActive
-                    ? 'bg-brand-whatsapp/20 shadow-sm'
-                    : 'bg-brand-whatsapp/10 hover:bg-brand-whatsapp/20'
-                }`
-              }
-            >
-              <div className="relative">
-                <MessageCircle size={18} className="text-brand-whatsapp" />
-                <span className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-brand-whatsapp text-white text-[10px] font-bold rounded-full flex items-center justify-center animate-pulse">AI</span>
-              </div>
-              <span className="text-sm font-medium font-heading text-brand-whatsapp">WhatsApp Bot</span>
-            </NavLink>
-          </div>
-        )}
-
-        {/* User / Logout */}
-        <div className={cn(
-          'p-3 border-t border-gray-100 dark:border-brand-dark-border',
-          collapsed && 'flex justify-center'
-        )}>
-          {collapsed ? (
-            <button
-              onClick={handleLogout}
-              className="p-2 rounded-xl hover:bg-red-50 dark:hover:bg-red-900/20 text-gray-400 hover:text-red-500 transition-colors"
-              title="Logout"
-            >
-              <LogOut size={18} />
-            </button>
-          ) : (
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-purple to-purple-600 flex items-center justify-center flex-shrink-0">
-                <Store size={14} className="text-white" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="text-xs font-semibold font-heading truncate dark:text-gray-200">
-                  {tenant?.ownerName || 'Store Owner'}
-                </div>
-                <div className="text-[10px] text-gray-400 truncate capitalize">
-                  {tenant?.subscriptionPlan || 'free'} plan
-                </div>
-              </div>
-              <button
-                onClick={handleLogout}
-                className="p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 text-gray-400 hover:text-red-500 transition-colors"
-                title="Logout"
-              >
-                <LogOut size={14} />
-              </button>
-            </div>
-          )}
         </div>
 
-        {/* Collapse Toggle */}
-        <button
-          onClick={() => onCollapse(!collapsed)}
-          aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-          className="absolute -right-3 top-20 w-6 h-6 rounded-full bg-brand-purple text-white flex items-center justify-center shadow-purple-glow-sm hover:scale-110 transition-transform z-50"
-        >
-          {collapsed ? <ChevronRight size={12} /> : <ChevronLeft size={12} />}
-        </button>
-      </aside>
+        {/* REPORTS SECTION */}
+        <div>
+          <div className="text-[10px] uppercase text-[#9CA3AF] font-bold px-3 mb-2 tracking-wider mt-[16px]">REPORTS</div>
+          <div className="space-y-1">
+            {reportsNavItems.map((item) => (
+              <NavLink
+                key={item.path}
+                to={item.path}
+                onClick={onClose}
+                className={({ isActive }) => cn('nav-item h-[44px]', isActive && 'active')}
+              >
+                <item.icon size={20} />
+                <span className="font-medium text-sm">{t(item.key) || item.label}</span>
+              </NavLink>
+            ))}
+          </div>
+        </div>
 
-      {/* Mobile Bottom Tabs */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-brand-dark-card border-t border-gray-100 dark:border-brand-dark-border safe-area-pb">
-        <div className="mobile-tab-bar">
-          {mobileTabItems.map((item) => (
-            <NavLink
-              key={item.path}
-              to={item.path}
-              className={({ isActive }) =>
-                cn(
-                  'mobile-tab-item',
-                  isActive ? 'text-brand-purple bg-brand-purple/10' : 'text-gray-400'
-                )
-              }
-            >
-              {({ isActive }) => (
-                <>
-                  <item.icon size={20} className={isActive ? 'text-brand-purple' : 'text-gray-400'} />
-                  <span className="text-[10px] font-medium font-heading truncate">{t(item.key)}</span>
-                </>
-              )}
-            </NavLink>
-          ))}
-          <NavLink
-            to="/settings"
-            className={({ isActive }) =>
-              cn('mobile-tab-item',
-                isActive ? 'text-brand-purple bg-brand-purple/10' : 'text-gray-400'
-              )
-            }
-          >
-            {({ isActive }) => (
-              <>
-                <Menu size={20} className={isActive ? 'text-brand-purple' : 'text-gray-400'} />
-                <span className="text-[10px] font-medium font-heading">More</span>
-              </>
-            )}
-          </NavLink>
+        {/* SETTINGS SECTION */}
+        <div>
+          <div className="text-[10px] uppercase text-[#9CA3AF] font-bold px-3 mb-2 tracking-wider mt-[16px]">SETTINGS</div>
+          <div className="space-y-1">
+            {settingsNavItems.map((item) => (
+              <NavLink
+                key={item.path}
+                to={item.path}
+                onClick={onClose}
+                className={({ isActive }) => cn('nav-item h-[44px]', isActive && 'active')}
+              >
+                <item.icon size={20} />
+                <span className="font-medium text-sm">{t(item.key) || item.label}</span>
+              </NavLink>
+            ))}
+          </div>
         </div>
       </div>
+
+      {/* BOTTOM USER SECTION */}
+      <div className="p-4 border-t border-[#E5E7EB] flex items-center justify-between flex-shrink-0">
+        <div className="flex items-center gap-3 overflow-hidden">
+          <div className="w-9 h-9 rounded-full bg-[#F3F4F6] text-[#4B5563] flex items-center justify-center font-bold text-sm flex-shrink-0">
+            {getInitials(tenant?.ownerName || 'User')}
+          </div>
+          <div className="flex flex-col min-w-0">
+            <span className="text-sm font-bold text-gray-800 truncate">{tenant?.ownerName || 'Store Owner'}</span>
+            <span className="text-xs text-gray-500 truncate">{tenant?.businessName || 'Business Name'}</span>
+          </div>
+        </div>
+        <button onClick={handleLogout} className="p-2 text-gray-400 hover:text-red-500 transition-colors flex-shrink-0" title="Logout">
+          <LogOut size={20} />
+        </button>
+      </div>
+    </div>
+  );
+
+  return (
+    <>
+      {/* Desktop Sidebar */}
+      <aside className="hidden md:flex fixed left-0 top-0 h-screen z-40">
+        <SidebarContent />
+      </aside>
+
+      {/* Mobile Sidebar Overlay */}
+      {isOpen && (
+        <div className="md:hidden fixed inset-0 z-50 flex">
+          <div className="fixed inset-0 bg-black/50 transition-opacity" onClick={onClose} />
+          <div className="relative flex-1 flex max-w-fit animate-slide-in">
+            <SidebarContent />
+          </div>
+        </div>
+      )}
     </>
   );
 }

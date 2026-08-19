@@ -253,7 +253,7 @@ export default function Billing() {
   if (showSuccess) {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fade-in">
-        <div className="bg-white dark:bg-brand-dark-card rounded-3xl p-8 max-w-md w-full mx-4 text-center animate-scale-in shadow-2xl">
+        <div className="bg-white rounded-3xl p-8 max-w-md w-full mx-4 text-center animate-scale-in shadow-2xl">
           <InvoiceReceipt 
             data={{
               items: items.map(i => ({ productName: i.productName, quantity: i.quantity, unitPrice: i.unitPrice, totalAmount: i.totalAmount })),
@@ -272,12 +272,12 @@ export default function Billing() {
           <div className="w-20 h-20 rounded-full bg-brand-green/20 flex items-center justify-center mx-auto mb-4">
             <Check size={40} className="text-brand-green" />
           </div>
-          <h2 className="text-2xl font-heading font-bold text-gray-900 dark:text-white mb-2">
+          <h2 className="text-2xl font-heading font-bold text-gray-900 mb-2">
             Bill #{invoiceNumber} ban gaya! 🎉
           </h2>
           <p className="text-gray-500 mb-1">{selectedCustomer?.fullName || 'Walk-in Customer'}</p>
           <p className="text-2xl font-bold font-heading text-brand-purple mb-1">{formatINR(Math.round(totals.grand))}</p>
-          <p className="text-sm text-gray-400 mb-2">{items.length} items</p>
+          <p className="text-sm text-gray-500 mb-2">{items.length} items</p>
           {loyaltyPointsEarned > 0 && (
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-gold/10 mb-4">
               <Gift size={16} className="text-brand-gold" />
@@ -287,10 +287,10 @@ export default function Billing() {
             </div>
           )}
           <div className="flex gap-3 mt-2">
-            <button onClick={() => window.print()} className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 text-sm font-medium transition-all">
+            <button onClick={() => window.print()} className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border border-gray-200 text-gray-600 hover:bg-gray-50 :bg-gray-50 text-sm font-medium transition-all">
               <Printer size={16} /> Print
             </button>
-            <button onClick={() => { showToast('PDF download jaldi aa raha hai!', 'info'); }} className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 text-sm font-medium transition-all">
+            <button onClick={() => { showToast('PDF download jaldi aa raha hai!', 'info'); }} className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border border-gray-200 text-gray-600 hover:bg-gray-50 :bg-gray-50 text-sm font-medium transition-all">
               <Download size={16} /> PDF
             </button>
             <button onClick={handleWhatsAppSend} className="flex-1 btn-whatsapp justify-center py-3 rounded-xl text-sm">
@@ -308,7 +308,7 @@ export default function Billing() {
 
   return (
     <div className="animate-fade-in">
-      <h1 className="text-2xl font-heading font-bold text-gray-900 dark:text-white mb-4">{t('createInvoice')} ✍️</h1>
+      <div className="bg-white border-2 border-brand-purple p-4 rounded-xl mb-4"><h1 className="text-2xl font-heading font-bold text-gray-900">{t('createInvoice')} ✍️</h1></div>
 
       <div className="flex flex-col lg:flex-row gap-6">
         {/* LEFT: Items (70%) */}
@@ -317,16 +317,16 @@ export default function Billing() {
           <div className="glass-card p-4">
             <button onClick={() => setCustomerCollapsed(!customerCollapsed)}
               className="flex items-center justify-between w-full mb-2">
-              <h3 className="font-heading font-semibold text-gray-900 dark:text-white text-sm">{t('customer')} 👤</h3>
-              <ChevronDown size={16} className={cn('text-gray-400 transition-transform', customerCollapsed && '-rotate-180')} />
+              <h3 className="text-gray-900 font-heading text-section-heading text-sm">{t('customer')} 👤</h3>
+              <ChevronDown size={16} className={cn('text-gray-500 transition-transform', customerCollapsed && '-rotate-180')} />
             </button>
             {!customerCollapsed && (
               <div className="animate-slide-up">
                 {selectedCustomer ? (
                   <div className="flex items-center justify-between p-3 rounded-xl bg-brand-purple/5 border border-brand-purple/20">
                     <div>
-                      <span className="font-medium text-gray-900 dark:text-white text-sm">{selectedCustomer.fullName}</span>
-                      <span className="text-gray-400 text-xs ml-2">📞 {selectedCustomer.phoneNumber}</span>
+                      <span className="font-medium text-gray-900 text-sm">{selectedCustomer.fullName}</span>
+                      <span className="text-gray-500 text-xs ml-2">📞 {selectedCustomer.phoneNumber}</span>
                       <div className="flex gap-3 mt-1">
                         <span className="text-xs text-brand-gold">🎁 {selectedCustomer.loyaltyPoints} pts</span>
                         {selectedCustomer.currentOutstanding > 0 && (
@@ -334,31 +334,31 @@ export default function Billing() {
                         )}
                       </div>
                     </div>
-                    <button onClick={() => setSelectedCustomer(null)} className="text-gray-400 hover:text-red-500">
+                    <button onClick={() => setSelectedCustomer(null)} className="text-gray-500 hover:text-red-500">
                       <X size={16} />
                     </button>
                   </div>
                 ) : (
                   <div className="relative">
-                    <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                    <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
                     <input type="text" value={customerSearch}
                       onChange={e => { setCustomerSearch(e.target.value); setShowCustomerDropdown(true); }}
                       onFocus={() => setShowCustomerDropdown(true)}
                       placeholder={language === 'hi' ? 'Customer ka naam ya phone...' : 'Search customer name or phone...'}
-                      className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 dark:border-brand-dark-border bg-white dark:bg-brand-dark text-sm text-gray-900 dark:text-gray-100 focus:border-brand-purple focus:ring-2 focus:ring-brand-purple/20 outline-none transition-all" />
+                      className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 bg-white text-sm text-gray-900 focus:border-brand-purple focus:ring-2 focus:ring-brand-purple/20 outline-none transition-all" />
                     {showCustomerDropdown && customerSearch && (
-                      <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-brand-dark-card rounded-xl border border-gray-100 dark:border-brand-dark-border shadow-xl z-20 overflow-hidden">
+                      <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-xl border border-gray-100 shadow-xl z-20 overflow-hidden">
                         {filteredCustomers.length ? filteredCustomers.map(c => (
                           <button key={c.id} onClick={() => { setSelectedCustomer(c); setShowCustomerDropdown(false); setCustomerSearch(''); }}
                             className="w-full flex items-center justify-between px-4 py-3 hover:bg-brand-purple/5 text-left transition-colors">
                             <div>
-                              <div className="text-sm font-medium text-gray-900 dark:text-gray-100">{c.fullName}</div>
-                              <div className="text-xs text-gray-400">{c.phoneNumber}</div>
+                              <div className="text-sm font-medium text-gray-900 ">{c.fullName}</div>
+                              <div className="text-xs text-gray-500">{c.phoneNumber}</div>
                             </div>
                             <span className="badge-purple text-[10px]">{c.customerSegment}</span>
                           </button>
                         )) : (
-                          <div className="p-4 text-center text-sm text-gray-400">Not found — add new customer</div>
+                          <div className="p-4 text-center text-sm text-gray-500">Not found — add new customer</div>
                         )}
                       </div>
                     )}
@@ -371,7 +371,7 @@ export default function Billing() {
           {/* Product Search */}
           <div className="glass-card p-4">
             <div className="relative mb-4">
-              <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+              <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
               <input type="text" value={productSearch}
                 onChange={e => { setProductSearch(e.target.value); setShowProductDropdown(true); setHighlightedIndex(-1); }}
                 onFocus={() => productSearch && setShowProductDropdown(true)}
@@ -393,28 +393,28 @@ export default function Billing() {
                   }
                 }}
                 placeholder={language === 'hi' ? 'Product dhundho ya barcode scan karo...' : 'Search product or scan barcode...'}
-                className="w-full pl-10 pr-20 py-3 rounded-xl border border-gray-200 dark:border-brand-dark-border bg-white dark:bg-brand-dark text-sm text-gray-900 dark:text-gray-100 focus:border-brand-purple focus:ring-2 focus:ring-brand-purple/20 outline-none transition-all" />
-              <button className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1 px-3 py-1.5 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-500 text-xs hover:bg-brand-purple/10 hover:text-brand-purple transition-all">
+                className="w-full pl-10 pr-20 py-3 rounded-xl border border-gray-200 bg-white text-sm text-gray-900 focus:border-brand-purple focus:ring-2 focus:ring-brand-purple/20 outline-none transition-all" />
+              <button className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1 px-3 py-1.5 rounded-lg bg-gray-100 text-gray-500 text-xs hover:bg-brand-purple/10 hover:text-brand-purple transition-all">
                 <Camera size={14} /> Scan
               </button>
               {showProductDropdown && productSearch && (
-                <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-brand-dark-card rounded-xl border border-gray-100 dark:border-brand-dark-border shadow-xl z-20 overflow-hidden">
+                <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-xl border border-gray-100 shadow-xl z-20 overflow-hidden">
                   {filteredProducts.length ? filteredProducts.map((p, index) => (
                     <button key={p.id} onClick={() => addProduct(p)}
                       className={cn("w-full flex items-center justify-between px-4 py-3 text-left transition-colors", highlightedIndex === index ? 'bg-brand-purple/10' : 'hover:bg-brand-purple/5')}>
                       <div>
-                        <div className="text-sm font-medium text-gray-900 dark:text-gray-100">{p.name}</div>
-                        <div className="text-xs text-gray-400">{p.nameHindi}</div>
+                        <div className="text-sm font-medium text-gray-900 ">{p.name}</div>
+                        <div className="text-xs text-gray-500">{p.nameHindi}</div>
                       </div>
                       <div className="text-right">
                         <div className="text-sm font-bold text-brand-purple">{formatINR(p.sellingPrice)}</div>
-                        <div className={cn('text-[10px] font-medium', p.currentStock <= p.minimumStockAlert ? 'text-red-500' : 'text-gray-400')}>
+                        <div className={cn('text-[10px] font-medium', p.currentStock <= p.minimumStockAlert ? 'text-red-500' : 'text-gray-500')}>
                           Stock: {p.currentStock}
                         </div>
                       </div>
                     </button>
                   )) : (
-                    <div className="p-4 text-center text-sm text-gray-400">Koi product nahi mila 🔍</div>
+                    <div className="p-4 text-center text-sm text-gray-500">Koi product nahi mila 🔍</div>
                   )}
                 </div>
               )}
@@ -423,7 +423,7 @@ export default function Billing() {
             {/* Items Table */}
             {items.length === 0 ? (
               <div className="text-center py-10">
-                <p className="text-gray-400 text-sm">
+                <p className="text-gray-500 text-sm">
                   {language === 'hi' ? 'Koi product nahi add kiya abhi. Upar search karein.' : 'No products added yet. Search above to add.'}
                 </p>
               </div>
@@ -431,7 +431,7 @@ export default function Billing() {
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="text-left text-xs text-gray-400 border-b border-gray-100 dark:border-gray-800">
+                    <tr className="bg-gray-50 text-gray-500 uppercase text-xs border-b border-gray-100 ">
                       <th className="pb-2 font-medium">#</th>
                       <th className="pb-2 font-medium">Product</th>
                       <th className="pb-2 font-medium text-center">Qty</th>
@@ -444,40 +444,40 @@ export default function Billing() {
                   </thead>
                   <tbody>
                     {items.map((item, idx) => (
-                      <tr key={item.productId} className="border-b border-gray-50 dark:border-gray-800 table-row-hover">
-                        <td className="py-3 text-gray-400">{idx + 1}</td>
-                        <td className="py-3 font-medium text-gray-900 dark:text-gray-100 max-w-[160px] truncate">{item.productName}</td>
+                      <tr key={item.productId} className="border-b border-gray-50 table-row-hover">
+                        <td className="py-3 text-gray-500">{idx + 1}</td>
+                        <td className="py-3 font-medium text-gray-900 max-w-[160px] truncate">{item.productName}</td>
                         <td className="py-3">
                           <div className="flex items-center gap-1 justify-center">
                             <button onClick={() => updateQuantity(item.productId, item.quantity - 1)}
-                              className="w-7 h-7 rounded-lg bg-gray-100 dark:bg-gray-800 flex items-center justify-center hover:bg-brand-purple/10 transition-colors">
+                              className="w-7 h-7 rounded-lg bg-gray-100 flex items-center justify-center hover:bg-brand-purple/10 transition-colors">
                               <Minus size={12} />
                             </button>
                             <input type="number" min="1" max={products.find(p => p.id === item.productId)?.currentStock || 1}
                               value={item.quantity} onChange={e => updateQuantity(item.productId, parseInt(e.target.value, 10) || 1)}
-                              className="w-12 text-center font-bold bg-transparent border-b border-gray-200 dark:border-gray-700 outline-none focus:border-brand-purple" />
+                              className="w-12 text-center font-bold bg-transparent border-b border-gray-200 outline-none focus:border-brand-purple" />
                             <button onClick={() => updateQuantity(item.productId, item.quantity + 1)}
-                              className="w-7 h-7 rounded-lg bg-gray-100 dark:bg-gray-800 flex items-center justify-center hover:bg-brand-purple/10 transition-colors">
+                              className="w-7 h-7 rounded-lg bg-gray-100 flex items-center justify-center hover:bg-brand-purple/10 transition-colors">
                               <Plus size={12} />
                             </button>
                           </div>
                         </td>
                         <td className="py-3 text-right">
                           <input type="number" value={item.unitPrice} onChange={e => updateUnitPrice(item.productId, Number(e.target.value))}
-                            className="w-20 text-right py-1 rounded-lg border border-gray-200 dark:border-gray-700 bg-transparent text-sm outline-none focus:border-brand-purple" />
+                            className="w-20 text-right py-1 rounded-lg border border-gray-200 bg-transparent text-sm outline-none focus:border-brand-purple" />
                         </td>
                         <td className="py-3">
                           <input type="number" value={item.discountPercent} min={0} max={100}
                             onChange={e => updateDiscount(item.productId, Number(e.target.value))}
-                            className="w-14 text-center py-1 rounded-lg border border-gray-200 dark:border-gray-700 bg-transparent text-sm outline-none focus:border-brand-purple" />
+                            className="w-14 text-center py-1 rounded-lg border border-gray-200 bg-transparent text-sm outline-none focus:border-brand-purple" />
                         </td>
-                        <td className="py-3 text-right text-xs text-gray-400">
+                        <td className="py-3 text-right text-xs text-gray-500">
                           {item.gstRate}%
                           {item.isGstInclusive && <span className="block text-[9px] text-brand-purple">(incl)</span>}
                         </td>
-                        <td className="py-3 text-right font-bold text-gray-900 dark:text-white">{formatINR(Math.round(item.totalAmount))}</td>
+                        <td className="py-3 text-right font-bold text-gray-900 ">{formatINR(Math.round(item.totalAmount))}</td>
                         <td className="py-3">
-                          <button onClick={() => removeItem(item.productId)} className="text-gray-300 hover:text-red-500 transition-colors">
+                          <button onClick={() => removeItem(item.productId)} className="text-gray-600 hover:text-red-500 transition-colors">
                             <X size={14} />
                           </button>
                         </td>
@@ -496,21 +496,21 @@ export default function Billing() {
           <div className="glass-card p-4 space-y-3">
             <div className="flex gap-3">
               <div className="flex-1">
-                <label className="text-[10px] text-gray-400 font-heading mb-1 block">Date</label>
-                <div className="flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 text-sm text-gray-700 dark:text-gray-300">
-                  <Calendar size={14} className="text-gray-400" /> {invoiceDate}
+                <label className="text-[10px] text-gray-500 font-heading mb-1 block">Date</label>
+                <div className="flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-200 text-sm text-gray-700 ">
+                  <Calendar size={14} className="text-gray-500" /> {invoiceDate}
                 </div>
               </div>
               <div className="flex-1">
-                <label className="text-[10px] text-gray-400 font-heading mb-1 block">Invoice #</label>
-                <input value={invoiceNumber} readOnly className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-sm text-gray-700 dark:text-gray-300 font-mono" />
+                <label className="text-[10px] text-gray-500 font-heading mb-1 block">Invoice #</label>
+                <input value={invoiceNumber} readOnly className="w-full px-3 py-2 rounded-lg border border-gray-200 bg-gray-50 text-sm text-gray-700 font-mono" />
               </div>
             </div>
           </div>
 
           {/* Totals */}
           <div className="glass-card p-4 space-y-2">
-            <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
+            <div className="flex justify-between text-sm text-gray-600 ">
               <span>{t('subtotal')}</span><span>{formatINR(Math.round(totals.subtotal))}</span>
             </div>
             {totals.discount > 0 && (
@@ -518,22 +518,22 @@ export default function Billing() {
                 <span>{t('discount')}</span><span>-{formatINR(Math.round(totals.discount))}</span>
               </div>
             )}
-            <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
+            <div className="flex justify-between text-sm text-gray-600 ">
               <span>CGST</span><span>{formatINR(Math.round(totals.cgst))}</span>
             </div>
-            <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
+            <div className="flex justify-between text-sm text-gray-600 ">
               <span>SGST</span><span>{formatINR(Math.round(totals.sgst))}</span>
             </div>
-            <div className="border-t border-dashed border-gray-200 dark:border-gray-700 my-2" />
+            <div className="border-t border-dashed border-gray-200 my-2" />
             <div className="flex justify-between items-center">
-              <span className="font-heading font-bold text-gray-900 dark:text-white">{t('grandTotal')}</span>
+              <span className="font-heading font-bold text-gray-900 ">{t('grandTotal')}</span>
               <span className="text-2xl font-bold font-heading text-brand-purple">{formatINR(Math.round(totals.grand))}</span>
             </div>
           </div>
 
           {/* Payment Method */}
           <div className="glass-card p-4">
-            <h3 className="font-heading font-semibold text-sm text-gray-900 dark:text-white mb-3">{t('payment')}</h3>
+            <h3 className="text-gray-900 font-heading text-section-heading text-sm mb-3">{t('payment')}</h3>
             <div className="grid grid-cols-4 gap-2 mb-3">
               {([
                 { id: 'cash', icon: Banknote, label: 'Cash' },
@@ -543,7 +543,7 @@ export default function Billing() {
               ] as const).map(m => (
                 <button key={m.id} onClick={() => setPaymentMethod(m.id)}
                   className={cn('flex flex-col items-center gap-1 py-2.5 rounded-xl border text-xs font-medium transition-all',
-                    paymentMethod === m.id ? 'border-brand-purple bg-brand-purple/10 text-brand-purple' : 'border-gray-200 dark:border-gray-700 text-gray-400')}>
+                    paymentMethod === m.id ? 'border-brand-purple bg-brand-purple/10 text-brand-purple' : 'border-gray-200 text-gray-500')}>
                   <m.icon size={16} />{m.label}
                 </button>
               ))}
@@ -551,7 +551,7 @@ export default function Billing() {
             {paymentMethod === 'cash' && (
               <div className="space-y-2 animate-fade-in">
                 <input type="number" value={cashTendered} onChange={e => setCashTendered(e.target.value)}
-                  placeholder="Amount tendered" className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-transparent text-sm outline-none focus:border-brand-purple" />
+                  placeholder="Amount tendered" className="w-full px-3 py-2 rounded-lg border border-gray-200 bg-transparent text-sm outline-none focus:border-brand-purple" />
                 {change > 0 && <div className="text-sm text-brand-green font-medium">Change: {formatINR(Math.round(change))}</div>}
               </div>
             )}
@@ -560,7 +560,7 @@ export default function Billing() {
                 <div className="w-24 h-24 mx-auto mb-2 rounded-xl border-2 border-dashed border-brand-purple/30 flex items-center justify-center bg-brand-purple/5">
                   <Smartphone size={28} className="text-brand-purple/50" />
                 </div>
-                <p className="text-xs text-gray-400">UPI QR Code</p>
+                <p className="text-xs text-gray-500">UPI QR Code</p>
                 <p className="text-lg font-bold font-heading text-brand-purple mt-1">{formatINR(Math.round(totals.grand))}</p>
               </div>
             )}
@@ -571,9 +571,9 @@ export default function Billing() {
             <div className="glass-card p-4 animate-fade-in">
               <div className="flex items-center gap-2 mb-2">
                 <Gift size={16} className="text-brand-gold" />
-                <span className="text-sm font-heading font-semibold text-gray-900 dark:text-white">Loyalty Points</span>
+                <span className="text-sm font-heading font-semibold text-gray-900 ">Loyalty Points</span>
               </div>
-              <p className="text-xs text-gray-400 mb-2">Balance: {selectedCustomer.loyaltyPoints} pts</p>
+              <p className="text-xs text-gray-500 mb-2">Balance: {selectedCustomer.loyaltyPoints} pts</p>
               <input type="range" min={0} max={Math.min(selectedCustomer.loyaltyPoints, Math.floor(totals.grand))}
                 value={loyaltyRedeem} onChange={e => setLoyaltyRedeem(Number(e.target.value))}
                 className="w-full accent-brand-purple" />
@@ -584,7 +584,7 @@ export default function Billing() {
           {/* Notes */}
           <textarea value={notes} onChange={e => setNotes(e.target.value)} rows={2}
             placeholder={language === 'hi' ? 'Notes...' : 'Add notes...'}
-            className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-brand-dark-card text-sm resize-none outline-none focus:border-brand-purple" />
+            className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-sm resize-none outline-none focus:border-brand-purple" />
 
           {/* Action Buttons */}
           <button onClick={() => handleCreateBill()} disabled={items.length === 0 || saving}
@@ -593,11 +593,12 @@ export default function Billing() {
             {saving ? 'Saving...' : language === 'hi' ? 'Bill Banao & WhatsApp Bhejo 📱' : 'Create Bill & Send WhatsApp 📱'}
           </button>
           <button onClick={() => handleCreateBill()} disabled={items.length === 0 || saving}
-            className={cn('w-full py-3 rounded-xl border border-gray-200 dark:border-gray-700 text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all', (items.length === 0 || saving) && 'opacity-40 cursor-not-allowed')}>
+            className={cn('w-full py-3 rounded-xl border border-gray-200 text-sm font-medium text-gray-600 hover:bg-gray-50 :bg-gray-50 transition-all', (items.length === 0 || saving) && 'opacity-40 cursor-not-allowed')}>
             {saving ? 'Saving...' : language === 'hi' ? 'Sirf Save Karo' : 'Save Only'}
           </button>
         </div>
       </div>
+      <div className='made-in-india text-center text-sm py-4 font-medium text-gray-500 mt-8'>Made with ❤️ in Jabalpur, India 🇮🇳</div>
     </div>
   );
 }

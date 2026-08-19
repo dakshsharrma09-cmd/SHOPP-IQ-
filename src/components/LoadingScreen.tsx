@@ -39,32 +39,32 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({ onFinished }) => {
   return (
     <div 
       className={`fixed inset-0 z-[100] flex items-center justify-center transition-opacity duration-500 overflow-hidden ${isFadingOut ? 'opacity-0' : 'opacity-100'}`}
-      style={{ background: 'linear-gradient(to bottom, #0F0A1E, #1A0D3F)' }}
+      style={{ background: 'linear-gradient(135deg, #fdf4ff 0%, #f3e8ff 100%)' }}
     >
       {/* Floating Orbs */}
       <div 
-        className="absolute rounded-full opacity-30 mix-blend-screen pointer-events-none"
+        className="absolute rounded-full opacity-60 mix-blend-multiply pointer-events-none"
         style={{
           width: '300px', height: '300px',
-          background: 'radial-gradient(circle, rgba(139,92,246,0.6) 0%, rgba(0,0,0,0) 70%)',
+          background: 'radial-gradient(circle, rgba(219,39,119,0.3) 0%, rgba(255,255,255,0) 70%)',
           top: '-10%', left: '-10%',
           animation: 'float 8s ease-in-out infinite'
         }}
       />
       <div 
-        className="absolute rounded-full opacity-20 mix-blend-screen pointer-events-none"
+        className="absolute rounded-full opacity-50 mix-blend-multiply pointer-events-none"
         style={{
           width: '400px', height: '400px',
-          background: 'radial-gradient(circle, rgba(217,119,6,0.5) 0%, rgba(0,0,0,0) 70%)', // Gold
+          background: 'radial-gradient(circle, rgba(147,51,234,0.3) 0%, rgba(255,255,255,0) 70%)', // Purple
           bottom: '-15%', right: '-10%',
           animation: 'float 12s ease-in-out infinite reverse'
         }}
       />
       <div 
-        className="absolute rounded-full opacity-30 mix-blend-screen pointer-events-none"
+        className="absolute rounded-full opacity-60 mix-blend-multiply pointer-events-none"
         style={{
           width: '200px', height: '200px',
-          background: 'radial-gradient(circle, rgba(167,139,250,0.6) 0%, rgba(0,0,0,0) 70%)',
+          background: 'radial-gradient(circle, rgba(244,114,182,0.3) 0%, rgba(255,255,255,0) 70%)',
           top: '40%', right: '20%',
           animation: 'float 10s ease-in-out infinite 2s'
         }}
@@ -76,11 +76,11 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({ onFinished }) => {
           <div 
             className="absolute inset-0 rounded-full blur-xl opacity-60"
             style={{ 
-              background: 'linear-gradient(135deg, #8B5CF6, #3B82F6)',
+              background: 'linear-gradient(135deg, #DB2777, #9333EA)',
               animation: 'pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
             }}
           />
-          <div className="relative w-24 h-24 rounded-full bg-gradient-to-tr from-purple-600 to-indigo-500 flex items-center justify-center shadow-lg border border-purple-400/30">
+          <div className="relative w-24 h-24 rounded-full bg-gradient-to-tr from-pink-500 to-purple-600 flex items-center justify-center shadow-lg border border-pink-200">
             <ShoppingBag className="w-12 h-12 text-white" strokeWidth={1.5} />
           </div>
         </div>
@@ -90,26 +90,23 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({ onFinished }) => {
           className="text-4xl md:text-5xl font-bold mb-2 tracking-tight"
           style={{ 
             fontFamily: '"Plus Jakarta Sans", sans-serif',
-            background: 'linear-gradient(to right, #ffffff, #c4b5fd)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent'
           }}
         >
-          SHOPP IQ
+          <span style={{ color: '#1E1B4B' }}>SHOPP</span> <span style={{ color: '#DB2777' }}>IQ</span>
         </h1>
 
         {/* Tagline (Typewriter) */}
-        <p className="text-purple-300/80 text-sm md:text-base font-medium h-6 tracking-wide mb-8 flex items-center">
+        <p className="text-purple-600 text-sm md:text-base font-medium italic h-6 tracking-wide mb-8 flex items-center">
           {taglineText}
-          <span className="animate-ping inline-block ml-1 w-1.5 h-4 bg-purple-400 rounded-sm"></span>
+          <span className="animate-ping inline-block ml-1 w-1.5 h-4 bg-purple-500 rounded-sm"></span>
         </p>
 
         {/* Shimmer Loading Bar */}
-        <div className="w-48 h-1 bg-purple-900/50 rounded-full overflow-hidden relative">
+        <div className="w-48 h-1 bg-purple-200 rounded-full overflow-hidden relative">
           <div 
             className="absolute top-0 bottom-0 left-0 w-full"
             style={{
-              background: 'linear-gradient(90deg, transparent, rgba(167,139,250,0.8), transparent)',
+              background: 'linear-gradient(90deg, transparent, rgba(219,39,119,0.8), transparent)',
               animation: 'shimmer 1.5s infinite linear',
               transform: 'translateX(-100%)'
             }}

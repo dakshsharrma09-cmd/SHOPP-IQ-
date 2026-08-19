@@ -162,20 +162,19 @@ export default function Register() {
 
   if (success) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4"
-        style={{ background: 'linear-gradient(135deg, #0F0A1E 0%, #1A0D3F 100%)' }}>
-        <div className="text-center animate-scale-in">
-          <div className="w-24 h-24 rounded-full bg-brand-green/20 flex items-center justify-center mx-auto mb-6">
+      <div className="min-h-screen flex items-center justify-center p-4 login-pattern-bg">
+        <div className="text-center animate-scale-in bg-white rounded-3xl p-8 shadow-xl max-w-md w-full border border-gray-100">
+          <div className="w-24 h-24 rounded-full bg-brand-green/10 flex items-center justify-center mx-auto mb-6">
             <CheckCircle size={48} className="text-brand-green" />
           </div>
-          <h1 className="text-4xl font-heading font-bold text-white mb-3">
+          <h1 className="text-4xl font-heading font-bold text-gray-900 mb-3">
             {t('welcomeMessage')}
           </h1>
-          <p className="text-xl text-gray-300 mb-2">
-            <span className="text-gradient-gold font-semibold">{formData.businessName}</span>
+          <p className="text-xl text-gray-600 mb-2">
+            <span className="text-brand-purple font-semibold">{formData.businessName}</span>
           </p>
-          <p className="text-gray-400 mb-8">{t('registrationComplete')}</p>
-          <div className="flex items-center gap-2 text-gray-400 justify-center">
+          <p className="text-gray-500 mb-8">{t('registrationComplete')}</p>
+          <div className="flex items-center gap-2 text-gray-500 justify-center">
             <div className="w-4 h-4 border-2 border-brand-purple border-t-transparent rounded-full animate-spin" />
             {language === 'hi' ? 'Dashboard khol rahe hain...' : 'Opening your dashboard...'}
           </div>
@@ -185,8 +184,7 @@ export default function Register() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4"
-      style={{ background: 'linear-gradient(135deg, #0F0A1E 0%, #1A0D3F 100%)' }}>
+    <div className="min-h-screen flex items-center justify-center p-4 login-pattern-bg">
 
       <div className="w-full max-w-lg animate-scale-in">
         {/* Logo */}
@@ -196,9 +194,9 @@ export default function Register() {
               style={{ background: 'linear-gradient(135deg, #7C3AED, #6D28D9)' }}>
               <BarChart3 size={20} className="text-white" />
             </div>
-            <span className="text-2xl font-heading font-bold text-white">SHOPP IQ</span>
+            <span className="text-2xl font-heading font-bold text-gray-900">SHOPP IQ</span>
           </div>
-          <p className="text-sm text-gray-400">
+          <p className="text-sm text-gray-500">
             {language === 'hi' ? 'अपनी दुकान रजिस्टर करें' : 'Register your business'}
           </p>
         </div>
@@ -210,34 +208,29 @@ export default function Register() {
               <div key={num} className="flex flex-col items-center gap-1">
                 <div className={cn(
                   'w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold font-heading transition-all duration-300',
-                  step > num ? 'bg-brand-green text-white' :
-                    step === num ? 'bg-brand-purple text-white shadow-purple-glow-sm' :
-                      'bg-white/10 text-gray-500'
+                  step > num ? 'bg-brand-green text-white shadow-sm' :
+                    step === num ? 'bg-brand-purple text-white shadow-md' :
+                      'bg-gray-100 text-gray-400'
                 )}>
                   {step > num ? '✓' : num}
                 </div>
                 <span className={cn(
                   'text-[10px] font-heading transition-colors',
-                  step >= num ? 'text-gray-300' : 'text-gray-600'
+                  step >= num ? 'text-gray-700' : 'text-gray-400'
                 )}>{label}</span>
               </div>
             ))}
           </div>
-          <div className="progress-bar">
+          <div className="progress-bar bg-gray-200">
             <div
-              className="progress-fill"
+              className="progress-fill bg-brand-purple"
               style={{ width: `${((step - 1) / 3) * 100}%` }}
             />
           </div>
         </div>
 
         {/* Card */}
-        <div className="rounded-3xl p-8 border"
-          style={{
-            background: 'rgba(255,255,255,0.05)',
-            backdropFilter: 'blur(20px)',
-            borderColor: 'rgba(124,58,237,0.3)',
-          }}>
+        <div className="bg-white rounded-3xl p-8 border border-gray-100 shadow-xl">
 
           {/* Step 1: Already done - Phone verification */}
           {step === 1 && (
@@ -246,11 +239,11 @@ export default function Register() {
                 <div className="w-16 h-16 rounded-full bg-brand-green/20 flex items-center justify-center mx-auto mb-4">
                   <CheckCircle size={32} className="text-brand-green" />
                 </div>
-                <h2 className="text-xl font-heading font-bold text-white mb-2">
+                <h2 className="text-xl font-heading font-bold text-gray-900 mb-2">
                   {language === 'hi' ? 'Phone verify ho gaya! ✅' : 'Phone Verified! ✅'}
                 </h2>
-                <p className="text-gray-400 text-sm mb-2">{user?.phoneNumber}</p>
-                <p className="text-gray-400 text-sm">
+                <p className="text-gray-500 text-sm mb-2">{user?.phoneNumber}</p>
+                <p className="text-gray-500 text-sm">
                   {language === 'hi'
                     ? 'Ab apni dukaan ki jaankari do'
                     : 'Now let\'s set up your business profile'}
@@ -263,16 +256,12 @@ export default function Register() {
           {step === 2 && (
             <div className="animate-slide-up space-y-4">
               <div>
-                <h2 className="text-xl font-heading font-bold text-white mb-1">
+                <h2 className="text-xl font-heading font-bold text-gray-900 mb-1">
                   {language === 'hi' ? 'Dukaan ki Jaankari 🏪' : 'Business Information 🏪'}
                 </h2>
-                <p className="text-gray-400 text-sm">
-                  {language === 'hi' ? 'Apni dukaan ke baare mein batao' : 'Tell us about your business'}
-                </p>
               </div>
-
               <div>
-                <label className="block text-xs text-gray-400 mb-1.5 font-heading">
+                <label className="block text-xs text-gray-600 mb-1.5 font-heading">
                   {language === 'hi' ? 'Dukaan ka Naam (English)*' : 'Business Name (English)*'}
                 </label>
                 <input
@@ -280,14 +269,13 @@ export default function Register() {
                   value={formData.businessName}
                   onChange={(e) => update('businessName', e.target.value)}
                   placeholder="e.g. Sharma General Store"
-                  className="input-field text-white placeholder:text-gray-600"
-                  style={{ background: 'rgba(255,255,255,0.05)', borderColor: errors.businessName ? '#EF4444' : 'rgba(124,58,237,0.3)' }}
+                  className={cn("input-field w-full", errors.businessName ? "border-red-500" : "")}
                 />
-                {errors.businessName && <p className="text-red-400 text-xs mt-1">{errors.businessName}</p>}
+                {errors.businessName && <p className="text-red-500 text-xs mt-1">{errors.businessName}</p>}
               </div>
 
               <div>
-                <label className="block text-xs text-gray-400 mb-1.5 font-heading">
+                <label className="block text-xs text-gray-600 mb-1.5 font-heading">
                   {language === 'hi' ? 'Dukaan ka Naam (Hindi)' : 'Business Name (Hindi)'}
                 </label>
                 <input
@@ -295,13 +283,12 @@ export default function Register() {
                   value={formData.businessNameHindi}
                   onChange={(e) => update('businessNameHindi', e.target.value)}
                   placeholder="जैसे शर्मा जनरल स्टोर"
-                  className="input-field text-white placeholder:text-gray-600"
-                  style={{ background: 'rgba(255,255,255,0.05)', borderColor: 'rgba(124,58,237,0.3)' }}
+                  className="input-field w-full"
                 />
               </div>
 
               <div>
-                <label className="block text-xs text-gray-400 mb-2 font-heading">
+                <label className="block text-xs text-gray-600 mb-2 font-heading">
                   {language === 'hi' ? 'Dukaan ka Prakar*' : 'Business Type*'}
                 </label>
                 <div className="grid grid-cols-3 gap-2">
@@ -312,8 +299,8 @@ export default function Register() {
                       className={cn(
                         'flex flex-col items-center gap-1.5 p-3 rounded-xl border text-xs font-medium font-heading transition-all',
                         formData.businessType === bt.id
-                          ? 'bg-brand-purple/20 border-brand-purple text-brand-purple'
-                          : 'border-white/10 text-gray-400 hover:border-brand-purple/50'
+                          ? 'bg-brand-purple/10 border-brand-purple text-brand-purple'
+                          : 'border-gray-200 bg-gray-50 text-gray-500 hover:border-brand-purple/50'
                       )}
                     >
                       <bt.icon size={18} />
@@ -321,12 +308,12 @@ export default function Register() {
                     </button>
                   ))}
                 </div>
-                {errors.businessType && <p className="text-red-400 text-xs mt-1">{errors.businessType}</p>}
+                {errors.businessType && <p className="text-red-500 text-xs mt-1">{errors.businessType}</p>}
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs text-gray-400 mb-1.5 font-heading">
+                  <label className="block text-xs text-gray-600 mb-1.5 font-heading">
                     {language === 'hi' ? 'Sheher*' : 'City*'}
                   </label>
                   <input
@@ -334,13 +321,12 @@ export default function Register() {
                     value={formData.city}
                     onChange={(e) => update('city', e.target.value)}
                     placeholder="e.g. Indore"
-                    className="input-field text-white placeholder:text-gray-600 w-full"
-                    style={{ background: 'rgba(255,255,255,0.05)', borderColor: errors.city ? '#EF4444' : 'rgba(124,58,237,0.3)' }}
+                    className={cn("input-field w-full", errors.city ? "border-red-500" : "")}
                   />
-                  {errors.city && <p className="text-red-400 text-xs mt-1">{errors.city}</p>}
+                  {errors.city && <p className="text-red-500 text-xs mt-1">{errors.city}</p>}
                 </div>
                 <div>
-                  <label className="block text-xs text-gray-400 mb-1.5 font-heading">
+                  <label className="block text-xs text-gray-600 mb-1.5 font-heading">
                     Pincode
                   </label>
                   <input
@@ -348,21 +334,19 @@ export default function Register() {
                     value={formData.pincode}
                     onChange={(e) => update('pincode', e.target.value.replace(/\D/g, '').slice(0, 6))}
                     placeholder="e.g. 452001"
-                    className="input-field text-white placeholder:text-gray-600 w-full"
-                    style={{ background: 'rgba(255,255,255,0.05)', borderColor: errors.pincode ? '#EF4444' : 'rgba(124,58,237,0.3)' }}
+                    className={cn("input-field w-full", errors.pincode ? "border-red-500" : "")}
                   />
-                  {errors.pincode && <p className="text-red-400 text-xs mt-1">{errors.pincode}</p>}
+                  {errors.pincode && <p className="text-red-500 text-xs mt-1">{errors.pincode}</p>}
                 </div>
               </div>
               <div>
-                <label className="block text-xs text-gray-400 mb-1.5 font-heading">
+                <label className="block text-xs text-gray-600 mb-1.5 font-heading">
                   {language === 'hi' ? 'Rajya*' : 'State*'}
                 </label>
                 <select
                   value={formData.state}
                   onChange={(e) => update('state', e.target.value)}
-                  className="input-field text-white w-full"
-                  style={{ background: 'rgba(30,15,60,0.9)', borderColor: 'rgba(124,58,237,0.3)' }}
+                  className="input-field w-full"
                 >
                   {indianStates.map(s => <option key={s} value={s}>{s}</option>)}
                 </select>
@@ -374,16 +358,12 @@ export default function Register() {
           {step === 3 && (
             <div className="animate-slide-up space-y-4">
               <div>
-                <h2 className="text-xl font-heading font-bold text-white mb-1">
+                <h2 className="text-xl font-heading font-bold text-gray-900 mb-1">
                   {language === 'hi' ? 'Maalik ki Jaankari 👤' : 'Owner Details 👤'}
                 </h2>
-                <p className="text-gray-400 text-sm">
-                  {language === 'hi' ? 'Apni personal jaankari bharein' : 'Fill in your personal details'}
-                </p>
               </div>
-
               <div>
-                <label className="block text-xs text-gray-400 mb-1.5 font-heading">
+                <label className="block text-xs text-gray-600 mb-1.5 font-heading">
                   {language === 'hi' ? 'Maalik ka Naam*' : 'Owner Name*'}
                 </label>
                 <input
@@ -391,14 +371,13 @@ export default function Register() {
                   value={formData.ownerName}
                   onChange={(e) => update('ownerName', e.target.value)}
                   placeholder="e.g. Rajesh Sharma"
-                  className="input-field text-white placeholder:text-gray-600"
-                  style={{ background: 'rgba(255,255,255,0.05)', borderColor: errors.ownerName ? '#EF4444' : 'rgba(124,58,237,0.3)' }}
+                  className={cn("input-field w-full", errors.ownerName ? "border-red-500" : "")}
                 />
-                {errors.ownerName && <p className="text-red-400 text-xs mt-1">{errors.ownerName}</p>}
+                {errors.ownerName && <p className="text-red-500 text-xs mt-1">{errors.ownerName}</p>}
               </div>
 
               <div>
-                <label className="block text-xs text-gray-400 mb-1.5 font-heading">
+                <label className="block text-xs text-gray-600 mb-1.5 font-heading">
                   GSTIN ({language === 'hi' ? 'Zaroori nahi' : 'Optional'})
                 </label>
                 <input
@@ -407,23 +386,20 @@ export default function Register() {
                   onChange={(e) => update('gstin', e.target.value.toUpperCase())}
                   placeholder="e.g. 08ABCDE1234F1Z5"
                   maxLength={15}
-                  className="input-field text-white placeholder:text-gray-600 font-mono uppercase tracking-wider"
-                  style={{ background: 'rgba(255,255,255,0.05)', borderColor: 'rgba(124,58,237,0.3)' }}
+                  className="input-field w-full font-mono uppercase tracking-wider"
                 />
                 {formData.gstin && (
                   <p className={cn('text-xs mt-1', formData.gstin.length === 15 ? 'text-brand-green' : 'text-gray-500')}>
-                    {formData.gstin.length}/15
+                    {formData.gstin.length === 15 ? '✓ Valid GSTIN length' : 'Must be 15 characters'}
                   </p>
                 )}
-                {errors.gstin && <p className="text-xs mt-1 text-red-400">{errors.gstin}</p>}
               </div>
-
+              
               <div>
-                <div className="flex items-center justify-between p-4 rounded-xl border cursor-pointer"
-                  style={{ borderColor: 'rgba(124,58,237,0.3)', background: 'rgba(255,255,255,0.03)' }}
+                <div className="flex items-center justify-between p-4 rounded-xl border border-gray-200 cursor-pointer hover:bg-gray-50 transition-colors"
                   onClick={() => update('isMsmeRegistered', !formData.isMsmeRegistered)}>
                   <div>
-                    <div className="text-white text-sm font-medium font-heading">
+                    <div className="text-gray-900 text-sm font-medium font-heading">
                       {language === 'hi' ? 'MSME Panjikrit hai?' : 'MSME Registered?'}
                     </div>
                     <div className="text-gray-500 text-xs mt-0.5">
@@ -432,7 +408,7 @@ export default function Register() {
                   </div>
                   <div className={cn(
                     'w-12 h-6 rounded-full transition-all duration-300 relative',
-                    formData.isMsmeRegistered ? 'bg-brand-purple' : 'bg-gray-700'
+                    formData.isMsmeRegistered ? 'bg-brand-purple' : 'bg-gray-300'
                   )}>
                     <div className={cn(
                       'absolute top-1 w-4 h-4 rounded-full bg-white transition-all duration-300',
@@ -448,10 +424,10 @@ export default function Register() {
           {step === 4 && (
             <div className="animate-slide-up space-y-4">
               <div>
-                <h2 className="text-xl font-heading font-bold text-white mb-1">
+                <h2 className="text-xl font-heading font-bold text-gray-900 mb-1">
                   {language === 'hi' ? 'WhatsApp Setup 📱' : 'WhatsApp Setup 📱'}
                 </h2>
-                <p className="text-gray-400 text-sm">
+                <p className="text-gray-500 text-sm">
                   {language === 'hi'
                     ? 'Grahak ko bill WhatsApp par bhejna ke liye'
                     : 'For sending bills to customers via WhatsApp'}
@@ -459,12 +435,11 @@ export default function Register() {
               </div>
 
               <div>
-                <label className="block text-xs text-gray-400 mb-1.5 font-heading">
+                <label className="block text-xs text-gray-600 mb-1.5 font-heading">
                   WhatsApp Number
                 </label>
-                <div className="flex rounded-xl overflow-hidden border" style={{ borderColor: 'rgba(124,58,237,0.3)' }}>
-                  <div className="flex items-center px-4 py-3 text-white/70 text-sm font-medium flex-shrink-0"
-                    style={{ background: 'rgba(124,58,237,0.1)', borderRight: '1px solid rgba(124,58,237,0.3)' }}>
+                <div className="flex rounded-xl overflow-hidden border border-gray-200 focus-within:border-brand-purple">
+                  <div className="flex items-center px-4 py-3 text-gray-600 text-sm font-medium flex-shrink-0 bg-gray-50 border-r border-gray-200">
                     🇮🇳 +91
                   </div>
                   <input
@@ -472,15 +447,14 @@ export default function Register() {
                     value={formData.whatsappNumber}
                     onChange={(e) => update('whatsappNumber', e.target.value.replace(/\D/g, '').slice(0, 10))}
                     placeholder="98765 43210"
-                    className="flex-1 px-4 py-3 text-white outline-none"
-                    style={{ background: 'transparent' }}
+                    className="flex-1 px-4 py-3 text-gray-900 outline-none bg-white"
                     maxLength={10}
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs text-gray-400 mb-2 font-heading">
+                <label className="block text-xs text-gray-600 mb-2 font-heading">
                   {language === 'hi' ? 'Bhasha Chuniye' : 'Language Preference'}
                 </label>
                 <div className="grid grid-cols-2 gap-3">
@@ -494,15 +468,15 @@ export default function Register() {
                       className={cn(
                         'p-4 rounded-xl border text-center transition-all',
                         formData.languagePreference === l.id
-                          ? 'bg-brand-purple/20 border-brand-purple'
-                          : 'border-white/10 hover:border-brand-purple/50'
+                          ? 'bg-brand-purple/10 border-brand-purple'
+                          : 'border-gray-200 hover:border-brand-purple/50 bg-gray-50'
                       )}
                     >
                       <div className={cn(
                         'text-lg font-bold font-heading',
-                        formData.languagePreference === l.id ? 'text-white' : 'text-gray-400'
+                        formData.languagePreference === l.id ? 'text-brand-purple' : 'text-gray-500'
                       )}>{l.label}</div>
-                      <div className="text-gray-500 text-xs mt-0.5">{l.sub}</div>
+                      <div className="text-gray-400 text-xs mt-0.5">{l.sub}</div>
                     </button>
                   ))}
                 </div>
@@ -513,7 +487,7 @@ export default function Register() {
                 <h3 className="text-brand-green text-sm font-semibold font-heading mb-2">
                   {language === 'hi' ? 'Aapki jaankari:' : 'Your Details:'}
                 </h3>
-                <div className="space-y-1 text-sm text-gray-400">
+                <div className="space-y-1 text-sm text-gray-500">
                   <div>🏪 {formData.businessName}</div>
                   <div>👤 {formData.ownerName}</div>
                   <div>📍 {formData.city}, {formData.state}</div>
@@ -532,7 +506,7 @@ export default function Register() {
             {step > 1 && (
               <button
                 onClick={() => setStep(s => s - 1)}
-                className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border border-white/20 text-white hover:border-white/40 transition-all font-heading text-sm font-medium"
+                className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border border-gray-300 text-gray-700 hover:bg-gray-50 transition-all font-heading text-sm font-medium"
               >
                 <ArrowLeft size={16} />
                 {t('back')}

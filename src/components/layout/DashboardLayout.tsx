@@ -5,20 +5,19 @@ import Header from './Header';
 import { cn } from '../../lib/formatters';
 
 export default function DashboardLayout() {
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
   const isWhatsApp = location.pathname === '/whatsapp';
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-brand-dark">
-      <Sidebar collapsed={sidebarCollapsed} onCollapse={setSidebarCollapsed} />
+    <div className="min-h-screen bg-gray-50">
+      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       <div className={cn(
         'transition-all duration-300',
-        'pl-0 md:pl-60',
-        sidebarCollapsed && 'md:pl-16'
+        'pl-0 md:pl-60'
       )}>
-        {!isWhatsApp && <Header sidebarCollapsed={sidebarCollapsed} />}
+        {!isWhatsApp && <Header onMenuClick={() => setSidebarOpen(true)} />}
         
         {/* Main Content */}
         <main className={cn(

@@ -19,13 +19,7 @@ import {
   PieChart, Pie, Cell, BarChart, Bar
 } from 'recharts';
 
-const getGreeting = () => {
-  const hour = new Date().getHours();
-  if (hour < 12) return { text: 'शुभ प्रभात', emoji: '☀️', sub: 'Good Morning' };
-  if (hour < 17) return { text: 'नमस्ते', emoji: '🙏', sub: 'Good Afternoon' };
-  if (hour < 21) return { text: 'शुभ संध्या', emoji: '🌅', sub: 'Good Evening' };
-  return { text: 'शुभ रात्रि', emoji: '🌙', sub: 'Good Night' };
-};
+
 
 function AnimatedNumber({ value, prefix = '', suffix = '' }: { value: number; prefix?: string; suffix?: string }) {
   const [display, setDisplay] = useState(0);
@@ -216,7 +210,7 @@ export default function Dashboard() {
     }
   };
 
-  const greeting = getGreeting();
+
 
   return (
     <div className="space-y-6">
@@ -229,22 +223,13 @@ export default function Dashboard() {
         @keyframes scoreRing { from { stroke-dasharray: 0 251.2; } }
         .score-ring-anim { animation: scoreRing 1.5s ease-out forwards; }
         @keyframes countPop { 0% { transform: scale(0.8); opacity: 0; } 60% { transform: scale(1.05); } 100% { transform: scale(1); opacity: 1; } }
-        .count-pop { animation: countPop 0.5s ease-out forwards; }
       `}</style>
-
       {/* ═══════════════════ HERO BANNER ═══════════════════ */}
-      <div className="relative overflow-hidden rounded-2xl p-6 md:p-8"
-        style={{ background: 'linear-gradient(-45deg, #1E0A3C, #2D1266, #1A0D3F, #0F0A1E)', backgroundSize: '400% 400%', animation: 'gradientMove 12s ease infinite' }}>
-        {/* Floating decorative orbs */}
-        <div className="absolute top-4 right-12 w-32 h-32 rounded-full opacity-20" style={{ background: 'radial-gradient(circle, #7C3AED, transparent)' }} />
-        <div className="absolute bottom-2 left-8 w-24 h-24 rounded-full opacity-15" style={{ background: 'radial-gradient(circle, #F59E0B, transparent)' }} />
-        <div className="absolute top-1/2 right-1/3 w-16 h-16 rounded-full opacity-10" style={{ background: 'radial-gradient(circle, #10B981, transparent)' }} />
-
+      <div className="relative overflow-hidden rounded-2xl p-6 md:p-8 bg-surface-bg">
         <div className="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
-            <h1 className="text-2xl md:text-3xl font-heading font-bold text-white flex items-center gap-3 mb-1">
-              <span className="text-3xl float-anim">{greeting.emoji}</span>
-              <span>{greeting.text}, <span className="text-transparent bg-clip-text" style={{ backgroundImage: 'linear-gradient(135deg, #C4B5FD, #F9A8D4)' }}>{tenant?.ownerName?.split(' ')[0] || 'Boss'}</span>!</span>
+            <h1 className="text-[28px] font-bold text-[#1F2937] flex items-center gap-3 mb-1" style={{ fontFamily: '"Plus Jakarta Sans", sans-serif' }}>
+              Namaste 🙏, {tenant?.ownerName?.split(' ')[0] || 'Boss'}!
               {isLive && (
                 <span className="relative flex h-2.5 w-2.5 mt-1">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
@@ -252,23 +237,21 @@ export default function Dashboard() {
                 </span>
               )}
             </h1>
-            <p className="text-sm text-purple-300/70 font-heading">
-              {new Intl.DateTimeFormat('hi-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }).format(new Date())}
+            <p className="text-sm text-gray-500 font-medium">
+              {new Date().toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })} • IST
             </p>
           </div>
 
           <div className="flex items-center gap-3">
             {!seeded && (
               <button onClick={handleSeed} disabled={seeding}
-                className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all hover:scale-105 active:scale-95"
-                style={{ background: 'rgba(124, 58, 237, 0.2)', border: '1px solid rgba(124, 58, 237, 0.3)', color: '#C4B5FD' }}>
+                className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all hover:scale-105 active:scale-95 bg-purple-100 text-purple-700 border border-purple-200">
                 <Sprout size={15} />
                 {seeding ? 'Loading...' : '🎲 Demo Data'}
               </button>
             )}
             <button onClick={() => navigate('/billing/new')}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold text-white transition-all hover:scale-105 active:scale-95 btn-pulse"
-              style={{ background: 'linear-gradient(135deg, #7C3AED, #6D28D9)' }}>
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold text-white transition-all hover:scale-105 active:scale-95 btn-pulse bg-brand-purple">
               <Plus size={16} /> {t('createBill').split('&')[0]}
             </button>
           </div>
@@ -276,81 +259,86 @@ export default function Dashboard() {
       </div>
 
       {/* ═══════════════════ STAT CARDS ═══════════════════ */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* Today Sales — Purple Gradient */}
-        <div className="fade-in-up rounded-2xl p-5 cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-xl group"
-          style={{ animationDelay: '0ms', background: 'linear-gradient(135deg, #7C3AED 0%, #6D28D9 50%, #5B21B6 100%)', boxShadow: '0 8px 32px rgba(124, 58, 237, 0.3)' }}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        {/* Today Sales */}
+        <div className="fade-in-up stat-card rounded-2xl p-5 cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-xl group bg-white border-l-4 border-gray-100"
+          style={{ animationDelay: '0ms', borderLeftColor: '#6D28D9' }}
           onClick={() => navigate('/analytics')}>
           <div className="flex items-start justify-between mb-3">
-            <div className="w-11 h-11 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
-              <TrendingUp size={20} className="text-white" />
+            <div className="w-11 h-11 rounded-xl flex items-center justify-center" style={{ backgroundColor: 'rgba(109, 40, 217, 0.1)' }}>
+              <TrendingUp size={20} className="text-[#6D28D9]" />
             </div>
-            <ArrowUpRight size={14} className="text-white/40 group-hover:text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+            <div className="flex items-center text-green-600 text-xs font-semibold">
+              <ArrowUpRight size={14} /> 12%
+            </div>
           </div>
-          <div className="text-2xl font-bold font-heading text-white mb-0.5 count-pop"><AnimatedNumber value={todaySales} prefix="₹" /></div>
-          <div className="text-xs text-white/80 font-medium">{t('todaySales')}</div>
-          <div className="text-[10px] text-white/50 mt-1">{todayInvoices.length} बिल आज</div>
+          <div className="font-stat text-stat-number text-gray-900 mb-0.5 count-pop" style={{ fontFamily: 'Poppins, sans-serif', fontSize: '32px', fontWeight: 'bold' }}><AnimatedNumber value={todaySales} prefix="₹" /></div>
+          <div className="text-xs text-gray-500 font-medium">{t('todaySales')}</div>
+          <div className="text-[10px] text-gray-400 mt-1">{todayInvoices.length} बिल आज</div>
         </div>
 
-        {/* Pending — Amber/Orange */}
-        <div className="fade-in-up rounded-2xl p-5 cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-xl group"
-          style={{ animationDelay: '100ms', background: 'linear-gradient(135deg, #F59E0B 0%, #D97706 50%, #B45309 100%)', boxShadow: '0 8px 32px rgba(245, 158, 11, 0.25)' }}
+        {/* Pending */}
+        <div className="fade-in-up stat-card rounded-2xl p-5 cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-xl group bg-white border-l-4 border-gray-100"
+          style={{ animationDelay: '100ms', borderLeftColor: '#DB2777' }}
           onClick={() => navigate('/payments')}>
           <div className="flex items-start justify-between mb-3">
-            <div className="w-11 h-11 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
-              <AlertTriangle size={20} className="text-white" />
+            <div className="w-11 h-11 rounded-xl flex items-center justify-center" style={{ backgroundColor: 'rgba(219, 39, 119, 0.1)' }}>
+              <AlertTriangle size={20} className="text-[#DB2777]" />
             </div>
-            <ArrowUpRight size={14} className="text-white/40 group-hover:text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+            <div className="flex items-center text-red-600 text-xs font-semibold">
+              <ArrowUpRight size={14} className="rotate-90" /> 5%
+            </div>
           </div>
-          <div className="text-2xl font-bold font-heading text-white mb-0.5 count-pop"><AnimatedNumber value={pendingTotal} prefix="₹" /></div>
-          <div className="text-xs text-white/80 font-medium">{t('pendingPayments')}</div>
-          <div className="text-[10px] text-white/50 mt-1">{pendingCount} बिल बाकी</div>
+          <div className="font-stat text-stat-number text-gray-900 mb-0.5 count-pop" style={{ fontFamily: 'Poppins, sans-serif', fontSize: '32px', fontWeight: 'bold' }}><AnimatedNumber value={pendingTotal} prefix="₹" /></div>
+          <div className="text-xs text-gray-500 font-medium">{t('pendingPayments')}</div>
+          <div className="text-[10px] text-gray-400 mt-1">{pendingCount} बिल बाकी</div>
         </div>
 
-        {/* Low Stock — Red/Rose */}
-        <div className="fade-in-up rounded-2xl p-5 cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-xl group"
-          style={{ animationDelay: '200ms', background: lowStockProducts.length > 0 ? 'linear-gradient(135deg, #EF4444 0%, #DC2626 50%, #B91C1C 100%)' : 'linear-gradient(135deg, #10B981 0%, #059669 50%, #047857 100%)', boxShadow: lowStockProducts.length > 0 ? '0 8px 32px rgba(239, 68, 68, 0.25)' : '0 8px 32px rgba(16, 185, 129, 0.25)' }}
+        {/* Low Stock */}
+        <div className="fade-in-up stat-card rounded-2xl p-5 cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-xl group bg-white border-l-4 border-gray-100"
+          style={{ animationDelay: '200ms', borderLeftColor: '#D97706' }}
           onClick={() => navigate('/inventory')}>
           <div className="flex items-start justify-between mb-3">
-            <div className="w-11 h-11 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
-              <Package size={20} className="text-white" />
+            <div className="w-11 h-11 rounded-xl flex items-center justify-center" style={{ backgroundColor: 'rgba(217, 119, 6, 0.1)' }}>
+              <Package size={20} className="text-[#D97706]" />
             </div>
-            <ArrowUpRight size={14} className="text-white/40 group-hover:text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
           </div>
-          <div className="text-2xl font-bold font-heading text-white mb-0.5 count-pop"><AnimatedNumber value={lowStockProducts.length} /></div>
-          <div className="text-xs text-white/80 font-medium">{t('lowStock')}</div>
-          <div className="text-[10px] text-white/50 mt-1">{lowStockProducts.length > 0 ? '⚠️ Reorder करो' : '✅ सब ठीक'}</div>
+          <div className="font-stat text-stat-number text-gray-900 mb-0.5 count-pop" style={{ fontFamily: 'Poppins, sans-serif', fontSize: '32px', fontWeight: 'bold' }}><AnimatedNumber value={lowStockProducts.length} /></div>
+          <div className="text-xs text-gray-500 font-medium">{t('lowStock')}</div>
+          <div className="text-[10px] text-gray-400 mt-1">{lowStockProducts.length > 0 ? '⚠️ Reorder करो' : '✅ सब ठीक'}</div>
         </div>
 
-        {/* New Customers — Blue */}
-        <div className="fade-in-up rounded-2xl p-5 cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-xl group"
-          style={{ animationDelay: '300ms', background: 'linear-gradient(135deg, #3B82F6 0%, #2563EB 50%, #1D4ED8 100%)', boxShadow: '0 8px 32px rgba(59, 130, 246, 0.25)' }}
+        {/* New Customers */}
+        <div className="fade-in-up stat-card rounded-2xl p-5 cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-xl group bg-white border-l-4 border-gray-100"
+          style={{ animationDelay: '300ms', borderLeftColor: '#059669' }}
           onClick={() => navigate('/customers')}>
           <div className="flex items-start justify-between mb-3">
-            <div className="w-11 h-11 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
-              <Users size={20} className="text-white" />
+            <div className="w-11 h-11 rounded-xl flex items-center justify-center" style={{ backgroundColor: 'rgba(5, 150, 105, 0.1)' }}>
+              <Users size={20} className="text-[#059669]" />
             </div>
-            <ArrowUpRight size={14} className="text-white/40 group-hover:text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+            <div className="flex items-center text-green-600 text-xs font-semibold">
+              <ArrowUpRight size={14} /> 8%
+            </div>
           </div>
-          <div className="text-2xl font-bold font-heading text-white mb-0.5 count-pop"><AnimatedNumber value={newCustomersToday} /></div>
-          <div className="text-xs text-white/80 font-medium">{t('newCustomers')}</div>
-          <div className="text-[10px] text-white/50 mt-1">कुल {customers.length} ग्राहक</div>
+          <div className="font-stat text-stat-number text-gray-900 mb-0.5 count-pop" style={{ fontFamily: 'Poppins, sans-serif', fontSize: '32px', fontWeight: 'bold' }}><AnimatedNumber value={newCustomersToday} /></div>
+          <div className="text-xs text-gray-500 font-medium">{t('newCustomers')}</div>
+          <div className="text-[10px] text-gray-400 mt-1">कुल {customers.length} ग्राहक</div>
         </div>
       </div>
 
       {/* ═══════════════════ CHARTS ROW ═══════════════════ */}
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
         {/* Sales Trend */}
-        <div className="lg:col-span-3 glass-card card-glow p-6 fade-in-up" style={{ animationDelay: '400ms' }}>
+        <div className="lg:col-span-3 glass-card bg-white rounded-2xl shadow-sm p-6 fade-in-up border border-gray-100" style={{ animationDelay: '400ms' }}>
           <div className="flex items-center justify-between mb-5">
             <div>
-              <h2 className="font-heading font-bold text-gray-900 dark:text-white text-base">{t('salesTrend')}</h2>
+              <h2 className="text-[20px] font-semibold text-[#1F2937]">{t('salesTrend')}</h2>
               <p className="text-[11px] text-gray-400 mt-0.5">📈 बिक्री का रुझान</p>
             </div>
-            <div className="flex gap-1 bg-gray-100 dark:bg-gray-800/80 rounded-xl p-1">
+            <div className="flex gap-1 bg-gray-50 rounded-xl p-1">
               {(['7D', '30D'] as const).map(p => (
                 <button key={p} onClick={() => setChartPeriod(p)}
-                  className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${chartPeriod === p ? 'bg-brand-purple text-white shadow-md shadow-purple-500/30' : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'}`}>
+                  className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${chartPeriod === p ? 'bg-[#6D28D9] text-white shadow-md shadow-purple-500/30' : 'text-gray-500 hover:text-gray-700'}`}>
                   {p === '7D' ? '7 दिन' : '30 दिन'}
                 </button>
               ))}
@@ -370,16 +358,16 @@ export default function Dashboard() {
                     <stop offset="100%" stopColor="#A78BFA" />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(124,58,237,0.06)" vertical={false} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#F3F4F6" vertical={false} />
                 <XAxis dataKey="day" tick={{ fontSize: 10, fill: '#9CA3AF' }} tickLine={false} axisLine={false}
                   interval={chartPeriod === '30D' ? 4 : 0} />
                 <YAxis tick={{ fontSize: 10, fill: '#9CA3AF' }} tickLine={false} axisLine={false}
                   tickFormatter={v => `₹${v/1000}k`} width={50} />
                 <Tooltip formatter={(v: any) => [formatINR(v), 'बिक्री']}
-                  contentStyle={{ background: 'rgba(26,16,53,0.95)', border: '1px solid rgba(124,58,237,0.3)', borderRadius: 14, backdropFilter: 'blur(10px)' }}
-                  labelStyle={{ color: '#C4B5FD', fontSize: 11, fontWeight: 600 }} itemStyle={{ color: '#A78BFA' }} />
-                <Line type="monotone" dataKey="sales" stroke="url(#lineGrad)" strokeWidth={3}
-                  dot={false} activeDot={{ r: 6, fill: '#7C3AED', stroke: 'white', strokeWidth: 3 }} />
+                  contentStyle={{ background: '#fff', border: '1px solid #F3F4F6', borderRadius: 14, boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}
+                  labelStyle={{ color: '#4B5563', fontSize: 11, fontWeight: 600 }} itemStyle={{ color: '#6D28D9' }} />
+                <Line type="monotone" dataKey="sales" stroke="#6D28D9" strokeWidth={3}
+                  dot={false} activeDot={{ r: 6, fill: '#6D28D9', stroke: 'white', strokeWidth: 3 }} />
               </LineChart>
             </ResponsiveContainer>
           ) : (
@@ -391,8 +379,8 @@ export default function Dashboard() {
         </div>
 
         {/* Category Pie */}
-        <div className="lg:col-span-2 glass-card card-glow p-6 fade-in-up" style={{ animationDelay: '500ms' }}>
-          <h2 className="font-heading font-bold text-gray-900 dark:text-white text-base mb-1">{t('revenueByCategory')}</h2>
+        <div className="lg:col-span-2 glass-card bg-white rounded-2xl shadow-sm p-6 fade-in-up border border-gray-100" style={{ animationDelay: '500ms' }}>
+          <h2 className="text-[20px] font-semibold text-[#1F2937] mb-1">{t('revenueByCategory')}</h2>
           <p className="text-[11px] text-gray-400 mb-4">🏷️ श्रेणी अनुसार</p>
           {categoryData.length > 0 ? (
             <>
@@ -403,17 +391,17 @@ export default function Dashboard() {
                     {categoryData.map((entry, i) => <Cell key={i} fill={entry.color} />)}
                   </Pie>
                   <Tooltip formatter={(v: any) => [`${v}%`, '']}
-                    contentStyle={{ background: 'rgba(26,16,53,0.95)', border: '1px solid rgba(124,58,237,0.3)', borderRadius: 12 }} />
+                    contentStyle={{ background: '#fff', border: '1px solid #F3F4F6', borderRadius: 12, boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }} />
                 </PieChart>
               </ResponsiveContainer>
               <div className="space-y-2 mt-2">
                 {categoryData.map(c => (
-                  <div key={c.name} className="flex items-center justify-between text-xs group cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-lg px-2 py-1 -mx-2 transition-colors">
+                  <div key={c.name} className="flex items-center justify-between text-xs group cursor-pointer hover:bg-gray-50 rounded-lg px-2 py-1 -mx-2 transition-colors">
                     <div className="flex items-center gap-2.5">
                       <div className="w-3 h-3 rounded-full shadow-sm" style={{ background: c.color }} />
-                      <span className="text-gray-600 dark:text-gray-400 font-medium">{c.name}</span>
+                      <span className="text-gray-600 font-medium">{c.name}</span>
                     </div>
-                    <span className="font-bold text-gray-900 dark:text-gray-200">{c.value}%</span>
+                    <span className="font-bold text-gray-900">{c.value}%</span>
                   </div>
                 ))}
               </div>
@@ -430,25 +418,19 @@ export default function Dashboard() {
       {/* ═══════════════════ TOP PRODUCTS + RECENT INVOICES ═══════════════════ */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Top Products */}
-        <div className="glass-card card-glow p-6 fade-in-up" style={{ animationDelay: '600ms' }}>
-          <h2 className="font-heading font-bold text-gray-900 dark:text-white text-base mb-1">🏆 {t('topProducts')}</h2>
+        <div className="glass-card bg-white rounded-2xl shadow-sm p-6 fade-in-up border border-gray-100" style={{ animationDelay: '600ms' }}>
+          <h2 className="text-[20px] font-semibold text-[#1F2937] mb-1">🏆 {t('topProducts')}</h2>
           <p className="text-[11px] text-gray-400 mb-4">सबसे ज़्यादा बिकने वाले</p>
           {topProducts.length > 0 ? (
             <ResponsiveContainer width="100%" height={200}>
               <BarChart data={topProducts} layout="vertical" barSize={12}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(124,58,237,0.06)" horizontal={false} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#F3F4F6" horizontal={false} />
                 <XAxis type="number" tick={{ fontSize: 10, fill: '#9CA3AF' }} tickLine={false} axisLine={false}
                   tickFormatter={v => `₹${v/1000}k`} />
                 <YAxis type="category" dataKey="name" tick={{ fontSize: 11, fill: '#6B7280' }} tickLine={false} axisLine={false} width={110} />
                 <Tooltip formatter={(v: any) => [formatINR(v), 'Revenue']}
-                  contentStyle={{ background: 'rgba(26,16,53,0.95)', border: '1px solid rgba(124,58,237,0.3)', borderRadius: 12 }} />
-                <Bar dataKey="revenue" radius={[0, 8, 8, 0]} fill="url(#purpleGradient)" />
-                <defs>
-                  <linearGradient id="purpleGradient" x1="0" y1="0" x2="1" y2="0">
-                    <stop offset="0%" stopColor="#6D28D9" />
-                    <stop offset="100%" stopColor="#A78BFA" />
-                  </linearGradient>
-                </defs>
+                  contentStyle={{ background: '#fff', border: '1px solid #F3F4F6', borderRadius: 12, boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }} />
+                <Bar dataKey="revenue" radius={[0, 8, 8, 0]} fill="#6D28D9" />
               </BarChart>
             </ResponsiveContainer>
           ) : (
@@ -460,67 +442,75 @@ export default function Dashboard() {
         </div>
 
         {/* Recent Invoices */}
-        <div className="glass-card card-glow p-6 fade-in-up" style={{ animationDelay: '700ms' }}>
+        <div className="glass-card bg-white rounded-2xl shadow-sm p-6 fade-in-up border border-gray-100" style={{ animationDelay: '700ms' }}>
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h2 className="font-heading font-bold text-gray-900 dark:text-white text-base">🧾 {t('recentInvoices')}</h2>
+              <h2 className="text-[20px] font-semibold text-[#1F2937]">🧾 {t('recentInvoices')}</h2>
               <p className="text-[11px] text-gray-400 mt-0.5">हाल के बिल</p>
             </div>
             <button onClick={() => navigate('/payments')} className="text-xs text-brand-purple hover:text-brand-purple-light font-semibold transition-colors">
               सब देखें →
             </button>
           </div>
-          <div className="space-y-2">
-            {recentInvoices.length > 0 ? recentInvoices.map((inv, i) => (
-              <div key={inv.id} className="flex items-center justify-between py-2.5 px-3 rounded-xl border border-transparent hover:border-brand-purple/10 hover:bg-brand-purple/[0.03] transition-all cursor-pointer fade-in-up" style={{ animationDelay: `${700 + i * 80}ms` }}>
-                <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-lg bg-brand-purple/10 flex items-center justify-center text-brand-purple text-xs font-bold">
-                    {inv.id.slice(-3)}
+          <div className="w-full">
+            <div className="flex bg-gray-50 text-gray-500 uppercase text-[11px] font-semibold px-3 py-2 rounded-t-lg">
+              <div className="flex-1">Bill / Customer</div>
+              <div className="w-24 text-right">Amount</div>
+              <div className="w-20 text-center">Status</div>
+              <div className="w-10"></div>
+            </div>
+            <div className="space-y-0">
+              {recentInvoices.length > 0 ? recentInvoices.map((inv, i) => (
+                <div key={inv.id} className="flex items-center py-2.5 px-3 bg-white border-b border-gray-100 table-row-hover hover:bg-purple-50/30 transition-all cursor-pointer fade-in-up" style={{ animationDelay: `${700 + i * 80}ms` }}>
+                  <div className="flex-1 flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-lg bg-purple-50 flex items-center justify-center text-[#6D28D9] text-xs font-bold">
+                      {inv.id.slice(-3)}
+                    </div>
+                    <div>
+                      <div className="text-sm font-semibold text-gray-900">{inv.customer || 'Walk-in'}</div>
+                      <div className="text-[10px] text-gray-400">{inv.date}</div>
+                    </div>
                   </div>
-                  <div>
-                    <div className="text-sm font-semibold text-gray-900 dark:text-gray-100 font-heading">{inv.customer || 'Walk-in'}</div>
-                    <div className="text-[10px] text-gray-400">{inv.date}</div>
+                  <div className="w-24 text-right text-sm font-bold text-gray-900">{formatINR(inv.amount)}</div>
+                  <div className="w-20 text-center flex justify-center"><StatusBadge status={inv.status} /></div>
+                  <div className="w-10 flex justify-end">
+                    {inv.customerPhone && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          window.open(`https://wa.me/91${inv.customerPhone}?text=${encodeURIComponent(`Namaste ${inv.customer}! Aapka bill ${inv.id} ready hai. Total: ${formatINR(inv.amount)}. - ShoppIQ`)}`, '_blank');
+                        }}
+                        className="text-green-500 hover:text-green-400 transition-colors"
+                        title="WhatsApp"
+                      >
+                        <MessageCircle size={16} />
+                      </button>
+                    )}
                   </div>
                 </div>
-                <div className="flex items-center gap-3">
-                  <span className="text-sm font-bold font-heading text-gray-900 dark:text-white">{formatINR(inv.amount)}</span>
-                  <StatusBadge status={inv.status} />
-                  {inv.customerPhone && (
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        window.open(`https://wa.me/91${inv.customerPhone}?text=${encodeURIComponent(`Namaste ${inv.customer}! Aapka bill ${inv.id} ready hai. Total: ${formatINR(inv.amount)}. - ShoppIQ`)}`, '_blank');
-                      }}
-                      className="text-green-500 hover:text-green-400 transition-colors"
-                      title="WhatsApp"
-                    >
-                      <MessageCircle size={16} />
-                    </button>
-                  )}
+              )) : (
+                <div className="text-center py-8 text-gray-400 text-sm">
+                  <span className="text-4xl block mb-2">📄</span>
+                  कोई बिल नहीं — पहला बिल बनाओ!
                 </div>
-              </div>
-            )) : (
-              <div className="text-center py-8 text-gray-400 text-sm">
-                <span className="text-4xl block mb-2">📄</span>
-                कोई बिल नहीं — पहला बिल बनाओ!
-              </div>
-            )}
+              )}
+            </div>
           </div>
         </div>
       </div>
 
       {/* ═══════════════════ QUICK ACTIONS ═══════════════════ */}
-      <div className="glass-card card-glow p-6 fade-in-up" style={{ animationDelay: '800ms' }}>
-        <h2 className="font-heading font-bold text-gray-900 dark:text-white text-base mb-4">⚡ {t('quickActions')}</h2>
+      <div className="glass-card bg-white rounded-2xl shadow-sm p-6 fade-in-up border border-gray-100" style={{ animationDelay: '800ms' }}>
+        <h2 className="text-[20px] font-semibold text-[#1F2937] mb-4">⚡ {t('quickActions')}</h2>
         <div className="grid grid-cols-4 md:grid-cols-8 gap-3">
           {quickActions.map((action, i) => (
             <button key={action.label} onClick={() => navigate(action.path)}
-              className="quick-action group hover:scale-105 active:scale-95 transition-all duration-200 fade-in-up"
+              className="quick-action bg-white border border-gray-200 rounded-xl p-2 group hover:scale-105 active:scale-95 transition-all duration-200 fade-in-up flex flex-col items-center justify-center gap-2"
               style={{ animationDelay: `${800 + i * 60}ms` }}>
-              <div className={`w-11 h-11 rounded-xl flex items-center justify-center bg-gray-50 dark:bg-gray-800/80 group-hover:bg-brand-purple/10 transition-all duration-200 group-hover:shadow-md`}>
+              <div className={`w-11 h-11 rounded-full flex items-center justify-center bg-gray-50 group-hover:shadow-md transition-all`}>
                 <action.icon size={20} className={`${action.color} transition-transform group-hover:scale-110`} />
               </div>
-              <span className="text-[10px] font-semibold text-gray-600 dark:text-gray-400 text-center leading-tight font-heading">
+              <span className="text-[12px] font-medium text-[#374151] text-center leading-tight">
                 {language === 'hi' ? action.labelHi : action.label}
               </span>
             </button>
@@ -529,27 +519,25 @@ export default function Dashboard() {
       </div>
 
       {/* ═══════════════════ VYAPAAR SCORE ═══════════════════ */}
-      <div className="glass-card card-glow overflow-hidden fade-in-up" style={{ animationDelay: '900ms' }}>
+      <div className="glass-card bg-white rounded-2xl shadow-sm overflow-hidden fade-in-up border border-gray-100" style={{ animationDelay: '900ms' }}>
         <button onClick={() => setScoreOpen(!scoreOpen)}
-          className="w-full flex items-center justify-between p-6 hover:bg-brand-purple/5 transition-colors">
+          className="w-full flex items-center justify-between p-6 hover:bg-purple-50/50 transition-colors">
           <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-2xl flex items-center justify-center relative"
-              style={{ background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(124, 58, 237, 0.15))' }}>
-              <Star size={24} className="text-brand-gold" />
-              <div className="absolute inset-0 rounded-2xl" style={{ background: 'linear-gradient(135deg, transparent, rgba(245, 158, 11, 0.1))', animation: 'pulse 2s ease-in-out infinite' }} />
+            <div className="w-14 h-14 rounded-2xl flex items-center justify-center relative bg-purple-50">
+              <Star size={24} className="text-[#6D28D9]" />
             </div>
             <div className="text-left">
-              <div className="font-heading font-bold text-lg text-gray-900 dark:text-white">{t('vyapaarScore')}</div>
-              <div className="text-xs text-gray-400 flex items-center gap-2">
+              <div className="text-[20px] font-semibold text-[#1F2937]">{t('vyapaarScore')}</div>
+              <div className="text-xs text-gray-500 flex items-center gap-2 mt-1">
                 आपके व्यापार की सेहत
-                <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${vyapaarScore >= 600 ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' : vyapaarScore >= 400 ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400' : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'}`}>
+                <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${vyapaarScore >= 600 ? 'bg-green-100 text-green-700' : vyapaarScore >= 400 ? 'bg-amber-100 text-amber-700' : 'bg-red-100 text-red-700'}`}>
                   {vyapaarScore >= 600 ? '🟢 अच्छा' : vyapaarScore >= 400 ? '🟡 ठीक-ठाक' : '🔴 सुधारो'}
                 </span>
               </div>
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <span className="text-2xl font-bold font-heading text-brand-purple">{vyapaarScore}<span className="text-sm text-gray-400 font-normal">/1000</span></span>
+            <span className="text-[32px] font-bold text-[#1F2937]" style={{ fontFamily: 'Poppins, sans-serif' }}>{vyapaarScore}<span className="text-sm text-gray-400 font-normal">/1000</span></span>
             {scoreOpen ? <ChevronUp size={18} className="text-gray-400" /> : <ChevronDown size={18} className="text-gray-400" />}
           </div>
         </button>
@@ -561,13 +549,20 @@ export default function Dashboard() {
               <div className="flex flex-col items-center justify-center">
                 <div className="relative w-44 h-44">
                   <svg viewBox="0 0 100 100" className="w-full h-full -rotate-90">
-                    <circle cx="50" cy="50" r="40" fill="none" stroke="rgba(124,58,237,0.08)" strokeWidth="7" />
+                    <defs>
+                      <linearGradient id="scoreGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stopColor="#6D28D9" />
+                        <stop offset="100%" stopColor="#DB2777" />
+                      </linearGradient>
+                    </defs>
+                    <circle cx="50" cy="50" r="40" fill="none" stroke="#F3F4F6" strokeWidth="7" />
                     <circle cx="50" cy="50" r="40" fill="none" strokeWidth="7" strokeLinecap="round"
                       className="score-ring-anim"
-                      style={{ stroke: vyapaarScore >= 600 ? '#10B981' : vyapaarScore >= 400 ? '#F59E0B' : '#EF4444', strokeDasharray: `${(vyapaarScore/1000)*251.2} 251.2` }} />
+                      stroke="url(#scoreGradient)"
+                      style={{ strokeDasharray: `${(vyapaarScore/1000)*251.2} 251.2` }} />
                   </svg>
                   <div className="absolute inset-0 flex flex-col items-center justify-center">
-                    <span className="text-4xl font-bold font-heading text-gray-900 dark:text-white">{vyapaarScore}</span>
+                    <span className="text-[32px] font-bold text-[#1F2937]" style={{ fontFamily: 'Poppins, sans-serif' }}>{vyapaarScore}</span>
                     <span className="text-[10px] text-gray-400 font-medium mt-0.5">1000 में से</span>
                   </div>
                 </div>
@@ -577,19 +572,18 @@ export default function Dashboard() {
                 {scoreBreakdown.map((item, i) => (
                   <div key={item.label} className="fade-in-up" style={{ animationDelay: `${i * 100}ms` }}>
                     <div className="flex justify-between text-sm mb-1.5">
-                      <span className="text-gray-600 dark:text-gray-400 font-medium">{item.label}</span>
-                      <span className="font-bold font-heading" style={{ color: item.color }}>{item.score}%</span>
+                      <span className="text-gray-600 font-medium">{item.label}</span>
+                      <span className="font-bold" style={{ color: item.color }}>{item.score}%</span>
                     </div>
-                    <div className="h-2 rounded-full bg-gray-100 dark:bg-gray-800 overflow-hidden">
+                    <div className="h-2 rounded-full bg-gray-100 overflow-hidden">
                       <div className="h-full rounded-full transition-all duration-1000 ease-out"
-                        style={{ width: `${item.score}%`, background: `linear-gradient(90deg, ${item.color}, ${item.color}dd)` }} />
+                        style={{ width: `${item.score}%`, backgroundColor: item.color }} />
                     </div>
                   </div>
                 ))}
-                <div className="mt-4 p-3.5 rounded-xl border border-brand-purple/10"
-                  style={{ background: 'linear-gradient(135deg, rgba(124, 58, 237, 0.05), rgba(245, 158, 11, 0.03))' }}>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">
-                    💡 <strong>टिप:</strong> {pendingCount} बाकी बिल remind करो → <span className="text-brand-purple font-bold">+15 pts</span>
+                <div className="mt-4 p-3.5 rounded-xl border border-purple-100 bg-purple-50">
+                  <p className="text-xs text-gray-700">
+                    💡 <strong>टिप:</strong> {pendingCount} बाकी बिल remind करो → <span className="text-[#6D28D9] font-bold">+15 pts</span>
                   </p>
                 </div>
               </div>
@@ -597,6 +591,8 @@ export default function Dashboard() {
           </div>
         )}
       </div>
+
+      <div className='made-in-india text-center text-sm text-gray-500 py-4 mt-8'>Made with ❤️ in Jabalpur, India 🇮🇳</div>
     </div>
   );
 }

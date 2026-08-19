@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { BarChart3, MessageCircle, Globe, ArrowRight, RotateCcw, ChevronRight } from 'lucide-react';
+import { ShoppingBag, MessageCircle, Globe, ArrowRight, RotateCcw, ChevronRight } from 'lucide-react';
 import type { ConfirmationResult } from 'firebase/auth';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -145,65 +145,12 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden animate-gradient"
-      style={{ background: 'linear-gradient(135deg, #0F0A1E 0%, #1A0D3F 50%, #2D1B69 100%, #1A0D3F 150%)' }}>
-
-      <style>{`
-        @keyframes float1 {
-          0%, 100% { transform: translate(0, 0) scale(1); }
-          50% { transform: translate(30px, -50px) scale(1.1); }
-        }
-        @keyframes float2 {
-          0%, 100% { transform: translate(0, 0) scale(1); }
-          50% { transform: translate(-40px, 40px) scale(1.05); }
-        }
-        @keyframes float3 {
-          0%, 100% { transform: translate(0, 0) scale(1); }
-          50% { transform: translate(50px, 20px) scale(0.95); }
-        }
-        @keyframes gradientShift {
-          0% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
-          100% { background-position: 0% 50%; }
-        }
-        @keyframes slideUpFade {
-          from { opacity: 0; transform: translateY(30px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes shake {
-          0%, 100% { transform: translateX(0); }
-          25% { transform: translateX(-5px); }
-          75% { transform: translateX(5px); }
-        }
-        .animate-gradient {
-          background-size: 400% 400% !important;
-          animation: gradientShift 15s ease infinite;
-        }
-        .animate-slide-up-fade {
-          animation: slideUpFade 0.6s ease-out forwards;
-        }
-        .animate-shake {
-          animation: shake 0.4s ease-in-out;
-        }
-      `}</style>
-
-      {/* Background decorations */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-[10%] left-[15%] rounded-full mix-blend-screen"
-          style={{ width: '200px', height: '200px', background: 'radial-gradient(circle, rgba(124,58,237,0.4), transparent 70%)', animation: 'float1 15s ease-in-out infinite' }} />
-        <div className="absolute top-[60%] right-[10%] rounded-full mix-blend-screen"
-          style={{ width: '150px', height: '150px', background: 'radial-gradient(circle, rgba(245,158,11,0.3), transparent 70%)', animation: 'float2 20s ease-in-out infinite reverse' }} />
-        <div className="absolute bottom-[20%] left-[30%] rounded-full mix-blend-screen"
-          style={{ width: '120px', height: '120px', background: 'radial-gradient(circle, rgba(236,72,153,0.3), transparent 70%)', animation: 'float3 18s ease-in-out infinite' }} />
-        {/* Dot grid */}
-        <div className="absolute inset-0 opacity-5"
-          style={{ backgroundImage: 'radial-gradient(#7C3AED 1px, transparent 1px)', backgroundSize: '30px 30px' }} />
-      </div>
+    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden login-pattern-bg animated-gradient-bg">
 
       {/* Language Toggle - top right */}
       <button
         onClick={() => setLanguage(language === 'en' ? 'hi' : 'en')}
-        className="absolute top-6 right-6 flex items-center gap-1.5 px-3 py-2 rounded-xl border border-white/20 text-white/70 hover:text-white hover:border-white/40 transition-all text-sm font-medium"
+        className="absolute top-6 right-6 flex items-center gap-1.5 px-3 py-2 rounded-xl border border-gray-200 text-gray-600 hover:text-gray-900 hover:border-gray-300 transition-all text-sm font-medium bg-white/50 backdrop-blur-sm"
       >
         <Globe size={14} />
         {language === 'en' ? 'हिंदी' : 'English'}
@@ -213,47 +160,43 @@ export default function Login() {
       <div id="recaptcha-container" />
 
       {/* Login Card */}
-      <div className="relative w-full max-w-md animate-slide-up-fade">
-        <div className="rounded-3xl p-8 border relative overflow-hidden"
+      <div className="relative w-full max-w-[420px] mx-auto animate-slide-up-fade">
+        <div className="rounded-2xl p-8 bg-white border border-[#F3F4F6] relative overflow-hidden"
           style={{
-            background: 'rgba(255,255,255,0.05)',
-            backdropFilter: 'blur(20px)',
-            borderColor: 'rgba(124,58,237,0.3)',
-            boxShadow: '0 0 60px rgba(124,58,237,0.3), inset 0 1px 0 rgba(255,255,255,0.1)'
+            boxShadow: '0 1px 3px rgba(0,0,0,0.06), 0 8px 32px rgba(109,40,217,0.06)'
           }}>
 
           {/* Logo */}
           <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-4 shadow-lg"
-              style={{ background: 'linear-gradient(135deg, #7C3AED, #6D28D9)', boxShadow: '0 0 30px rgba(124,58,237,0.5)' }}>
-              <BarChart3 size={28} className="text-white" />
+            <div className="inline-flex items-center justify-center w-12 h-12 rounded-full mb-4 shadow-sm"
+              style={{ background: 'linear-gradient(135deg, #7C3AED, #6D28D9)' }}>
+              <ShoppingBag size={24} className="text-white" />
             </div>
-            <h1 className="text-3xl font-heading font-bold text-white mb-1">
-              SHOPP <span className="text-gradient-purple">IQ</span>
+            <h1 className="text-[28px] font-bold mb-1" style={{ color: '#1E1B4B', fontFamily: '"Plus Jakarta Sans", sans-serif' }}>
+              SHOPP <span style={{ color: '#DB2777' }}>IQ</span>
             </h1>
-            <p className="text-sm font-medium" style={{ color: '#F59E0B' }}>
+            <p className="text-[13px] text-purple-600 italic">
               Dukaan se Digital tak
             </p>
           </div>
 
           {step === 'phone' ? (
             <div className="animate-slide-up">
-              <h2 className="text-xl font-heading font-semibold text-white mb-1 text-center">
+              <h2 className="text-xl font-heading font-semibold text-gray-900 mb-1 text-center">
                 {language === 'hi' ? 'Swagat hai! 👋' : 'Welcome Back! 👋'}
               </h2>
-              <p className="text-sm text-gray-400 text-center mb-6">
+              <p className="text-sm text-gray-500 text-center mb-6">
                 {language === 'hi' ? 'Apna phone number daalo' : 'Enter your mobile number to continue'}
               </p>
 
               {/* Phone Input */}
               <div className="mb-4">
-                <label className="block text-xs font-medium text-gray-400 mb-2 font-heading">
+                <label className="block text-[13px] font-semibold text-[#374151] mb-2 font-heading">
                   {t('phoneNumber')}
                 </label>
-                <div className="flex rounded-xl overflow-hidden border transition-all"
-                  style={{ borderColor: error ? '#EF4444' : 'rgba(124,58,237,0.3)' }}>
-                  <div className="flex items-center gap-2 px-4 py-3 border-r text-white/70 text-sm font-medium flex-shrink-0"
-                    style={{ borderColor: 'rgba(124,58,237,0.3)', background: 'rgba(124,58,237,0.1)' }}>
+                <div className="flex rounded-[10px] overflow-hidden border-[1.5px] transition-all bg-white focus-within:border-purple-500 focus-within:ring-2 focus-within:ring-purple-200"
+                  style={{ borderColor: error ? '#EF4444' : '#E5E7EB', height: '44px' }}>
+                  <div className="flex items-center gap-2 px-3 py-2 border-r border-[#E5E7EB] text-gray-600 text-sm font-medium flex-shrink-0 bg-gray-50">
                     🇮🇳 +91
                   </div>
                   <input
@@ -266,13 +209,12 @@ export default function Login() {
                     }}
                     onKeyDown={(e) => e.key === 'Enter' && handleSendOTP()}
                     placeholder={language === 'hi' ? '98765 43210' : '98765 43210'}
-                    className="flex-1 px-4 py-3 text-white text-lg font-medium tracking-wider outline-none"
-                    style={{ background: 'transparent' }}
+                    className="flex-1 px-3 py-2 text-gray-900 text-base font-medium tracking-wider outline-none bg-transparent"
                     maxLength={10}
                     autoFocus
                   />
                 </div>
-                {error && <p className="text-red-400 text-xs mt-2">{error}</p>}
+                {error && <p className="text-red-500 text-xs mt-2">{error}</p>}
               </div>
 
               {/* Send OTP Button */}
@@ -280,7 +222,7 @@ export default function Login() {
                 onClick={handleSendOTP}
                 disabled={loading || phone.length !== 10}
                 className={cn(
-                  'btn-whatsapp w-full justify-center text-base py-4 rounded-2xl font-heading',
+                  'btn-primary w-full justify-center text-base rounded-xl font-heading h-[44px]',
                   (loading || phone.length !== 10) && 'opacity-50 cursor-not-allowed'
                 )}
               >
@@ -291,7 +233,7 @@ export default function Login() {
                   </div>
                 ) : (
                   <>
-                    <MessageCircle size={20} />
+                    <MessageCircle size={18} />
                     {t('sendOTP')}
                     <ChevronRight size={16} />
                   </>
@@ -307,13 +249,13 @@ export default function Login() {
           ) : (
             <div className="animate-slide-up">
               <div className="text-center mb-6">
-                <div className="w-14 h-14 rounded-full bg-brand-whatsapp/20 flex items-center justify-center mx-auto mb-3">
-                  <MessageCircle size={24} className="text-brand-whatsapp" />
+                <div className="w-12 h-12 rounded-full bg-purple-50 flex items-center justify-center mx-auto mb-3">
+                  <MessageCircle size={20} className="text-purple-600" />
                 </div>
-                <h2 className="text-xl font-heading font-semibold text-white mb-1">
+                <h2 className="text-xl font-heading font-semibold text-gray-900 mb-1">
                   {t('enterOTP')}
                 </h2>
-                <p className="text-sm text-gray-400">
+                <p className="text-sm text-gray-500">
                   {language === 'hi'
                     ? `+91 ${phone} par OTP bheja gaya`
                     : `OTP sent to +91 ${phone}`}
@@ -331,21 +273,24 @@ export default function Login() {
                     value={digit}
                     onChange={(e) => handleOTPChange(index, e.target.value)}
                     onKeyDown={(e) => handleOTPKeyDown(index, e)}
-                    className={cn('otp-box', digit && 'filled')}
+                    className={cn(
+                      'w-11 h-12 text-center text-lg font-semibold rounded-[10px] border-[1.5px] outline-none transition-all',
+                      digit ? 'border-[#6D28D9] bg-[#F5F3FF] text-[#1F2937]' : 'border-[#E5E7EB] bg-white text-[#1F2937] focus:border-purple-500 focus:ring-2 focus:ring-purple-200'
+                    )}
                     maxLength={1}
                     autoFocus={index === 0}
                   />
                 ))}
               </div>
 
-              {error && <p className="text-red-400 text-xs text-center mb-4">{error}</p>}
+              {error && <p className="text-red-500 text-xs text-center mb-4">{error}</p>}
 
               {/* Verify Button */}
               <button
                 onClick={() => handleVerifyOTP()}
                 disabled={loading || otp.join('').length !== 6}
                 className={cn(
-                  'btn-primary w-full justify-center text-base py-4 rounded-2xl font-heading',
+                  'btn-primary w-full justify-center text-base rounded-xl font-heading h-[44px]',
                   (loading || otp.join('').length !== 6) && 'opacity-50 cursor-not-allowed'
                 )}
               >
@@ -366,18 +311,18 @@ export default function Login() {
               <div className="flex items-center justify-between mt-4">
                 <button
                   onClick={() => { setStep('phone'); setOtp(['', '', '', '', '', '']); }}
-                  className="text-sm text-gray-400 hover:text-white transition-colors flex items-center gap-1"
+                  className="text-sm text-gray-500 hover:text-gray-900 transition-colors flex items-center gap-1"
                 >
                   ← {language === 'hi' ? 'Wapas jao' : 'Go back'}
                 </button>
                 {countdown > 0 ? (
-                  <span className="text-sm text-gray-400">
+                  <span className="text-sm text-gray-500">
                     {t('resendIn')} {countdown}s
                   </span>
                 ) : (
                   <button
                     onClick={handleSendOTP}
-                    className="text-sm text-brand-purple hover:text-brand-purple-light flex items-center gap-1 transition-colors"
+                    className="text-sm text-purple-600 hover:text-purple-700 flex items-center gap-1 transition-colors font-medium"
                   >
                     <RotateCcw size={14} />
                     {t('resendOTP')}
@@ -388,26 +333,24 @@ export default function Login() {
           )}
 
           {/* Footer */}
-          <div className="mt-8 pt-6 border-t text-center" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>
-            <p className="text-xs text-gray-500">
+          <div className="mt-8 pt-6 border-t border-gray-100 text-center">
+            <p className="text-[11px] text-gray-500 uppercase tracking-wider font-semibold mb-4">
               {language === 'hi'
                 ? 'India ke 10,000+ kirana stores ka bharosa'
                 : "Trusted by 10,000+ kirana stores across India"}
             </p>
-            <div className="flex items-center justify-center gap-4 mt-3">
-              <div className="text-center">
-                <div className="text-white text-sm font-bold font-heading"><CountUp target={10} suffix="K+" /></div>
-                <div className="text-gray-500 text-[10px]">Stores</div>
+            <div className="flex items-center justify-center gap-2">
+              <div className="flex-1 bg-[#F5F3FF] rounded-lg py-2 px-1 text-center">
+                <div className="text-purple-700 text-sm font-bold font-heading"><CountUp target={10} suffix="K+" /></div>
+                <div className="text-purple-600/70 text-[10px] font-medium mt-0.5">Stores</div>
               </div>
-              <div className="w-px h-6 bg-white/10" />
-              <div className="text-center">
-                <div className="text-white text-sm font-bold font-heading"><CountUp target={50} prefix="₹" suffix="Cr+" /></div>
-                <div className="text-gray-500 text-[10px]">Processed</div>
+              <div className="flex-1 bg-[#F5F3FF] rounded-lg py-2 px-1 text-center">
+                <div className="text-purple-700 text-sm font-bold font-heading"><CountUp target={50} prefix="₹" suffix="Cr+" /></div>
+                <div className="text-purple-600/70 text-[10px] font-medium mt-0.5">Processed</div>
               </div>
-              <div className="w-px h-6 bg-white/10" />
-              <div className="text-center">
-                <div className="text-white text-sm font-bold font-heading"><CountUp target={4.8} suffix=" ★" isFloat /></div>
-                <div className="text-gray-500 text-[10px]">Rating</div>
+              <div className="flex-1 bg-[#F5F3FF] rounded-lg py-2 px-1 text-center">
+                <div className="text-purple-700 text-sm font-bold font-heading"><CountUp target={4.8} suffix=" ★" isFloat /></div>
+                <div className="text-purple-600/70 text-[10px] font-medium mt-0.5">Rating</div>
               </div>
             </div>
           </div>

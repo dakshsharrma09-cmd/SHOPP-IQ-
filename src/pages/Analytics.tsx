@@ -217,20 +217,20 @@ export default function Analytics() {
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
         .fade-in-up { animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
       `}</style>
-      <div className="p-8 rounded-3xl bg-gradient-to-r from-[#1A1035] via-[#2A1558] to-[#1A1035] relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6 shadow-2xl border border-white/10 fade-in-up" style={{ animationDelay: '0.1s' }}>
+      <div className="p-8 rounded-3xl bg-gradient-to-r from-purple-50 to-pink-50 relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6 shadow-2xl border border-white/10 fade-in-up" style={{ animationDelay: '0.1s' }}>
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-overlay"></div>
         <div className="absolute -top-24 -right-24 w-64 h-64 bg-brand-purple rounded-full blur-[100px] opacity-40"></div>
         <div className="relative z-10">
-          <h1 className="text-3xl font-heading font-extrabold text-white mb-2 tracking-tight flex items-center gap-3">
+          <h1 className="text-3xl font-heading font-extrabold text-gray-900 mb-2 tracking-tight flex items-center gap-3">
             {t('analytics')} 📊
           </h1>
-          <p className="text-purple-300 text-sm font-medium tracking-widest uppercase">व्यापार विश्लेषण</p>
+          <p className="text-purple-700 text-sm font-medium tracking-widest uppercase">व्यापार विश्लेषण</p>
         </div>
         <div className="relative z-10 flex flex-wrap items-center gap-3">
           {/* Export CSV */}
           <button
             onClick={handleExportCSV}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl border border-purple-500/30 text-white text-sm font-medium hover:bg-white/10 backdrop-blur-md transition-all shadow-lg"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl border border-purple-500/30 text-gray-900 text-sm font-medium hover:bg-white/10 backdrop-blur-md transition-all shadow-lg"
           >
             <FileSpreadsheet size={15} />
             Export CSV
@@ -240,7 +240,7 @@ export default function Analytics() {
             {(['7d', '30d', '90d', '1y'] as const).map(p => (
               <button key={p} onClick={() => setPeriod(p)}
                 className={cn('px-4 py-2 rounded-lg text-sm font-medium transition-all',
-                  period === p ? 'bg-gradient-to-r from-purple-600 to-purple-800 text-white shadow-lg' : 'text-gray-300 hover:text-white')}>
+                  period === p ? 'bg-gradient-to-r from-purple-600 to-purple-800 text-gray-900 shadow-lg' : 'text-gray-600 hover:text-gray-900')}>
                 {p === '7d' ? '7 Days' : p === '30d' ? '30 Days' : p === '90d' ? '90 Days' : '1 Year'}
               </button>
             ))}
@@ -257,23 +257,23 @@ export default function Analytics() {
           { title: 'Active Customers', value: String(activeCustomerCount), icon: Users, gradient: 'linear-gradient(135deg, #2563EB, #1D4ED8)' },
         ].map((s, i) => (
           <div key={s.title} className="stat-card border-none relative overflow-hidden group fade-in-up" style={{ animationDelay: `${0.2 + i * 0.1}s`, background: s.gradient }}>
-            <div className="absolute -right-6 -top-6 text-white/10 transform group-hover:scale-110 transition-transform duration-500">
+            <div className="absolute -right-6 -top-6 text-gray-900/10 transform group-hover:scale-110 transition-transform duration-500">
               <s.icon size={100} />
             </div>
             <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-3 bg-white/20 backdrop-blur-sm border border-white/20 relative z-10">
-              <s.icon size={20} className="text-white" />
+              <s.icon size={20} className="text-gray-900" />
             </div>
-            <div className="text-2xl font-bold font-heading text-white relative z-10 drop-shadow-md">{s.value}</div>
-            <div className="text-sm text-white/90 font-medium relative z-10">{s.title}</div>
+            <div className="text-2xl font-bold font-heading text-gray-900 relative z-10 drop-shadow-md">{s.value}</div>
+            <div className="text-sm text-gray-900/90 font-medium relative z-10">{s.title}</div>
           </div>
         ))}
       </div>
 
       {/* Revenue Trend — Area Chart */}
       <div className="chart-container card-glow p-6 fade-in-up" style={{ animationDelay: '0.6s' }}>
-        <h2 className="font-heading font-semibold text-gray-900 dark:text-white mb-4">
+        <h2 className="text-gray-900 font-heading text-section-heading-white mb-4">
           {language === 'hi' ? 'Revenue Trend' : 'Revenue Trend'}
-          <span className="text-xs text-gray-400 font-normal ml-2">Last {periodDays} days</span>
+          <span className="text-xs text-gray-500 font-normal ml-2">Last {periodDays} days</span>
         </h2>
         {revenueData.some(d => d.rev > 0) ? (
           <ResponsiveContainer width="100%" height={280}>
@@ -290,22 +290,22 @@ export default function Analytics() {
               <YAxis tick={{ fontSize: 10, fill: '#9CA3AF' }} tickLine={false} axisLine={false}
                 tickFormatter={v => `₹${v / 1000}k`} />
               <Tooltip formatter={(v: any) => [formatINR(v), 'Revenue']}
-                contentStyle={{ background: '#1A1035', border: '1px solid rgba(124,58,237,0.3)', borderRadius: 12, color: '#fff' }}
+                contentStyle={{ background: '#ffffff', border: '1px solid rgba(124,58,237,0.3)', borderRadius: 12, color: '#111827' }}
                 labelStyle={{ color: '#9CA3AF' }} />
               <Area type="monotone" dataKey="rev" stroke="#7C3AED" strokeWidth={2.5}
                 fill="url(#revGradient)" activeDot={{ r: 5, fill: '#7C3AED', stroke: 'white', strokeWidth: 2 }} />
             </AreaChart>
           </ResponsiveContainer>
         ) : (
-          <div className="flex items-center justify-center h-[280px] text-gray-400">No data yet — load demo data from Dashboard</div>
+          <div className="flex items-center justify-center h-[280px] text-gray-500">No data yet — load demo data from Dashboard</div>
         )}
       </div>
 
       {/* P&L Statement */}
       <div className="chart-container card-glow p-6 fade-in-up" style={{ animationDelay: '0.7s' }}>
-        <h2 className="font-heading font-semibold text-gray-900 dark:text-white mb-4">
+        <h2 className="text-gray-900 font-heading text-section-heading-white mb-4">
           {language === 'hi' ? 'Profit & Loss' : 'Profit & Loss'}
-          <span className="text-xs text-gray-400 font-normal ml-2">Last {periodDays} days</span>
+          <span className="text-xs text-gray-500 font-normal ml-2">Last {periodDays} days</span>
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* P&L Breakdown */}
@@ -319,9 +319,9 @@ export default function Analytics() {
             ].map((row) => (
               <div key={row.label} className={cn(
                 'flex items-center justify-between p-3 rounded-xl',
-                row.bold ? 'bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-800' : ''
+                row.bold ? 'bg-gray-50-gray-800/50 border border-gray-100-gray-800' : ''
               )}>
-                <span className={cn('text-sm', row.bold ? 'font-semibold text-gray-900 dark:text-white' : 'text-gray-500 pl-4')}>{row.label}</span>
+                <span className={cn('text-sm', row.bold ? 'font-semibold text-gray-900-white' : 'text-gray-500 pl-4')}>{row.label}</span>
                 <span className={cn('font-bold font-heading', row.color)}>{formatINR(Math.round(Math.abs(row.value)))}</span>
               </div>
             ))}
@@ -329,10 +329,10 @@ export default function Analytics() {
 
           {/* Margin Indicators */}
           <div className="space-y-4">
-            <div className="p-4 rounded-xl bg-gradient-to-br from-brand-purple/5 to-purple-100/30 dark:from-brand-purple/10 dark:to-purple-900/10 border border-brand-purple/10">
+            <div className="p-4 rounded-xl bg-gradient-to-br from-brand-purple/5 to-purple-100/30-brand-purple/10-purple-900/10 border border-brand-purple/10">
               <div className="text-sm text-gray-500 mb-1">Gross Margin</div>
               <div className="text-3xl font-bold font-heading text-brand-purple">{pnl.grossMargin.toFixed(1)}%</div>
-              <div className="mt-2 h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+              <div className="mt-2 h-2 bg-gray-200-gray-700 rounded-full overflow-hidden">
                 <div className="h-full bg-brand-purple rounded-full transition-all duration-500"
                   style={{ width: `${Math.min(100, Math.max(0, pnl.grossMargin))}%` }} />
               </div>
@@ -340,14 +340,14 @@ export default function Analytics() {
             <div className={cn(
               'p-4 rounded-xl border',
               pnl.netProfit >= 0
-                ? 'bg-gradient-to-br from-green-50/50 to-emerald-100/30 dark:from-green-900/10 dark:to-emerald-900/10 border-green-100 dark:border-green-900/30'
-                : 'bg-gradient-to-br from-red-50/50 to-rose-100/30 dark:from-red-900/10 dark:to-rose-900/10 border-red-100 dark:border-red-900/30'
+                ? 'bg-gradient-to-br from-green-50/50 to-emerald-100/30-green-900/10-emerald-900/10 border-green-100-green-900/30'
+                : 'bg-gradient-to-br from-red-50/50 to-rose-100/30-red-900/10-rose-900/10 border-red-100-red-900/30'
             )}>
               <div className="text-sm text-gray-500 mb-1">Net Margin</div>
               <div className={cn('text-3xl font-bold font-heading', pnl.netProfit >= 0 ? 'text-brand-green' : 'text-red-500')}>
                 {pnl.netMargin.toFixed(1)}%
               </div>
-              <div className="mt-2 h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+              <div className="mt-2 h-2 bg-gray-200-gray-700 rounded-full overflow-hidden">
                 <div className={cn('h-full rounded-full transition-all duration-500', pnl.netProfit >= 0 ? 'bg-brand-green' : 'bg-red-500')}
                   style={{ width: `${Math.min(100, Math.max(0, Math.abs(pnl.netMargin)))}%` }} />
               </div>
@@ -359,7 +359,7 @@ export default function Analytics() {
       {/* Top Products + Category Breakdown */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div className="chart-container card-glow p-6 fade-in-up" style={{ animationDelay: '0.8s' }}>
-          <h2 className="font-heading font-semibold text-gray-900 dark:text-white mb-4">{t('topProducts')}</h2>
+          <h2 className="text-gray-900 font-heading text-section-heading-white mb-4">{t('topProducts')}</h2>
           {topProductsData.length > 0 ? (
             <ResponsiveContainer width="100%" height={250}>
               <BarChart data={topProductsData} layout="vertical" barSize={10}>
@@ -371,12 +371,12 @@ export default function Analytics() {
               </BarChart>
             </ResponsiveContainer>
           ) : (
-            <div className="flex items-center justify-center h-[250px] text-gray-400">No data</div>
+            <div className="flex items-center justify-center h-[250px] text-gray-500">No data</div>
           )}
         </div>
 
         <div className="chart-container card-glow p-6 fade-in-up" style={{ animationDelay: '0.9s' }}>
-          <h2 className="font-heading font-semibold text-gray-900 dark:text-white mb-4">{t('revenueByCategory')}</h2>
+          <h2 className="text-gray-900 font-heading text-section-heading-white mb-4">{t('revenueByCategory')}</h2>
           {categoryDonut.length > 0 ? (
             <>
               <ResponsiveContainer width="100%" height={180}>
@@ -391,13 +391,13 @@ export default function Analytics() {
                 {categoryDonut.map(c => (
                   <div key={c.name} className="flex items-center justify-between text-xs">
                     <div className="flex items-center gap-2"><div className="w-2.5 h-2.5 rounded-full" style={{ background: c.color }} /><span className="text-gray-500">{c.name}</span></div>
-                    <span className="font-medium text-gray-900 dark:text-gray-200">{formatINR(c.value)}</span>
+                    <span className="font-medium text-gray-900-gray-200">{formatINR(c.value)}</span>
                   </div>
                 ))}
               </div>
             </>
           ) : (
-            <div className="flex items-center justify-center h-[250px] text-gray-400">No data</div>
+            <div className="flex items-center justify-center h-[250px] text-gray-500">No data</div>
           )}
         </div>
       </div>
@@ -405,7 +405,7 @@ export default function Analytics() {
       {/* Customer Segments + GST */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div className="chart-container card-glow p-6 fade-in-up" style={{ animationDelay: '1.0s' }}>
-          <h2 className="font-heading font-semibold text-gray-900 dark:text-white mb-4">Customer Segments</h2>
+          <h2 className="text-gray-900 font-heading text-section-heading-white mb-4">Customer Segments</h2>
           {customers.length > 0 ? (
             <div className="h-full flex items-center justify-center pb-6">
               {(() => {
@@ -439,27 +439,27 @@ export default function Analytics() {
               })()}
             </div>
           ) : (
-            <div className="flex items-center justify-center h-[200px] text-gray-400">No customers yet</div>
+            <div className="flex items-center justify-center h-[200px] text-gray-500">No customers yet</div>
           )}
         </div>
 
         <div className="chart-container card-glow p-6 fade-in-up" style={{ animationDelay: '1.1s' }}>
-          <h2 className="font-heading font-semibold text-gray-900 dark:text-white mb-4">GST Summary</h2>
+          <h2 className="text-gray-900 font-heading text-section-heading-white mb-4">GST Summary</h2>
           <div className="space-y-3">
             {[
               { label: 'CGST Collected', value: formatINR(Math.round(totalCGST)), color: 'text-brand-purple' },
               { label: 'SGST Collected', value: formatINR(Math.round(totalSGST)), color: 'text-blue-500' },
               { label: 'Total GST', value: formatINR(Math.round(totalCGST + totalSGST)), color: 'text-brand-green' },
             ].map(item => (
-              <div key={item.label} className="flex items-center justify-between p-3 rounded-xl border border-gray-100 dark:border-gray-800">
+              <div key={item.label} className="flex items-center justify-between p-3 rounded-xl border border-gray-100-gray-800">
                 <span className="text-sm text-gray-500">{item.label}</span>
                 <span className={cn('font-bold font-heading', item.color)}>{item.value}</span>
               </div>
             ))}
           </div>
           {/* Expense breakdown */}
-          <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-800">
-            <h3 className="text-sm font-heading font-semibold text-gray-700 dark:text-gray-300 mb-3">
+          <div className="mt-4 pt-4 border-t border-gray-100-gray-800">
+            <h3 className="text-sm font-heading font-semibold text-gray-700-gray-300 mb-3">
               Expenses ({periodDays}d)
             </h3>
             {periodExpenses.length > 0 ? (
@@ -479,17 +479,18 @@ export default function Analytics() {
                       </div>
                     ));
                 })()}
-                <div className="flex items-center justify-between pt-2 border-t border-gray-50 dark:border-gray-800 text-sm">
-                  <span className="font-medium text-gray-700 dark:text-gray-300">Total</span>
+                <div className="flex items-center justify-between pt-2 border-t border-gray-50-gray-800 text-sm">
+                  <span className="font-medium text-gray-700-gray-300">Total</span>
                   <span className="font-bold font-heading text-red-500">{formatINR(Math.round(pnl.totalExpenses))}</span>
                 </div>
               </div>
             ) : (
-              <p className="text-xs text-gray-400">No expenses recorded yet</p>
+              <p className="text-xs text-gray-500">No expenses recorded yet</p>
             )}
           </div>
         </div>
       </div>
+      <div className='made-in-india text-center text-sm py-4 text-gray-500'>Made with ❤️ in Jabalpur, India 🇮🇳</div>
     </div>
   );
 }

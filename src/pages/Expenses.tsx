@@ -151,14 +151,14 @@ export default function Expenses() {
       `}</style>
 
       {/* Header Banner */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 p-6 rounded-2xl shadow-lg" style={{ background: 'linear-gradient(135deg, #7f1d1d, #4c1d95)' }}>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 p-6 rounded-2xl shadow-sm border border-gray-100 bg-white">
         <div>
-          <h1 className="text-2xl md:text-3xl font-heading font-bold text-white mb-1 flex items-center gap-2">
+          <h1 className="text-2xl md:text-3xl font-heading font-bold text-gray-900 mb-1 flex items-center gap-2">
             Expenses 💸
           </h1>
-          <p className="text-red-200 text-sm">{language === 'hi' ? 'खर्चे ट्रैक करो' : 'Track your expenses'}</p>
+          <p className="text-gray-500 text-sm">{language === 'hi' ? 'खर्चे ट्रैक करो' : 'Track your expenses'}</p>
         </div>
-        <button onClick={() => setShowAddModal(true)} className="flex items-center gap-2 bg-white/20 hover:bg-white/30 transition-colors text-white px-4 py-2.5 rounded-xl font-medium shadow-sm backdrop-blur-sm border border-white/10">
+        <button onClick={() => setShowAddModal(true)} className="flex items-center gap-2 btn-primary text-white px-4 py-2.5 rounded-xl font-medium shadow-sm">
           <Plus size={18} /> {language === 'hi' ? 'खर्चा जोड़ें' : 'Add Expense'}
         </button>
       </div>
@@ -184,13 +184,13 @@ export default function Expenses() {
         <div className="lg:col-span-2">
           <div className="glass-card card-glow mb-4 p-4 flex gap-3">
             <div className="relative flex-1">
-              <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+              <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
               <input type="text" value={search} onChange={e => setSearch(e.target.value)}
                 placeholder={language === 'hi' ? 'खोजें...' : 'Search expenses...'}
-                className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 dark:border-brand-dark-border bg-white dark:bg-brand-dark text-sm outline-none focus:border-brand-purple transition-all" />
+                className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 border-gray-200 bg-white  text-sm outline-none focus:border-brand-purple transition-all" />
             </div>
             <select value={filterCategory} onChange={e => setFilterCategory(e.target.value)}
-              className="px-4 py-2.5 rounded-xl border border-gray-200 dark:border-brand-dark-border bg-white dark:bg-brand-dark text-sm outline-none focus:border-brand-purple transition-all">
+              className="px-4 py-2.5 rounded-xl border border-gray-200 border-gray-200 bg-white  text-sm outline-none focus:border-brand-purple transition-all">
               <option value="all">All Categories</option>
               {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
             </select>
@@ -199,7 +199,7 @@ export default function Expenses() {
           <div className="glass-card card-glow overflow-hidden">
             <table className="w-full text-sm">
               <thead>
-                <tr className="bg-gray-50 dark:bg-gray-800/50">
+                <tr className="bg-gray-50 bg-gray-50/50">
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">Date</th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">Category</th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">Description</th>
@@ -210,21 +210,21 @@ export default function Expenses() {
               </thead>
               <tbody>
                 {filteredExpenses.map((exp, index) => (
-                  <tr key={exp.id} className="border-b border-gray-50 dark:border-gray-800 table-row-hover fade-in-up" style={{ animationDelay: `${index * 0.05}s` }}>
+                  <tr key={exp.id} className="border-b border-gray-50 border-gray-200 table-row-hover fade-in-up" style={{ animationDelay: `${index * 0.05}s` }}>
                     <td className="px-4 py-3 text-gray-500 text-xs">{exp.expenseDate.toDate().toLocaleDateString('en-IN')}</td>
                     <td className="px-4 py-3 font-medium text-brand-purple">{exp.categoryName}</td>
-                    <td className="px-4 py-3 text-gray-700 dark:text-gray-300">{exp.description}</td>
+                    <td className="px-4 py-3 text-gray-700 ">{exp.description}</td>
                     <td className="px-4 py-3 text-right font-bold text-red-500">{formatINR(exp.amount)}</td>
                     <td className="px-4 py-3 text-center text-xs text-gray-500">{exp.paymentMethod}</td>
                     <td className="px-4 py-3 text-center">
-                      <button onClick={() => handleDelete(exp.id)} className="p-1.5 rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-500 transition-colors">
+                      <button onClick={() => handleDelete(exp.id)} className="p-1.5 rounded-lg hover:bg-red-50 text-gray-500 hover:text-red-500 transition-colors">
                         <Trash2 size={16} />
                       </button>
                     </td>
                   </tr>
                 ))}
                 {filteredExpenses.length === 0 && (
-                  <tr><td colSpan={6} className="px-4 py-8 text-center text-gray-400">{language === 'hi' ? 'कोई खर्चे नहीं मिले' : 'No expenses found'}</td></tr>
+                  <tr><td colSpan={6} className="px-4 py-8 text-center text-gray-500">{language === 'hi' ? 'कोई खर्चे नहीं मिले' : 'No expenses found'}</td></tr>
                 )}
               </tbody>
             </table>
@@ -234,7 +234,7 @@ export default function Expenses() {
         {/* Sidebar Chart */}
         <div>
           <div className="glass-card card-glow p-5">
-            <h3 className="font-heading font-bold text-gray-900 dark:text-white mb-4">{language === 'hi' ? 'खर्चों का विवरण' : 'Expense Breakdown'}</h3>
+            <h3 className="font-heading font-bold text-gray-900 text-gray-900 mb-4">{language === 'hi' ? 'खर्चों का विवरण' : 'Expense Breakdown'}</h3>
             {chartData.length > 0 ? (
               <div className="h-64">
                 <ResponsiveContainer width="100%" height="100%">
@@ -255,7 +255,7 @@ export default function Expenses() {
                 </ResponsiveContainer>
               </div>
             ) : (
-              <div className="h-64 flex items-center justify-center text-gray-400 text-sm">
+              <div className="h-64 flex items-center justify-center text-gray-500 text-sm">
                 No data available
               </div>
             )}
@@ -266,10 +266,10 @@ export default function Expenses() {
       {/* Add Modal */}
       {showAddModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fade-in">
-          <div className="bg-white dark:bg-brand-dark-card rounded-2xl p-6 w-full max-w-sm mx-4 animate-scale-in">
+          <div className="bg-white  rounded-2xl p-6 w-full max-w-sm mx-4 animate-scale-in">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-heading font-bold text-gray-900 dark:text-white">{language === 'hi' ? 'खर्चा जोड़ें' : 'Add Expense'}</h3>
-              <button onClick={() => setShowAddModal(false)} className="p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+              <h3 className="font-heading font-bold text-gray-900 text-gray-900">{language === 'hi' ? 'खर्चा जोड़ें' : 'Add Expense'}</h3>
+              <button onClick={() => setShowAddModal(false)} className="p-1 rounded-lg hover:bg-gray-100 ">
                 <X size={18} className="text-gray-500" />
               </button>
             </div>
@@ -277,35 +277,35 @@ export default function Expenses() {
             <div className="space-y-4">
               <div>
                 <label className="block text-xs font-medium text-gray-500 mb-1">{language === 'hi' ? 'श्रेणी' : 'Category'}</label>
-                <select value={category} onChange={e => setCategory(e.target.value)} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-brand-dark text-sm outline-none focus:border-brand-purple">
+                <select value={category} onChange={e => setCategory(e.target.value)} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 border-gray-200 bg-white  text-sm outline-none focus:border-brand-purple">
                   {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
                 </select>
               </div>
               
               <div>
                 <label className="block text-xs font-medium text-gray-500 mb-1">{language === 'hi' ? 'रकम' : 'Amount'}</label>
-                <input type="number" value={amount} onChange={e => setAmount(e.target.value)} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-brand-dark text-sm outline-none focus:border-brand-purple" />
+                <input type="number" value={amount} onChange={e => setAmount(e.target.value)} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 border-gray-200 bg-white  text-sm outline-none focus:border-brand-purple" />
               </div>
 
               <div>
                 <label className="block text-xs font-medium text-gray-500 mb-1">{language === 'hi' ? 'विवरण' : 'Description'}</label>
-                <input type="text" value={description} onChange={e => setDescription(e.target.value)} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-brand-dark text-sm outline-none focus:border-brand-purple" />
+                <input type="text" value={description} onChange={e => setDescription(e.target.value)} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 border-gray-200 bg-white  text-sm outline-none focus:border-brand-purple" />
               </div>
 
               <div>
                 <label className="block text-xs font-medium text-gray-500 mb-1">{language === 'hi' ? 'तारीख' : 'Date'}</label>
-                <input type="date" value={date} onChange={e => setDate(e.target.value)} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-brand-dark text-sm outline-none focus:border-brand-purple" />
+                <input type="date" value={date} onChange={e => setDate(e.target.value)} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 border-gray-200 bg-white  text-sm outline-none focus:border-brand-purple" />
               </div>
 
               <div>
                 <label className="block text-xs font-medium text-gray-500 mb-1">{language === 'hi' ? 'भुगतान का तरीका' : 'Payment Method'}</label>
-                <select value={method} onChange={e => setMethod(e.target.value)} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-brand-dark text-sm outline-none focus:border-brand-purple">
+                <select value={method} onChange={e => setMethod(e.target.value)} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 border-gray-200 bg-white  text-sm outline-none focus:border-brand-purple">
                   {PAYMENT_METHODS.map(m => <option key={m} value={m}>{m}</option>)}
                 </select>
               </div>
 
               <div className="flex gap-2 pt-2">
-                <button onClick={() => setShowAddModal(false)} className="flex-1 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 text-sm font-medium text-gray-600 dark:text-gray-300">{language === 'hi' ? 'रद्द करें' : 'Cancel'}</button>
+                <button onClick={() => setShowAddModal(false)} className="flex-1 py-2.5 rounded-xl border border-gray-200 text-sm font-medium text-gray-600 ">{language === 'hi' ? 'रद्द करें' : 'Cancel'}</button>
                 <button onClick={handleAddExpense} disabled={saving || !amount || !description} className={cn('flex-1 btn-primary justify-center py-2.5 text-sm', (saving || !amount || !description) && 'opacity-50')}>
                   {saving ? (language === 'hi' ? 'सेव हो रहा है...' : 'Saving...') : (language === 'hi' ? 'सेव करें' : 'Save')}
                 </button>
@@ -314,6 +314,8 @@ export default function Expenses() {
           </div>
         </div>
       )}
+
+      <div className='made-in-india mt-8 text-center text-sm text-gray-500 font-medium py-4'>Made with ❤️ in Jabalpur, India 🇮🇳</div>
     </div>
   );
 }
