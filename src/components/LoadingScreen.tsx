@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { ShoppingBag } from 'lucide-react';
 
 interface LoadingScreenProps {
   onFinished?: () => void;
@@ -71,29 +70,17 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({ onFinished }) => {
       />
 
       <div className="relative z-10 flex flex-col items-center">
-        {/* Logo with Glow */}
+        {/* Logo */}
         <div className="relative mb-6">
           <div 
-            className="absolute inset-0 rounded-full blur-xl opacity-60"
+            className="absolute inset-0 rounded-full blur-xl opacity-40"
             style={{ 
               background: 'linear-gradient(135deg, #DB2777, #9333EA)',
               animation: 'pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
             }}
           />
-          <div className="relative w-24 h-24 rounded-full bg-gradient-to-tr from-pink-500 to-purple-600 flex items-center justify-center shadow-lg border border-pink-200">
-            <ShoppingBag className="w-12 h-12 text-white" strokeWidth={1.5} />
-          </div>
+          <img src="/logo.png" alt="ShoppIQ" className="relative h-[120px] w-auto drop-shadow-lg" />
         </div>
-
-        {/* Brand Name */}
-        <h1 
-          className="text-4xl md:text-5xl font-bold mb-2 tracking-tight"
-          style={{ 
-            fontFamily: '"Plus Jakarta Sans", sans-serif',
-          }}
-        >
-          <span style={{ color: '#1E1B4B' }}>SHOPP</span> <span style={{ color: '#DB2777' }}>IQ</span>
-        </h1>
 
         {/* Tagline (Typewriter) */}
         <p className="text-purple-600 text-sm md:text-base font-medium italic h-6 tracking-wide mb-8 flex items-center">

@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ShoppingBag, MessageCircle, Globe, ArrowRight, RotateCcw, ChevronRight } from 'lucide-react';
+import { MessageCircle, Globe, ArrowRight, RotateCcw, ChevronRight } from 'lucide-react';
 import type { ConfirmationResult } from 'firebase/auth';
 import { useAuth } from '../contexts/AuthContext';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -168,16 +168,7 @@ export default function Login() {
 
           {/* Logo */}
           <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-12 h-12 rounded-full mb-4 shadow-sm"
-              style={{ background: 'linear-gradient(135deg, #7C3AED, #6D28D9)' }}>
-              <ShoppingBag size={24} className="text-white" />
-            </div>
-            <h1 className="text-[28px] font-bold mb-1" style={{ color: '#1E1B4B', fontFamily: '"Plus Jakarta Sans", sans-serif' }}>
-              SHOPP <span style={{ color: '#DB2777' }}>IQ</span>
-            </h1>
-            <p className="text-[13px] text-purple-600 italic">
-              Dukaan se Digital tak
-            </p>
+            <img src="/logo.png" alt="ShoppIQ" className="h-[80px] w-auto mx-auto" />
           </div>
 
           {step === 'phone' ? (

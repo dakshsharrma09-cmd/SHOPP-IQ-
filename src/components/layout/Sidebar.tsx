@@ -1,7 +1,7 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, FileText, Package, Users, CreditCard, Gift,
-  BarChart3, Receipt, Settings, LogOut, MessageCircle, ShoppingBag, Wallet
+  BarChart3, Receipt, Settings, LogOut, MessageCircle, Wallet
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useLanguage } from '../../contexts/LanguageContext';
@@ -49,19 +49,8 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
   const SidebarContent = () => (
     <div className="flex flex-col h-full bg-[#FFFFFF] w-[240px] border-r border-[#E5E7EB]">
       {/* LOGO AREA */}
-      <div className="h-[64px] flex items-center px-4 border-b border-[#E5E7EB] flex-shrink-0">
-        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-purple-700 flex items-center justify-center mr-3 shadow-sm">
-          <ShoppingBag size={16} className="text-white" />
-        </div>
-        <div className="flex flex-col justify-center">
-          <div className="font-heading text-lg leading-none flex">
-            <span className="font-bold text-[#1E1B4B]">SHOPP</span>
-            <span className="font-bold text-[#DB2777] ml-1">IQ</span>
-          </div>
-          <div className="text-[#9333EA] text-[11px] italic mt-0.5">
-            Dukaan se Digital tak
-          </div>
-        </div>
+      <div className="h-[72px] flex items-center px-4 border-b border-[#E5E7EB] flex-shrink-0">
+        <img src="/logo.png" alt="ShoppIQ" className="h-[52px] w-auto" />
       </div>
 
       {/* NAV SECTIONS */}

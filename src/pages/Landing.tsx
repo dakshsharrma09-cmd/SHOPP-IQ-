@@ -104,6 +104,7 @@ export default function Landing() {
         
         <div className="max-w-7xl mx-auto relative z-10 text-center">
           <FadeIn>
+            <img src="/logo.png" alt="ShoppIQ" className="h-[100px] w-auto mx-auto mb-6 drop-shadow-2xl" />
             <h1 className="text-5xl md:text-7xl font-heading font-extrabold mb-6 tracking-tight">
               <span className="text-white">Welcome to</span> <br className="md:hidden" />
               <span className="text-gradient-purple animate-pulse">ShoppIQ</span>
