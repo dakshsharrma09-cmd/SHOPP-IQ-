@@ -14,6 +14,7 @@ import {
   Download, Check, ChevronDown, Gift
 } from 'lucide-react';
 import { InvoiceReceipt } from '../components/InvoiceReceipt';
+import { generateInvoicePDF } from '../utils/generateInvoicePDF';
 import '../styles/print.css';
 
 interface CartItem {
@@ -30,7 +31,7 @@ interface CartItem {
 }
 
 export default function Billing() {
-  const { tenantId } = useAuth();
+  const { tenantId, tenant } = useAuth();
   const { t, language } = useLanguage();
   const { showToast } = useToast();
 
@@ -290,7 +291,39 @@ export default function Billing() {
             <button onClick={() => window.print()} className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border border-gray-200 text-gray-600 hover:bg-gray-50 :bg-gray-50 text-sm font-medium transition-all">
               <Printer size={16} /> Print
             </button>
-            <button onClick={() => { showToast('PDF download jaldi aa raha hai!', 'info'); }} className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border border-gray-200 text-gray-600 hover:bg-gray-50 :bg-gray-50 text-sm font-medium transition-all">
+            <button onClick={() => {
+              try {
+                generateInvoicePDF({
+                  invoiceNumber,
+                  invoiceDate,
+                  customerName: selectedCustomer?.fullName || 'Walk-in Customer',
+                  customerPhone: selectedCustomer?.phoneNumber || '',
+                  items: items.map(item => ({
+                    productName: item.productName,
+                    quantity: item.quantity,
+                    unit: 'pc',
+                    unitPrice: item.unitPrice,
+                    gstRate: item.gstRate,
+                    totalAmount: item.totalAmount,
+                  })),
+                  subtotal: totals.subtotal,
+                  cgstTotal: totals.cgst,
+                  sgstTotal: totals.sgst,
+                  discountAmount: totals.discount,
+                  grandTotal: totals.grand,
+                  amountPaid: totals.grand,
+                  amountPending: 0,
+                  paymentMethod,
+                  businessName: tenant?.businessName || 'ShoppIQ Store',
+                  businessPhone: tenant?.phoneNumber,
+                  businessAddress: tenant?.address ? `${tenant.address}, ${tenant.city}, ${tenant.state} - ${tenant.pincode}` : `${tenant?.city || ''}, ${tenant?.state || ''}`,
+                  gstin: tenant?.gstin,
+                });
+                showToast('PDF downloaded! 📄', 'success');
+              } catch (err) {
+                showToast('PDF download failed. Try again.', 'error');
+              }
+            }} className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border border-gray-200 text-gray-600 hover:bg-gray-50 text-sm font-medium transition-all">
               <Download size={16} /> PDF
             </button>
             <button onClick={handleWhatsAppSend} className="flex-1 btn-whatsapp justify-center py-3 rounded-xl text-sm">
