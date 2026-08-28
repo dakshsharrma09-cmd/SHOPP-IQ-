@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { InvoiceReceipt } from '../components/InvoiceReceipt';
 import { generateInvoicePDF } from '../utils/generateInvoicePDF';
+import BarcodeScanner from '../components/BarcodeScanner';
 import '../styles/print.css';
 
 interface CartItem {
@@ -59,6 +60,7 @@ export default function Billing() {
   const [loyaltyRedeem, setLoyaltyRedeem] = useState(0);
   const [invoiceDate] = useState(new Date().toISOString().split('T')[0]);
   const [invoiceNumber, setInvoiceNumber] = useState('INV-2026-0001');
+  const [showScanner, setShowScanner] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [customerCollapsed, setCustomerCollapsed] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -427,7 +429,8 @@ export default function Billing() {
                 }}
                 placeholder={language === 'hi' ? 'Product dhundho ya barcode scan karo...' : 'Search product or scan barcode...'}
                 className="w-full pl-10 pr-20 py-3 rounded-xl border border-gray-200 bg-white text-sm text-gray-900 focus:border-brand-purple focus:ring-2 focus:ring-brand-purple/20 outline-none transition-all" />
-              <button className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1 px-3 py-1.5 rounded-lg bg-gray-100 text-gray-500 text-xs hover:bg-brand-purple/10 hover:text-brand-purple transition-all">
+              <button onClick={() => setShowScanner(true)}
+                className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1 px-3 py-1.5 rounded-lg bg-purple-100 text-purple-700 text-xs font-medium hover:bg-purple-200 transition-all active:scale-95">
                 <Camera size={14} /> Scan
               </button>
               {showProductDropdown && productSearch && (
@@ -632,6 +635,20 @@ export default function Billing() {
         </div>
       </div>
       <div className='made-in-india text-center text-sm py-4 font-medium text-gray-500 mt-8'>Made with ❤️ in Jabalpur, India 🇮🇳</div>
+
+      {/* Barcode Scanner Modal */}
+      <BarcodeScanner
+        isOpen={showScanner}
+        onClose={() => setShowScanner(false)}
+        products={products}
+        onProductFound={(product) => {
+          addProduct(product);
+          showToast(`${product.name} added to bill!`, 'success');
+        }}
+        onProductNotFound={(barcode) => {
+          showToast(`Barcode ${barcode} not in inventory`, 'error');
+        }}
+      />
     </div>
   );
 }
