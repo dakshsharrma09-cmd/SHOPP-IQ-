@@ -640,13 +640,11 @@ export default function Billing() {
       <BarcodeScanner
         isOpen={showScanner}
         onClose={() => setShowScanner(false)}
+        tenantId={tenantId || ''}
         products={products}
         onProductFound={(product) => {
           addProduct(product);
-          showToast(`${product.name} added to bill!`, 'success');
-        }}
-        onProductNotFound={(barcode) => {
-          showToast(`Barcode ${barcode} not in inventory`, 'error');
+          showToast(`${product.name} added!`, 'success');
         }}
       />
     </div>
