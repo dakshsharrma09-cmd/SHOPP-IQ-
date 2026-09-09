@@ -20,10 +20,10 @@ interface QuickReply {
 }
 
 const defaultQuickReplies: QuickReply[] = [
-  { label: '📊 आज की बिक्री', command: 'aaj ki bikri' },
-  { label: '📦 Stock Check', command: 'stock check' },
-  { label: '💰 Pending Payment', command: 'pending payment' },
-  { label: '📄 नया बिल', command: 'naya bill' },
+  { label: ' आज की बिक्री', command: 'aaj ki bikri' },
+  { label: ' Stock Check', command: 'stock check' },
+  { label: ' Pending Payment', command: 'pending payment' },
+  { label: ' नया बिल', command: 'naya bill' },
 ];
 
 const HELP_COMMANDS = [
@@ -60,7 +60,7 @@ export default function WhatsAppChat() {
   useEffect(() => {
     const welcomeMsg: ChatMessage = {
       id: 'welcome',
-      text: `नमस्ते ${tenant?.ownerName || 'Boss'}! 👋\n\nमैं ShoppIQ Bot हूँ — आपका डिजिटल दुकान सहायक।\n\nमुझसे कुछ भी पूछो — बिक्री, स्टॉक, बाकी पैसे, कुछ भी!\n\n💡 नीचे बटन दबाओ या "help" लिखो सब कमांड देखने के लिए।`,
+      text: `नमस्ते ${tenant?.ownerName || 'Boss'}! \n\nमैं ShoppIQ Bot हूँ — आपका डिजिटल दुकान सहायक।\n\nमुझसे कुछ भी पूछो — बिक्री, स्टॉक, बाकी पैसे, कुछ भी!\n\n नीचे बटन दबाओ या "help" लिखो सब कमांड देखने के लिए।`,
       sender: 'bot',
       timestamp: new Date(),
       quickReplies: defaultQuickReplies,
@@ -99,14 +99,14 @@ export default function WhatsAppChat() {
       const billCount = todayInvoices.length;
 
       if (billCount === 0) {
-        addBotMessage('📊 *आज की बिक्री*\n\nआज अभी तक कोई बिल नहीं बना।\n\n💡 बिल बनाने के लिए "नया बिल" बोलो!');
+        addBotMessage(' *आज की बिक्री*\n\nआज अभी तक कोई बिल नहीं बना।\n\n बिल बनाने के लिए "नया बिल" बोलो!');
       } else {
         addBotMessage(
-          `📊 *आज की बिक्री*\n\n` +
-          `💰 कुल बिक्री: *${formatINR(totalSales)}*\n` +
-          `🧾 बिलों की संख्या: *${billCount}*\n` +
-          `📈 औसत बिल: *${formatINR(totalSales / billCount)}*\n\n` +
-          `${billCount >= 10 ? '🔥 शानदार! आज तो धमाल मचा दिया!' : '💪 चलो और बिल बनाओ!'}`
+          ` *आज की बिक्री*\n\n` +
+          ` कुल बिक्री: *${formatINR(totalSales)}*\n` +
+          ` बिलों की संख्या: *${billCount}*\n` +
+          ` औसत बिल: *${formatINR(totalSales / billCount)}*\n\n` +
+          `${billCount >= 10 ? ' शानदार! आज तो धमाल मचा दिया!' : ' चलो और बिल बनाओ!'}`
         );
       }
       return;
@@ -118,23 +118,23 @@ export default function WhatsAppChat() {
       const outOfStock = products.filter(p => p.currentStock === 0 && p.isActive);
 
       if (lowStock.length === 0 && outOfStock.length === 0) {
-        addBotMessage('📦 *Stock Status*\n\n✅ सब कुछ सही है! कोई प्रोडक्ट कम स्टॉक में नहीं है।\n\n🎉 बहुत बढ़िया!');
+        addBotMessage(' *Stock Status*\n\n सब कुछ सही है! कोई प्रोडक्ट कम स्टॉक में नहीं है।\n\n बहुत बढ़िया!');
       } else {
-        let msg = '📦 *Stock Alert*\n\n';
+        let msg = ' *Stock Alert*\n\n';
         if (outOfStock.length > 0) {
-          msg += '🔴 *स्टॉक खत्म:*\n';
+          msg += ' *स्टॉक खत्म:*\n';
           outOfStock.slice(0, 5).forEach(p => {
             msg += `  • ${p.name}\n`;
           });
           msg += '\n';
         }
         if (lowStock.length > 0) {
-          msg += '🟡 *कम स्टॉक:*\n';
+          msg += ' *कम स्टॉक:*\n';
           lowStock.slice(0, 5).forEach(p => {
             msg += `  • ${p.name} — ${p.currentStock} ${p.unit} बाकी\n`;
           });
         }
-        msg += `\n⚠️ कुल ${lowStock.length + outOfStock.length} प्रोडक्ट पर ध्यान दो!`;
+        msg += `\n कुल ${lowStock.length + outOfStock.length} प्रोडक्ट पर ध्यान दो!`;
         addBotMessage(msg);
       }
       return;
@@ -146,11 +146,11 @@ export default function WhatsAppChat() {
       const totalPending = pendingInvoices.reduce((sum, inv) => sum + inv.amountPending, 0);
 
       if (pendingInvoices.length === 0) {
-        addBotMessage('💰 *बाकी भुगतान*\n\n✅ कोई बाकी पैसा नहीं है!\n\n🎉 सब का भुगतान हो चुका है!');
+        addBotMessage(' *बाकी भुगतान*\n\n कोई बाकी पैसा नहीं है!\n\n सब का भुगतान हो चुका है!');
       } else {
-        let msg = `💰 *बाकी भुगतान*\n\n`;
-        msg += `💵 कुल बाकी: *${formatINR(totalPending)}*\n`;
-        msg += `📋 बाकी बिल: *${pendingInvoices.length}*\n\n`;
+        let msg = ` *बाकी भुगतान*\n\n`;
+        msg += ` कुल बाकी: *${formatINR(totalPending)}*\n`;
+        msg += ` बाकी बिल: *${pendingInvoices.length}*\n\n`;
         msg += '*टॉप बाकीदार:*\n';
         pendingInvoices
           .sort((a, b) => b.amountPending - a.amountPending)
@@ -158,7 +158,7 @@ export default function WhatsAppChat() {
           .forEach(inv => {
             msg += `  • ${inv.customerName}: ${formatINR(inv.amountPending)}\n`;
           });
-        msg += `\n💡 "भुगतान" पेज पर जाकर रिमाइंडर भेजो!`;
+        msg += `\n "भुगतान" पेज पर जाकर रिमाइंडर भेजो!`;
         addBotMessage(msg);
       }
       return;
@@ -187,11 +187,11 @@ export default function WhatsAppChat() {
       const sorted = Object.values(productSales).sort((a, b) => b.revenue - a.revenue);
 
       if (sorted.length === 0) {
-        addBotMessage('🏆 *टॉप प्रोडक्ट*\n\nआज अभी तक कोई बिक्री नहीं हुई।\n\n💡 पहला बिल बनाओ!');
+        addBotMessage(' *टॉप प्रोडक्ट*\n\nआज अभी तक कोई बिक्री नहीं हुई।\n\n पहला बिल बनाओ!');
       } else {
-        let msg = '🏆 *आज के टॉप प्रोडक्ट*\n\n';
+        let msg = ' *आज के टॉप प्रोडक्ट*\n\n';
         sorted.slice(0, 5).forEach((p, i) => {
-          const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : '  •';
+          const medal = i === 0 ? '' : i === 1 ? '' : i === 2 ? '' : '  •';
           msg += `${medal} ${p.name}\n   ${p.qty} बेचे — ${formatINR(p.revenue)}\n`;
         });
         addBotMessage(msg);
@@ -201,7 +201,7 @@ export default function WhatsAppChat() {
 
     // New bill
     if (cmd.includes('naya bill') || cmd.includes('new bill') || cmd.includes('bill banao') || cmd.includes('बिल')) {
-      addBotMessage('📄 *नया बिल*\n\nबिल बनाने के लिए बिलिंग पेज पर जा रहे हैं...\n\n👉 2 सेकंड में redirect होगा!');
+      addBotMessage(' *नया बिल*\n\nबिल बनाने के लिए बिलिंग पेज पर जा रहे हैं...\n\n 2 सेकंड में redirect होगा!');
       setTimeout(() => navigate('/billing/new'), 2000);
       return;
     }
@@ -209,17 +209,17 @@ export default function WhatsAppChat() {
     // Total customers
     if (cmd.includes('customer') || cmd.includes('grahak') || cmd.includes('ग्राहक')) {
       const uniqueCustomers = new Set(invoices.map(inv => inv.customerName).filter(Boolean));
-      addBotMessage(`👥 *ग्राहक जानकारी*\n\nकुल ग्राहक (बिल से): *${uniqueCustomers.size}*\n\n💡 ज़्यादा details के लिए "ग्राहक" पेज देखो!`);
+      addBotMessage(` *ग्राहक जानकारी*\n\nकुल ग्राहक (बिल से): *${uniqueCustomers.size}*\n\n ज़्यादा details के लिए "ग्राहक" पेज देखो!`);
       return;
     }
 
     // Help / menu
     if (cmd.includes('help') || cmd.includes('menu') || cmd.includes('मदद')) {
-      let msg = '📋 *ShoppIQ Bot Commands*\n\n';
+      let msg = ' *ShoppIQ Bot Commands*\n\n';
       HELP_COMMANDS.forEach(c => {
         msg += `▸ *${c.cmd}*\n  ${c.desc}\n\n`;
       });
-      msg += '💡 कोई भी कमांड लिखो या नीचे बटन दबाओ!';
+      msg += ' कोई भी कमांड लिखो या नीचे बटन दबाओ!';
       addBotMessage(msg);
       return;
     }
@@ -253,13 +253,13 @@ export default function WhatsAppChat() {
       const sortedProducts = Object.entries(productSales).sort((a, b) => b[1] - a[1]);
       const topProductName = sortedProducts.length > 0 ? sortedProducts[0][0] : 'None';
 
-      const msg = `📊 Daily Report — ShoppIQ
+      const msg = ` Daily Report — ShoppIQ
 ━━━━━━━━━━━━━━━━━
-💰 Aaj ki bikri: ₹${todaySales} (${invoiceCount} bills)
-📦 Low stock: ${lowStockCount} products
+ Aaj ki bikri: ₹${todaySales} (${invoiceCount} bills)
+ Low stock: ${lowStockCount} products
 💳 Pending payment: ₹${pendingTotal} (${pendingCount} invoices)
-👥 Total customers: ${customerCount}
-⭐ Top product: ${topProductName}
+ Total customers: ${customerCount}
+ Top product: ${topProductName}
 ━━━━━━━━━━━━━━━━━`;
       addBotMessage(msg);
       return;
@@ -267,7 +267,7 @@ export default function WhatsAppChat() {
 
     // Unknown
     addBotMessage(
-      `🤔 समझ नहीं आया: "${input}"\n\n💡 "help" लिखो सब कमांड देखने के लिए, या नीचे बटन दबाओ!`,
+      ` समझ नहीं आया: "${input}"\n\n "help" लिखो सब कमांड देखने के लिए, या नीचे बटन दबाओ!`,
       defaultQuickReplies
     );
   };
@@ -310,7 +310,7 @@ export default function WhatsAppChat() {
   return (
     <div className="flex flex-col h-[calc(100vh-4rem)] max-w-3xl mx-auto" style={{ fontFamily: "'Segoe UI', Helvetica, Arial, sans-serif" }}>
       {/* WhatsApp Header */}
-      <div className="flex items-center gap-3 px-4 py-3 rounded-t-2xl" style={{ background: '#075E54' }}>
+      <div className="flex items-center gap-3 px-4 py-3 rounded-t-lg" style={{ background: '#075E54' }}>
         <button
           onClick={() => navigate('/dashboard')}
           className="md:hidden text-gray-300 hover:text-white"
@@ -324,7 +324,7 @@ export default function WhatsAppChat() {
           <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-[#25D366] rounded-full border-2" style={{ borderColor: '#075E54' }} />
         </div>
         <div className="flex-1">
-          <h3 className="text-white font-semibold text-sm">ShoppIQ Bot 🤖</h3>
+          <h3 className="text-white font-semibold text-sm">ShoppIQ Bot </h3>
           <p className="text-[#8696A0] text-xs">
             {isTyping ? 'typing...' : 'online'}
           </p>
@@ -394,7 +394,7 @@ export default function WhatsAppChat() {
                   <button
                     key={qr.command}
                     onClick={() => handleSend(qr.command)}
-                    className="px-3 py-1.5 rounded-full text-xs font-medium transition-all hover:scale-105 active:scale-95"
+                    className="px-3 py-1.5 rounded-full text-xs font-medium transition-all hover:bg-gray-50 active:scale-95"
                     style={{
                       background: 'rgba(124, 58, 237, 0.15)',
                       color: '#A78BFA',
@@ -414,9 +414,9 @@ export default function WhatsAppChat() {
           <div className="flex justify-start">
             <div className="rounded-lg px-4 py-3 shadow-sm" style={{ background: '#FFFFFF' }}>
               <div className="flex gap-1 items-center">
-                <div className="w-2 h-2 bg-[#8696A0] rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                <div className="w-2 h-2 bg-[#8696A0] rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                <div className="w-2 h-2 bg-[#8696A0] rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                <div className="w-2 h-2 bg-[#8696A0] rounded-full animate-bounce"  />
+                <div className="w-2 h-2 bg-[#8696A0] rounded-full animate-bounce"  />
+                <div className="w-2 h-2 bg-[#8696A0] rounded-full animate-bounce"  />
               </div>
             </div>
           </div>
@@ -426,7 +426,7 @@ export default function WhatsAppChat() {
       </div>
 
       {/* Input Area */}
-      <div className="flex items-center gap-2 px-3 py-3 rounded-b-2xl" style={{ background: '#F0F0F0' }}>
+      <div className="flex items-center gap-2 px-3 py-3 rounded-b-lg" style={{ background: '#F0F0F0' }}>
         <div className="flex-1 flex items-center rounded-full px-4 py-2.5 shadow-sm" style={{ background: '#FFFFFF' }}>
           <Smile size={20} className="text-[#8696A0] mr-3 flex-shrink-0" />
           <input

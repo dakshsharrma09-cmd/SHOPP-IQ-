@@ -255,8 +255,8 @@ export default function Billing() {
 
   if (showSuccess) {
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fade-in">
-        <div className="bg-white rounded-3xl p-8 max-w-md w-full mx-4 text-center animate-scale-in shadow-2xl">
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+        <div className="bg-white rounded-lg p-8 max-w-md w-full mx-4 text-center shadow-lg">
           <InvoiceReceipt 
             data={{
               items: items.map(i => ({ productName: i.productName, quantity: i.quantity, unitPrice: i.unitPrice, totalAmount: i.totalAmount })),
@@ -276,7 +276,7 @@ export default function Billing() {
             <Check size={40} className="text-brand-green" />
           </div>
           <h2 className="text-2xl font-heading font-bold text-gray-900 mb-2">
-            Bill #{invoiceNumber} ban gaya! 🎉
+            Bill #{invoiceNumber} ban gaya!
           </h2>
           <p className="text-gray-500 mb-1">{selectedCustomer?.fullName || 'Walk-in Customer'}</p>
           <p className="text-2xl font-bold font-heading text-brand-purple mb-1">{formatINR(Math.round(totals.grand))}</p>
@@ -285,12 +285,12 @@ export default function Billing() {
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-gold/10 mb-4">
               <Gift size={16} className="text-brand-gold" />
               <span className="text-sm font-heading font-semibold text-brand-gold">
-                +{loyaltyPointsEarned} Loyalty Points Earned! 🎁
+                +{loyaltyPointsEarned} Loyalty Points Earned!
               </span>
             </div>
           )}
           <div className="flex gap-3 mt-2">
-            <button onClick={() => window.print()} className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border border-gray-200 text-gray-600 hover:bg-gray-50 :bg-gray-50 text-sm font-medium transition-all">
+            <button onClick={() => window.print()} className="flex-1 flex items-center justify-center gap-2 py-3 rounded-md border border-gray-200 text-gray-600 hover:bg-gray-50 text-sm font-medium transition-all">
               <Printer size={16} /> Print
             </button>
             <button onClick={() => {
@@ -321,14 +321,14 @@ export default function Billing() {
                   businessAddress: tenant?.address ? `${tenant.address}, ${tenant.city}, ${tenant.state} - ${tenant.pincode}` : `${tenant?.city || ''}, ${tenant?.state || ''}`,
                   gstin: tenant?.gstin,
                 });
-                showToast('PDF downloaded! 📄', 'success');
+                showToast('PDF downloaded!', 'success');
               } catch (err) {
                 showToast('PDF download failed. Try again.', 'error');
               }
-            }} className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border border-gray-200 text-gray-600 hover:bg-gray-50 text-sm font-medium transition-all">
+            }} className="flex-1 flex items-center justify-center gap-2 py-3 rounded-md border border-gray-200 text-gray-600 hover:bg-gray-50 text-sm font-medium transition-all">
               <Download size={16} /> PDF
             </button>
-            <button onClick={handleWhatsAppSend} className="flex-1 btn-whatsapp justify-center py-3 rounded-xl text-sm">
+            <button onClick={handleWhatsAppSend} className="flex-1 flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#1ebd5c] text-white py-3 rounded-md text-sm font-medium transition-all">
               <MessageCircle size={16} /> WhatsApp
             </button>
           </div>
@@ -342,30 +342,33 @@ export default function Billing() {
   }
 
   return (
-    <div className="animate-fade-in">
-      <div className="bg-white border-2 border-brand-purple p-4 rounded-xl mb-4"><h1 className="text-2xl font-heading font-bold text-gray-900">{t('createInvoice')} ✍️</h1></div>
+    <div>
+      <div className="mb-4">
+        <h1 className="text-2xl font-heading font-bold text-gray-900">Create Invoice</h1>
+        <p className="text-sm text-gray-500">Create and collect payment for this sale.</p>
+      </div>
 
       <div className="flex flex-col lg:flex-row gap-6">
         {/* LEFT: Items (70%) */}
         <div className="flex-1 space-y-4">
           {/* Customer Section */}
-          <div className="glass-card p-4">
+          <div className="bg-white border border-gray-200 rounded-lg p-4">
             <button onClick={() => setCustomerCollapsed(!customerCollapsed)}
               className="flex items-center justify-between w-full mb-2">
-              <h3 className="text-gray-900 font-heading text-section-heading text-sm">{t('customer')} 👤</h3>
+              <h3 className="text-gray-900 font-heading text-section-heading text-sm">{t('customer')}</h3>
               <ChevronDown size={16} className={cn('text-gray-500 transition-transform', customerCollapsed && '-rotate-180')} />
             </button>
             {!customerCollapsed && (
-              <div className="animate-slide-up">
+              <div>
                 {selectedCustomer ? (
-                  <div className="flex items-center justify-between p-3 rounded-xl bg-brand-purple/5 border border-brand-purple/20">
+                  <div className="flex items-center justify-between p-3 rounded-md bg-brand-purple/5 border border-brand-purple/20">
                     <div>
                       <span className="font-medium text-gray-900 text-sm">{selectedCustomer.fullName}</span>
-                      <span className="text-gray-500 text-xs ml-2">📞 {selectedCustomer.phoneNumber}</span>
+                      <span className="text-gray-500 text-xs ml-2">{selectedCustomer.phoneNumber}</span>
                       <div className="flex gap-3 mt-1">
-                        <span className="text-xs text-brand-gold">🎁 {selectedCustomer.loyaltyPoints} pts</span>
+                        <span className="text-xs text-brand-gold">{selectedCustomer.loyaltyPoints} pts</span>
                         {selectedCustomer.currentOutstanding > 0 && (
-                          <span className="text-xs text-red-500">💰 {formatINR(selectedCustomer.currentOutstanding)} due</span>
+                          <span className="text-xs text-red-500">{formatINR(selectedCustomer.currentOutstanding)} due</span>
                         )}
                       </div>
                     </div>
@@ -380,9 +383,9 @@ export default function Billing() {
                       onChange={e => { setCustomerSearch(e.target.value); setShowCustomerDropdown(true); }}
                       onFocus={() => setShowCustomerDropdown(true)}
                       placeholder={language === 'hi' ? 'Customer ka naam ya phone...' : 'Search customer name or phone...'}
-                      className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 bg-white text-sm text-gray-900 focus:border-brand-purple focus:ring-2 focus:ring-brand-purple/20 outline-none transition-all" />
+                      className="w-full pl-10 pr-4 py-2.5 rounded-md border border-gray-200 bg-white text-sm text-gray-900 focus:border-brand-purple focus:ring-2 focus:ring-brand-purple/20 outline-none transition-all" />
                     {showCustomerDropdown && customerSearch && (
-                      <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-xl border border-gray-100 shadow-xl z-20 overflow-hidden">
+                      <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-md border border-gray-100 shadow-lg z-20 overflow-hidden">
                         {filteredCustomers.length ? filteredCustomers.map(c => (
                           <button key={c.id} onClick={() => { setSelectedCustomer(c); setShowCustomerDropdown(false); setCustomerSearch(''); }}
                             className="w-full flex items-center justify-between px-4 py-3 hover:bg-brand-purple/5 text-left transition-colors">
@@ -404,7 +407,7 @@ export default function Billing() {
           </div>
 
           {/* Product Search */}
-          <div className="glass-card p-4">
+          <div className="bg-white border border-gray-200 rounded-lg p-4">
             <div className="relative mb-4">
               <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
               <input type="text" value={productSearch}
@@ -428,13 +431,13 @@ export default function Billing() {
                   }
                 }}
                 placeholder={language === 'hi' ? 'Product dhundho ya barcode scan karo...' : 'Search product or scan barcode...'}
-                className="w-full pl-10 pr-20 py-3 rounded-xl border border-gray-200 bg-white text-sm text-gray-900 focus:border-brand-purple focus:ring-2 focus:ring-brand-purple/20 outline-none transition-all" />
+                className="w-full pl-10 pr-20 py-3 rounded-md border border-gray-200 bg-white text-sm text-gray-900 focus:border-brand-purple focus:ring-2 focus:ring-brand-purple/20 outline-none transition-all" />
               <button onClick={() => setShowScanner(true)}
                 className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1 px-3 py-1.5 rounded-lg bg-purple-100 text-purple-700 text-xs font-medium hover:bg-purple-200 transition-all active:scale-95">
                 <Camera size={14} /> Scan
               </button>
               {showProductDropdown && productSearch && (
-                <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-xl border border-gray-100 shadow-xl z-20 overflow-hidden">
+                <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-md border border-gray-100 shadow-lg z-20 overflow-hidden">
                   {filteredProducts.length ? filteredProducts.map((p, index) => (
                     <button key={p.id} onClick={() => addProduct(p)}
                       className={cn("w-full flex items-center justify-between px-4 py-3 text-left transition-colors", highlightedIndex === index ? 'bg-brand-purple/10' : 'hover:bg-brand-purple/5')}>
@@ -450,7 +453,7 @@ export default function Billing() {
                       </div>
                     </button>
                   )) : (
-                    <div className="p-4 text-center text-sm text-gray-500">Koi product nahi mila 🔍</div>
+                    <div className="p-4 text-center text-sm text-gray-500">Koi product nahi mila</div>
                   )}
                 </div>
               )}
@@ -480,32 +483,32 @@ export default function Billing() {
                   </thead>
                   <tbody>
                     {items.map((item, idx) => (
-                      <tr key={item.productId} className="border-b border-gray-50 table-row-hover">
+                      <tr key={item.productId} className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
                         <td className="py-3 text-gray-500">{idx + 1}</td>
                         <td className="py-3 font-medium text-gray-900 max-w-[160px] truncate">{item.productName}</td>
                         <td className="py-3">
                           <div className="flex items-center gap-1 justify-center">
                             <button onClick={() => updateQuantity(item.productId, item.quantity - 1)}
-                              className="w-7 h-7 rounded-lg bg-gray-100 flex items-center justify-center hover:bg-brand-purple/10 transition-colors">
+                              className="w-7 h-7 rounded-md bg-gray-100 flex items-center justify-center hover:bg-brand-purple/10 transition-colors">
                               <Minus size={12} />
                             </button>
                             <input type="number" min="1" max={products.find(p => p.id === item.productId)?.currentStock || 1}
                               value={item.quantity} onChange={e => updateQuantity(item.productId, parseInt(e.target.value, 10) || 1)}
                               className="w-12 text-center font-bold bg-transparent border-b border-gray-200 outline-none focus:border-brand-purple" />
                             <button onClick={() => updateQuantity(item.productId, item.quantity + 1)}
-                              className="w-7 h-7 rounded-lg bg-gray-100 flex items-center justify-center hover:bg-brand-purple/10 transition-colors">
+                              className="w-7 h-7 rounded-md bg-gray-100 flex items-center justify-center hover:bg-brand-purple/10 transition-colors">
                               <Plus size={12} />
                             </button>
                           </div>
                         </td>
                         <td className="py-3 text-right">
                           <input type="number" value={item.unitPrice} onChange={e => updateUnitPrice(item.productId, Number(e.target.value))}
-                            className="w-20 text-right py-1 rounded-lg border border-gray-200 bg-transparent text-sm outline-none focus:border-brand-purple" />
+                            className="w-20 text-right py-1 rounded-md border border-gray-200 bg-transparent text-sm outline-none focus:border-brand-purple" />
                         </td>
                         <td className="py-3">
                           <input type="number" value={item.discountPercent} min={0} max={100}
                             onChange={e => updateDiscount(item.productId, Number(e.target.value))}
-                            className="w-14 text-center py-1 rounded-lg border border-gray-200 bg-transparent text-sm outline-none focus:border-brand-purple" />
+                            className="w-14 text-center py-1 rounded-md border border-gray-200 bg-transparent text-sm outline-none focus:border-brand-purple" />
                         </td>
                         <td className="py-3 text-right text-xs text-gray-500">
                           {item.gstRate}%
@@ -529,23 +532,23 @@ export default function Billing() {
         {/* RIGHT: Summary (30%) — sticky */}
         <div className="w-full lg:w-80 xl:w-96 space-y-4 lg:sticky lg:top-20 lg:self-start">
           {/* Invoice Info */}
-          <div className="glass-card p-4 space-y-3">
+          <div className="bg-white border border-gray-200 rounded-lg p-4 space-y-3">
             <div className="flex gap-3">
               <div className="flex-1">
                 <label className="text-[10px] text-gray-500 font-heading mb-1 block">Date</label>
-                <div className="flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-200 text-sm text-gray-700 ">
+                <div className="flex items-center gap-2 px-3 py-2 rounded-md border border-gray-200 text-sm text-gray-700 ">
                   <Calendar size={14} className="text-gray-500" /> {invoiceDate}
                 </div>
               </div>
               <div className="flex-1">
                 <label className="text-[10px] text-gray-500 font-heading mb-1 block">Invoice #</label>
-                <input value={invoiceNumber} readOnly className="w-full px-3 py-2 rounded-lg border border-gray-200 bg-gray-50 text-sm text-gray-700 font-mono" />
+                <input value={invoiceNumber} readOnly className="w-full px-3 py-2 rounded-md border border-gray-200 bg-gray-50 text-sm text-gray-700 font-mono" />
               </div>
             </div>
           </div>
 
           {/* Totals */}
-          <div className="glass-card p-4 space-y-2">
+          <div className="bg-white border border-gray-200 rounded-lg p-4 space-y-2">
             <div className="flex justify-between text-sm text-gray-600 ">
               <span>{t('subtotal')}</span><span>{formatINR(Math.round(totals.subtotal))}</span>
             </div>
@@ -568,7 +571,7 @@ export default function Billing() {
           </div>
 
           {/* Payment Method */}
-          <div className="glass-card p-4">
+          <div className="bg-white border border-gray-200 rounded-lg p-4">
             <h3 className="text-gray-900 font-heading text-section-heading text-sm mb-3">{t('payment')}</h3>
             <div className="grid grid-cols-4 gap-2 mb-3">
               {([
@@ -578,22 +581,22 @@ export default function Billing() {
                 { id: 'mixed', icon: CreditCard, label: 'Mixed' },
               ] as const).map(m => (
                 <button key={m.id} onClick={() => setPaymentMethod(m.id)}
-                  className={cn('flex flex-col items-center gap-1 py-2.5 rounded-xl border text-xs font-medium transition-all',
-                    paymentMethod === m.id ? 'border-brand-purple bg-brand-purple/10 text-brand-purple' : 'border-gray-200 text-gray-500')}>
+                  className={cn('flex flex-col items-center gap-1 py-2.5 rounded-md border text-xs font-medium transition-all',
+                    paymentMethod === m.id ? 'border-purple-600 bg-purple-50 text-purple-700' : 'border-gray-200 text-gray-500')}>
                   <m.icon size={16} />{m.label}
                 </button>
               ))}
             </div>
             {paymentMethod === 'cash' && (
-              <div className="space-y-2 animate-fade-in">
+              <div className="space-y-2">
                 <input type="number" value={cashTendered} onChange={e => setCashTendered(e.target.value)}
-                  placeholder="Amount tendered" className="w-full px-3 py-2 rounded-lg border border-gray-200 bg-transparent text-sm outline-none focus:border-brand-purple" />
+                  placeholder="Amount tendered" className="w-full px-3 py-2 rounded-md border border-gray-200 bg-transparent text-sm outline-none focus:border-brand-purple" />
                 {change > 0 && <div className="text-sm text-brand-green font-medium">Change: {formatINR(Math.round(change))}</div>}
               </div>
             )}
             {paymentMethod === 'upi' && (
-              <div className="text-center py-4 animate-fade-in">
-                <div className="w-24 h-24 mx-auto mb-2 rounded-xl border-2 border-dashed border-brand-purple/30 flex items-center justify-center bg-brand-purple/5">
+              <div className="text-center py-4">
+                <div className="w-24 h-24 mx-auto mb-2 rounded-md border-2 border-dashed border-brand-purple/30 flex items-center justify-center bg-brand-purple/5">
                   <Smartphone size={28} className="text-brand-purple/50" />
                 </div>
                 <p className="text-xs text-gray-500">UPI QR Code</p>
@@ -604,7 +607,7 @@ export default function Billing() {
 
           {/* Loyalty */}
           {selectedCustomer && selectedCustomer.loyaltyPoints > 0 && (
-            <div className="glass-card p-4 animate-fade-in">
+            <div className="bg-white border border-gray-200 rounded-lg p-4">
               <div className="flex items-center gap-2 mb-2">
                 <Gift size={16} className="text-brand-gold" />
                 <span className="text-sm font-heading font-semibold text-gray-900 ">Loyalty Points</span>
@@ -620,16 +623,16 @@ export default function Billing() {
           {/* Notes */}
           <textarea value={notes} onChange={e => setNotes(e.target.value)} rows={2}
             placeholder={language === 'hi' ? 'Notes...' : 'Add notes...'}
-            className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-sm resize-none outline-none focus:border-brand-purple" />
+            className="w-full px-4 py-3 rounded-md border border-gray-200 bg-white text-sm resize-none outline-none focus:border-brand-purple" />
 
           {/* Action Buttons */}
           <button onClick={() => handleCreateBill()} disabled={items.length === 0 || saving}
-            className={cn('btn-whatsapp w-full justify-center py-4 rounded-2xl text-base font-heading', (items.length === 0 || saving) && 'opacity-40 cursor-not-allowed')}>
+            className={cn('bg-purple-700 hover:bg-purple-800 text-white rounded-md w-full py-3 font-semibold flex items-center justify-center gap-2 transition-colors', (items.length === 0 || saving) && 'opacity-50 cursor-not-allowed')}>
             <MessageCircle size={20} />
-            {saving ? 'Saving...' : language === 'hi' ? 'Bill Banao & WhatsApp Bhejo 📱' : 'Create Bill & Send WhatsApp 📱'}
+            {saving ? 'Saving...' : language === 'hi' ? 'Bill Banao & WhatsApp Bhejo' : 'Create Bill & Send WhatsApp'}
           </button>
           <button onClick={() => handleCreateBill()} disabled={items.length === 0 || saving}
-            className={cn('w-full py-3 rounded-xl border border-gray-200 text-sm font-medium text-gray-600 hover:bg-gray-50 :bg-gray-50 transition-all', (items.length === 0 || saving) && 'opacity-40 cursor-not-allowed')}>
+            className={cn('w-full py-3 rounded-md border border-gray-200 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-all', (items.length === 0 || saving) && 'opacity-40 cursor-not-allowed')}>
             {saving ? 'Saving...' : language === 'hi' ? 'Sirf Save Karo' : 'Save Only'}
           </button>
         </div>

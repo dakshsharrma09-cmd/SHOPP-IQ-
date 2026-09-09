@@ -40,7 +40,7 @@ function Skeleton({ h = 'h-6', w = 'w-full', className = '' }: { h?: string; w?:
 
 function CardSkeleton() {
   return (
-    <div className="p-5 rounded-2xl bg-white border border-gray-200 space-y-3">
+    <div className="p-5 rounded-lg bg-white border border-gray-200 space-y-3">
       <Skeleton h="h-4" w="w-24" />
       <Skeleton h="h-8" w="w-32" />
       <Skeleton h="h-3" w="w-20" />
@@ -49,7 +49,7 @@ function CardSkeleton() {
 }
 
 function ChartSkeleton({ height = 280 }: { height?: number }) {
-  return <div className="animate-pulse rounded-xl bg-gray-100" style={{ height }} />;
+  return <div className="animate-pulse rounded-md bg-gray-100" style={{ height }} />;
 }
 
 // ── Empty State ──────────────────────────────────────────────
@@ -406,15 +406,15 @@ export default function Analytics() {
   return (
     <div className="space-y-6">
       {/* ═══ HEADER ═══ */}
-      <div className="p-6 md:p-8 rounded-2xl bg-white border border-gray-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="p-6 md:p-8 rounded-lg bg-white border border-gray-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-heading font-bold text-gray-900 flex items-center gap-2">
-            📊 {t('analytics')}
+             {t('analytics')}
           </h1>
           <p className="text-gray-500 text-sm mt-1">व्यापार विश्लेषण — Business Intelligence</p>
         </div>
         <div className="flex flex-wrap items-center gap-3">
-          <div className="flex gap-1 bg-gray-100 rounded-xl p-1">
+          <div className="flex gap-1 bg-gray-100 rounded-md p-1">
             {(['7d', '30d', '90d', '1y'] as const).map(p => (
               <button key={p} onClick={() => setPeriod(p)}
                 className={cn('px-3 py-1.5 rounded-lg text-sm font-medium transition-all',
@@ -439,10 +439,10 @@ export default function Analytics() {
             { title: language === 'hi' ? 'औसत ऑर्डर' : 'Avg Order Value', value: formatINR(stats.aov), pct: stats.aovPct, icon: DollarSign, borderColor: '#D97706' },
             { title: language === 'hi' ? 'सक्रिय ग्राहक' : 'Active Customers', value: String(stats.activeCustomers), pct: stats.customersPct, icon: Users, borderColor: '#059669' },
           ].map((s, i) => (
-            <div key={i} className="p-5 rounded-2xl bg-white border border-gray-200 shadow-sm relative overflow-hidden"
+            <div key={i} className="p-5 rounded-lg bg-white border border-gray-200 shadow-sm relative overflow-hidden"
               style={{ borderLeft: `4px solid ${s.borderColor}` }}>
               <div className="flex items-center justify-between mb-2">
-                <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ backgroundColor: s.borderColor + '15' }}>
+                <div className="w-9 h-9 rounded-md flex items-center justify-center" style={{ backgroundColor: s.borderColor + '15' }}>
                   <s.icon size={18} style={{ color: s.borderColor }} />
                 </div>
                 <Trend pct={s.pct} />
@@ -455,7 +455,7 @@ export default function Analytics() {
       </div>
 
       {/* ═══ REVENUE TREND ═══ */}
-      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5">
+      <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-5">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-heading font-semibold text-gray-900">
             {language === 'hi' ? 'बिक्री रुझान' : 'Revenue Trend'}
@@ -493,7 +493,7 @@ export default function Analytics() {
       {/* ═══ TOP PRODUCTS + CATEGORY ═══ */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Top Products */}
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5">
+        <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-5">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-heading font-semibold text-gray-900">{t('topProducts')}</h2>
             <button onClick={exportTopProductsCSV} className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-purple-600 transition-colors">
@@ -519,7 +519,7 @@ export default function Analytics() {
         </div>
 
         {/* Category Breakdown */}
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5">
+        <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-5">
           <h2 className="text-lg font-heading font-semibold text-gray-900 mb-4">{t('revenueByCategory')}</h2>
           {loading ? <ChartSkeleton height={260} /> : categoryData.length > 0 ? (
             <div className="flex flex-col items-center">
@@ -549,7 +549,7 @@ export default function Analytics() {
       </div>
 
       {/* ═══ P&L STATEMENT ═══ */}
-      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5">
+      <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-5">
         <h2 className="text-lg font-heading font-semibold text-gray-900 mb-4">
           {language === 'hi' ? 'लाभ और हानि' : 'Profit & Loss'}
           <span className="text-xs text-gray-400 font-normal ml-2">Last {periodDays} days</span>
@@ -564,24 +564,24 @@ export default function Analytics() {
                 { label: '(-) Expenses', value: pnl.totalExpenses, color: 'text-red-500', bold: false },
                 { label: 'Net Profit', value: pnl.netProfit, color: pnl.netProfit >= 0 ? 'text-green-600' : 'text-red-500', bold: true },
               ].map(row => (
-                <div key={row.label} className={cn('flex items-center justify-between p-3 rounded-xl', row.bold ? 'bg-gray-50 border border-gray-100' : '')}>
+                <div key={row.label} className={cn('flex items-center justify-between p-3 rounded-md', row.bold ? 'bg-gray-50 border border-gray-100' : '')}>
                   <span className={cn('text-sm', row.bold ? 'font-semibold text-gray-900' : 'text-gray-500 pl-4')}>{row.label}</span>
                   <span className={cn('font-bold font-stat', row.color)}>{formatINR(Math.round(Math.abs(row.value)))}</span>
                 </div>
               ))}
             </div>
             <div className="space-y-4">
-              <div className="p-4 rounded-xl bg-purple-50 border border-purple-100">
+              <div className="p-4 rounded-md bg-purple-50 border border-purple-100">
                 <div className="text-sm text-gray-600 mb-1">Gross Margin</div>
-                <div className="text-3xl font-bold font-stat text-purple-700">{pnl.grossMargin.toFixed(1)}%</div>
+                <div className="text-2xl font-bold font-stat text-purple-700">{pnl.grossMargin.toFixed(1)}%</div>
                 <div className="mt-2 h-2 bg-purple-100 rounded-full overflow-hidden">
                   <div className="h-full bg-purple-600 rounded-full transition-all duration-500"
                     style={{ width: `${Math.min(100, Math.max(0, pnl.grossMargin))}%` }} />
                 </div>
               </div>
-              <div className={cn('p-4 rounded-xl border', pnl.netProfit >= 0 ? 'bg-green-50 border-green-100' : 'bg-red-50 border-red-100')}>
+              <div className={cn('p-4 rounded-md border', pnl.netProfit >= 0 ? 'bg-green-50 border-green-100' : 'bg-red-50 border-red-100')}>
                 <div className="text-sm text-gray-600 mb-1">Net Margin</div>
-                <div className={cn('text-3xl font-bold font-stat', pnl.netProfit >= 0 ? 'text-green-600' : 'text-red-500')}>
+                <div className={cn('text-2xl font-bold font-stat', pnl.netProfit >= 0 ? 'text-green-600' : 'text-red-500')}>
                   {pnl.netMargin.toFixed(1)}%
                 </div>
                 <div className={cn('mt-2 h-2 rounded-full overflow-hidden', pnl.netProfit >= 0 ? 'bg-green-100' : 'bg-red-100')}>
@@ -595,7 +595,7 @@ export default function Analytics() {
       </div>
 
       {/* ═══ MONTHLY P&L TABLE ═══ */}
-      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5">
+      <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-5">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-heading font-semibold text-gray-900">
             {language === 'hi' ? 'मासिक लाभ-हानि' : 'Monthly P&L'}
@@ -656,7 +656,7 @@ export default function Analytics() {
       {/* ═══ CUSTOMER SEGMENTS + GST ═══ */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Customer Segments Donut */}
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5">
+        <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-5">
           <h2 className="text-lg font-heading font-semibold text-gray-900 mb-4">Customer Segments</h2>
           {loading ? <ChartSkeleton height={260} /> : customerSegments.length > 0 ? (
             <div className="flex flex-col items-center">
@@ -690,7 +690,7 @@ export default function Analytics() {
         </div>
 
         {/* GST + Expenses */}
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5">
+        <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-5">
           <h2 className="text-lg font-heading font-semibold text-gray-900 mb-4">GST Summary</h2>
           {loading ? <ChartSkeleton height={200} /> : (
             <>
@@ -700,7 +700,7 @@ export default function Analytics() {
                   { label: 'SGST', value: formatINR(Math.round(totalSGST)), color: 'text-blue-600' },
                   { label: 'Total GST', value: formatINR(Math.round(totalCGST + totalSGST)), color: 'text-green-600' },
                 ].map(item => (
-                  <div key={item.label} className="flex items-center justify-between p-3 rounded-xl border border-gray-100 bg-gray-50">
+                  <div key={item.label} className="flex items-center justify-between p-3 rounded-md border border-gray-100 bg-gray-50">
                     <span className="text-sm text-gray-600">{item.label}</span>
                     <span className={cn('font-bold font-stat', item.color)}>{item.value}</span>
                   </div>
@@ -736,7 +736,7 @@ export default function Analytics() {
       </div>
 
       {/* ═══ VYAPAAR SCORE ═══ */}
-      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
+      <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
         <h2 className="text-lg font-heading font-semibold text-gray-900 mb-6">
           {language === 'hi' ? 'व्यापार स्कोर' : 'Vyapaar Score'}
         </h2>
@@ -753,7 +753,7 @@ export default function Analytics() {
                 </svg>
                 <div className="absolute inset-0 flex items-center justify-center">
                   <div className="text-center">
-                    <div className="text-3xl font-bold font-stat" style={{ color: scoreColor }}>{vyapaarScore.total}</div>
+                    <div className="text-2xl font-bold font-stat" style={{ color: scoreColor }}>{vyapaarScore.total}</div>
                     <div className="text-xs text-gray-500">/1000</div>
                   </div>
                 </div>
@@ -777,8 +777,8 @@ export default function Analytics() {
 
               {/* Tips */}
               {vyapaarScore.tips.length > 0 && (
-                <div className="mt-4 p-3 rounded-xl bg-purple-50 border border-purple-100">
-                  <p className="text-xs font-semibold text-purple-700 mb-2">💡 Score Improve Tips:</p>
+                <div className="mt-4 p-3 rounded-md bg-purple-50 border border-purple-100">
+                  <p className="text-xs font-semibold text-purple-700 mb-2"> Score Improve Tips:</p>
                   {vyapaarScore.tips.map((tip, i) => (
                     <p key={i} className="text-xs text-purple-600 mb-1">• {tip}</p>
                   ))}

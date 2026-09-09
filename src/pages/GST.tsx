@@ -187,7 +187,7 @@ export default function GST() {
     <div className="space-y-6" id="gst-report">
       <style>{`
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
-        .fade-in-up { animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
+        . { animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
       `}</style>
       {/* ── Print-only header (hidden on screen) ──────────── */}
       <div className="print-header hidden">
@@ -201,29 +201,29 @@ export default function GST() {
       </div>
 
       {/* ── Screen header ─────────────────────────────────── */}
-      <div className="p-8 rounded-3xl bg-gradient-to-r from-purple-50 to-pink-50 relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6 shadow-2xl border border-white/10 fade-in-up" style={{ animationDelay: '0.1s' }} data-print-hide>
+      <div className="p-8 rounded-lg bg-gradient-to-r from-purple-50 to-pink-50 relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6 border border-gray-200 border border-white/10 "  data-print-hide>
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-overlay"></div>
         <div className="absolute -top-24 -right-24 w-64 h-64 bg-indigo-500 rounded-full blur-[100px] opacity-40"></div>
         <div className="relative z-10">
-          <h1 className="text-3xl font-heading font-extrabold text-gray-900 mb-2 tracking-tight flex items-center gap-3">
-            {t('gst')} 🧾
+          <h1 className="text-2xl font-heading font-extrabold text-gray-900 mb-2 tracking-tight flex items-center gap-3">
+            {t('gst')} 
           </h1>
           <p className="text-indigo-700 text-sm font-medium tracking-widest uppercase">जीएसटी रिपोर्ट</p>
         </div>
         <div className="relative z-10 flex gap-2">
           <select value={month} onChange={e => setMonth(Number(e.target.value))}
-            className="px-4 py-2.5 rounded-xl border border-indigo-500/30 bg-black/40 backdrop-blur-md text-gray-900 text-sm outline-none focus:border-indigo-400 font-medium">
-            {months.map((m, i) => <option key={i} value={i} className="bg-surface-bg text-gray-900">{m}</option>)}
+            className="px-4 py-2.5 rounded-md border border-indigo-500/30 bg-black/40 backdrop-blur-md text-gray-900 text-sm outline-none focus:border-indigo-400 font-medium">
+            {months.map((m, i) => <option key={i} value={i} className=" text-gray-900">{m}</option>)}
           </select>
           <select value={year} onChange={e => setYear(Number(e.target.value))}
-            className="px-4 py-2.5 rounded-xl border border-indigo-500/30 bg-black/40 backdrop-blur-md text-gray-900 text-sm outline-none focus:border-indigo-400 font-medium">
-            {[2024, 2025, 2026, 2027].map(y => <option key={y} value={y} className="bg-surface-bg text-gray-900">{y}</option>)}
+            className="px-4 py-2.5 rounded-md border border-indigo-500/30 bg-black/40 backdrop-blur-md text-gray-900 text-sm outline-none focus:border-indigo-400 font-medium">
+            {[2024, 2025, 2026, 2027].map(y => <option key={y} value={y} className=" text-gray-900">{y}</option>)}
           </select>
         </div>
       </div>
 
       {/* ── Business Info Banner ──────────────────────────── */}
-      <div className="glass-card card-glow p-4 flex flex-col md:flex-row md:items-center justify-between gap-2 fade-in-up" style={{ animationDelay: '0.2s' }}>
+      <div className="bg-white border border-gray-200 rounded-lg p-4 flex flex-col md:flex-row md:items-center justify-between gap-2 " >
         <div>
           <div className="text-sm text-gray-900 font-heading text-section-heading-white">{tenant?.businessName || 'Your Business'}</div>
           <div className="text-xs text-gray-500">GSTIN: <span className="font-mono text-brand-purple">{tenant?.gstin || 'Not set — update in Settings'}</span></div>
@@ -244,7 +244,7 @@ export default function GST() {
           { label: 'SGST', value: formatINR(Math.round(totalSGST)), gradient: 'linear-gradient(135deg, #10b981, #047857)' },
           { label: 'Total Tax', value: formatINR(Math.round(totalTax)), gradient: 'linear-gradient(135deg, #f59e0b, #b45309)' },
         ].map((s, i) => (
-          <div key={s.label} className="stat-card border-none relative overflow-hidden fade-in-up" style={{ animationDelay: `${0.3 + i * 0.1}s`, background: s.gradient }}>
+          <div key={s.label} className="stat-card border-none relative overflow-hidden " style={{ animationDelay: `${0.3 + i * 0.1}s`, background: s.gradient }}>
             <div className="text-xs text-gray-900/80 font-medium mb-1 relative z-10">{s.label}</div>
             <div className="text-xl font-bold font-heading text-gray-900 relative z-10 drop-shadow-md">{s.value}</div>
           </div>
@@ -252,7 +252,7 @@ export default function GST() {
       </div>
 
       {/* ── Tabs ──────────────────────────────────────────── */}
-      <div className="flex gap-1 p-1 bg-gray-100-gray-800 rounded-xl w-fit" data-print-hide>
+      <div className="flex gap-1 p-1 bg-gray-100-gray-800 rounded-md w-fit" data-print-hide>
         {(['gstr1', 'slabs', 'hsn'] as const).map(t2 => (
           <button key={t2} onClick={() => setTab(t2)}
             className={cn('px-4 py-2 rounded-lg text-sm font-medium transition-all',
@@ -266,7 +266,7 @@ export default function GST() {
           TAB 1: GSTR-1 Summary (B2B / B2C / Nil)
           ═══════════════════════════════════════════════════════ */}
       {tab === 'gstr1' && (
-        <div className="glass-card card-glow overflow-hidden fade-in-up" style={{ animationDelay: '0.8s' }}>
+        <div className="bg-white border border-gray-200 rounded-lg overflow-hidden " >
           <table className="w-full text-sm">
             <thead>
               <tr className="bg-gray-50 text-gray-500 uppercase text-xs">
@@ -307,7 +307,7 @@ export default function GST() {
           TAB 2: GST Rate Slab Breakdown
           ═══════════════════════════════════════════════════════ */}
       {tab === 'slabs' && (
-        <div className="glass-card card-glow overflow-hidden fade-in-up" style={{ animationDelay: '0.8s' }}>
+        <div className="bg-white border border-gray-200 rounded-lg overflow-hidden " >
           <table className="w-full text-sm">
             <thead>
               <tr className="bg-gray-50 text-gray-500 uppercase text-xs">
@@ -362,7 +362,7 @@ export default function GST() {
           TAB 3: HSN Summary
           ═══════════════════════════════════════════════════════ */}
       {tab === 'hsn' && (
-        <div className="glass-card card-glow overflow-hidden fade-in-up" style={{ animationDelay: '0.8s' }}>
+        <div className="bg-white border border-gray-200 rounded-lg overflow-hidden " >
           <table className="w-full text-sm">
             <thead>
               <tr className="bg-gray-50 text-gray-500 uppercase text-xs">
@@ -407,33 +407,33 @@ export default function GST() {
       )}
 
       {/* ── Action Buttons ────────────────────────────────── */}
-      <div className="flex flex-wrap gap-3 fade-in-up" style={{ animationDelay: '0.9s' }} data-print-hide>
-        <button onClick={handleWhatsAppCA} className="flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-green-500 to-green-600 text-gray-900 text-sm font-medium hover:scale-105 hover:shadow-[0_0_20px_rgba(34,197,94,0.4)] transition-all">
+      <div className="flex flex-wrap gap-3 "  data-print-hide>
+        <button onClick={handleWhatsAppCA} className="flex items-center gap-2 px-6 py-3 rounded-md bg-gradient-to-r from-green-500 to-green-600 text-gray-900 text-sm font-medium hover:bg-gray-50 hover:shadow-[0_0_20px_rgba(34,197,94,0.4)] transition-all">
           <MessageCircle size={16} /> {language === 'hi' ? 'CA ko WhatsApp Bhejo' : 'WhatsApp to CA'}
         </button>
-        <button onClick={handlePrintPDF} className="flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-brand-purple to-purple-600 text-gray-900 text-sm font-medium hover:scale-105 hover:shadow-[0_0_20px_rgba(124,58,237,0.4)] transition-all">
+        <button onClick={handlePrintPDF} className="flex items-center gap-2 px-6 py-3 rounded-md bg-gradient-to-r from-brand-purple to-purple-600 text-gray-900 text-sm font-medium hover:bg-gray-50 hover:shadow-[0_0_20px_rgba(124,58,237,0.4)] transition-all">
           <Printer size={16} /> {language === 'hi' ? 'PDF Download Karo' : 'Download PDF'}
         </button>
-        <button onClick={handleDownloadJSON} className="flex items-center gap-2 px-6 py-3 rounded-xl bg-white/10 border border-brand-purple/30 text-brand-purple-purple-300 text-sm font-medium hover:bg-brand-purple/10 transition-all">
+        <button onClick={handleDownloadJSON} className="flex items-center gap-2 px-6 py-3 rounded-md bg-white/10 border border-brand-purple/30 text-brand-purple-purple-300 text-sm font-medium hover:bg-brand-purple/10 transition-all">
           <FileDown size={16} /> Download GSTR-1 JSON
         </button>
       </div>
 
       {/* ── Tax Liability Summary (always visible) ────────── */}
-      <div className="glass-card card-glow p-6 fade-in-up" style={{ animationDelay: '1.0s' }}>
+      <div className="bg-white border border-gray-200 rounded-lg p-6 " >
         <h2 className="text-gray-900 font-heading text-section-heading-white mb-4">
           {language === 'hi' ? 'Tax Liability Summary' : 'Tax Liability Summary'}
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="p-4 rounded-xl bg-blue-50-blue-900/10 border border-blue-100-blue-900/30">
+          <div className="p-4 rounded-md bg-blue-50-blue-900/10 border border-blue-100-blue-900/30">
             <div className="text-xs text-blue-600-blue-400 mb-1">CGST Payable</div>
             <div className="text-2xl font-bold font-heading text-blue-700-blue-300">{formatINR(Math.round(totalCGST))}</div>
           </div>
-          <div className="p-4 rounded-xl bg-green-50-green-900/10 border border-green-100-green-900/30">
+          <div className="p-4 rounded-md bg-green-50-green-900/10 border border-green-100-green-900/30">
             <div className="text-xs text-green-600-green-400 mb-1">SGST Payable</div>
             <div className="text-2xl font-bold font-heading text-green-700-green-300">{formatINR(Math.round(totalSGST))}</div>
           </div>
-          <div className="p-4 rounded-xl bg-gradient-to-br from-brand-purple/10 to-purple-100/50-brand-purple/20-purple-900/10 border border-brand-purple/20">
+          <div className="p-4 rounded-md bg-gradient-to-br from-brand-purple/10 to-purple-100/50-brand-purple/20-purple-900/10 border border-brand-purple/20">
             <div className="text-xs text-brand-purple mb-1">Total Tax Liability</div>
             <div className="text-2xl font-bold font-heading text-brand-purple">{formatINR(Math.round(totalTax))}</div>
           </div>

@@ -215,21 +215,15 @@ export default function Dashboard() {
   return (
     <div className="space-y-6">
       <style>{`
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
-        .fade-in-up { animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
-        @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
-        .float-anim { animation: float 3s ease-in-out infinite; }
-        @keyframes gradientMove { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         @keyframes scoreRing { from { stroke-dasharray: 0 251.2; } }
         .score-ring-anim { animation: scoreRing 1.5s ease-out forwards; }
-        @keyframes countPop { 0% { transform: scale(0.8); opacity: 0; } 60% { transform: scale(1.05); } 100% { transform: scale(1); opacity: 1; } }
       `}</style>
       {/* ═══════════════════ HERO BANNER ═══════════════════ */}
-      <div className="relative overflow-hidden rounded-2xl p-6 md:p-8 bg-surface-bg">
+      <div className="relative overflow-hidden rounded-lg p-6 md:p-8">
         <div className="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
-            <h1 className="text-[28px] font-bold text-[#1F2937] flex items-center gap-3 mb-1" style={{ fontFamily: '"Plus Jakarta Sans", sans-serif' }}>
-              Namaste 🙏, {tenant?.ownerName?.split(' ')[0] || 'Boss'}!
+            <h1 className="text-2xl font-bold text-[#1F2937] flex items-center gap-3 mb-1" style={{ fontFamily: '"Plus Jakarta Sans", sans-serif' }}>
+              Namaste, {tenant?.ownerName?.split(' ')[0] || 'Boss'}!
               {isLive && (
                 <span className="relative flex h-2.5 w-2.5 mt-1">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
@@ -245,13 +239,13 @@ export default function Dashboard() {
           <div className="flex items-center gap-3">
             {!seeded && (
               <button onClick={handleSeed} disabled={seeding}
-                className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all hover:scale-105 active:scale-95 bg-purple-100 text-purple-700 border border-purple-200">
+                className="flex items-center gap-2 px-5 py-2.5 rounded-md text-sm font-semibold transition-all bg-purple-100 text-purple-700 border border-purple-200">
                 <Sprout size={15} />
-                {seeding ? 'Loading...' : '🎲 Demo Data'}
+                {seeding ? 'Loading...' : 'Load Demo Data'}
               </button>
             )}
             <button onClick={() => navigate('/billing/new')}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold text-white transition-all hover:scale-105 active:scale-95 btn-pulse bg-brand-purple">
+              className="flex items-center gap-2 px-5 py-2.5 rounded-md text-sm font-bold text-white transition-all bg-purple-700 hover:bg-purple-800">
               <Plus size={16} /> {t('createBill').split('&')[0]}
             </button>
           </div>
@@ -261,8 +255,8 @@ export default function Dashboard() {
       {/* ═══════════════════ STAT CARDS ═══════════════════ */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         {/* Today Sales */}
-        <div className="fade-in-up stat-card rounded-2xl p-5 cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-xl group bg-white border-l-4 border-gray-100"
-          style={{ animationDelay: '0ms', borderLeftColor: '#6D28D9' }}
+        <div className="fade-in-up stat-card rounded-lg p-5 cursor-pointer transition-all duration-300 hover:bg-gray-50 group bg-white border-l-4 border-gray-100"
+          style={{ borderLeftColor: '#6D28D9' }}
           onClick={() => navigate('/analytics')}>
           <div className="flex items-start justify-between mb-3">
             <div className="w-11 h-11 rounded-xl flex items-center justify-center" style={{ backgroundColor: 'rgba(109, 40, 217, 0.1)' }}>
@@ -272,14 +266,14 @@ export default function Dashboard() {
               <ArrowUpRight size={14} /> 12%
             </div>
           </div>
-          <div className="font-stat text-stat-number text-gray-900 mb-0.5 count-pop" style={{ fontFamily: 'Poppins, sans-serif', fontSize: '32px', fontWeight: 'bold' }}><AnimatedNumber value={todaySales} prefix="₹" /></div>
+          <div className="text-2xl font-bold font-stat text-gray-900 mb-0.5"><AnimatedNumber value={todaySales} prefix="₹" /></div>
           <div className="text-xs text-gray-500 font-medium">{t('todaySales')}</div>
           <div className="text-[10px] text-gray-400 mt-1">{todayInvoices.length} बिल आज</div>
         </div>
 
         {/* Pending */}
-        <div className="fade-in-up stat-card rounded-2xl p-5 cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-xl group bg-white border-l-4 border-gray-100"
-          style={{ animationDelay: '100ms', borderLeftColor: '#DB2777' }}
+        <div className="fade-in-up stat-card rounded-lg p-5 cursor-pointer transition-all duration-300 hover:bg-gray-50 group bg-white border-l-4 border-gray-100"
+          style={{ borderLeftColor: '#DB2777' }}
           onClick={() => navigate('/payments')}>
           <div className="flex items-start justify-between mb-3">
             <div className="w-11 h-11 rounded-xl flex items-center justify-center" style={{ backgroundColor: 'rgba(219, 39, 119, 0.1)' }}>
@@ -289,28 +283,28 @@ export default function Dashboard() {
               <ArrowUpRight size={14} className="rotate-90" /> 5%
             </div>
           </div>
-          <div className="font-stat text-stat-number text-gray-900 mb-0.5 count-pop" style={{ fontFamily: 'Poppins, sans-serif', fontSize: '32px', fontWeight: 'bold' }}><AnimatedNumber value={pendingTotal} prefix="₹" /></div>
+          <div className="text-2xl font-bold font-stat text-gray-900 mb-0.5"><AnimatedNumber value={pendingTotal} prefix="₹" /></div>
           <div className="text-xs text-gray-500 font-medium">{t('pendingPayments')}</div>
           <div className="text-[10px] text-gray-400 mt-1">{pendingCount} बिल बाकी</div>
         </div>
 
         {/* Low Stock */}
-        <div className="fade-in-up stat-card rounded-2xl p-5 cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-xl group bg-white border-l-4 border-gray-100"
-          style={{ animationDelay: '200ms', borderLeftColor: '#D97706' }}
+        <div className="fade-in-up stat-card rounded-lg p-5 cursor-pointer transition-all duration-300 hover:bg-gray-50 group bg-white border-l-4 border-gray-100"
+          style={{ borderLeftColor: '#D97706' }}
           onClick={() => navigate('/inventory')}>
           <div className="flex items-start justify-between mb-3">
             <div className="w-11 h-11 rounded-xl flex items-center justify-center" style={{ backgroundColor: 'rgba(217, 119, 6, 0.1)' }}>
               <Package size={20} className="text-[#D97706]" />
             </div>
           </div>
-          <div className="font-stat text-stat-number text-gray-900 mb-0.5 count-pop" style={{ fontFamily: 'Poppins, sans-serif', fontSize: '32px', fontWeight: 'bold' }}><AnimatedNumber value={lowStockProducts.length} /></div>
+          <div className="text-2xl font-bold font-stat text-gray-900 mb-0.5"><AnimatedNumber value={lowStockProducts.length} /></div>
           <div className="text-xs text-gray-500 font-medium">{t('lowStock')}</div>
           <div className="text-[10px] text-gray-400 mt-1">{lowStockProducts.length > 0 ? '⚠️ Reorder करो' : '✅ सब ठीक'}</div>
         </div>
 
         {/* New Customers */}
-        <div className="fade-in-up stat-card rounded-2xl p-5 cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-xl group bg-white border-l-4 border-gray-100"
-          style={{ animationDelay: '300ms', borderLeftColor: '#059669' }}
+        <div className="fade-in-up stat-card rounded-lg p-5 cursor-pointer transition-all duration-300 hover:bg-gray-50 group bg-white border-l-4 border-gray-100"
+          style={{ borderLeftColor: '#059669' }}
           onClick={() => navigate('/customers')}>
           <div className="flex items-start justify-between mb-3">
             <div className="w-11 h-11 rounded-xl flex items-center justify-center" style={{ backgroundColor: 'rgba(5, 150, 105, 0.1)' }}>
@@ -320,7 +314,7 @@ export default function Dashboard() {
               <ArrowUpRight size={14} /> 8%
             </div>
           </div>
-          <div className="font-stat text-stat-number text-gray-900 mb-0.5 count-pop" style={{ fontFamily: 'Poppins, sans-serif', fontSize: '32px', fontWeight: 'bold' }}><AnimatedNumber value={newCustomersToday} /></div>
+          <div className="text-2xl font-bold font-stat text-gray-900 mb-0.5"><AnimatedNumber value={newCustomersToday} /></div>
           <div className="text-xs text-gray-500 font-medium">{t('newCustomers')}</div>
           <div className="text-[10px] text-gray-400 mt-1">कुल {customers.length} ग्राहक</div>
         </div>
@@ -329,16 +323,16 @@ export default function Dashboard() {
       {/* ═══════════════════ CHARTS ROW ═══════════════════ */}
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
         {/* Sales Trend */}
-        <div className="lg:col-span-3 glass-card bg-white rounded-2xl shadow-sm p-6 fade-in-up border border-gray-100" style={{ animationDelay: '400ms' }}>
+        <div className="lg:col-span-3 bg-white border border-gray-200 rounded-lg p-6 fade-in-up border border-gray-100">
           <div className="flex items-center justify-between mb-5">
             <div>
               <h2 className="text-[20px] font-semibold text-[#1F2937]">{t('salesTrend')}</h2>
-              <p className="text-[11px] text-gray-400 mt-0.5">📈 बिक्री का रुझान</p>
+              <p className="text-[11px] text-gray-400 mt-0.5">बिक्री का रुझान</p>
             </div>
-            <div className="flex gap-1 bg-gray-50 rounded-xl p-1">
+            <div className="flex gap-1 bg-gray-50 rounded-md p-1">
               {(['7D', '30D'] as const).map(p => (
                 <button key={p} onClick={() => setChartPeriod(p)}
-                  className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${chartPeriod === p ? 'bg-[#6D28D9] text-white shadow-md shadow-purple-500/30' : 'text-gray-500 hover:text-gray-700'}`}>
+                  className={`px-3.5 py-1.5 rounded text-xs font-semibold transition-all ${chartPeriod === p ? 'bg-[#6D28D9] text-white' : 'text-gray-500 hover:text-gray-700'}`}>
                   {p === '7D' ? '7 दिन' : '30 दिन'}
                 </button>
               ))}
@@ -372,16 +366,15 @@ export default function Dashboard() {
             </ResponsiveContainer>
           ) : (
             <div className="flex flex-col items-center justify-center h-[230px] text-gray-400 text-sm gap-2">
-              <span className="text-4xl">📊</span>
-              <span>अभी कोई data नहीं — Demo Data लोड करें ↗</span>
+              <span className="text-gray-400 font-medium">अभी कोई data नहीं — Demo Data लोड करें ↗</span>
             </div>
           )}
         </div>
 
         {/* Category Pie */}
-        <div className="lg:col-span-2 glass-card bg-white rounded-2xl shadow-sm p-6 fade-in-up border border-gray-100" style={{ animationDelay: '500ms' }}>
+        <div className="lg:col-span-2 bg-white border border-gray-200 rounded-lg p-6 fade-in-up border border-gray-100">
           <h2 className="text-[20px] font-semibold text-[#1F2937] mb-1">{t('revenueByCategory')}</h2>
-          <p className="text-[11px] text-gray-400 mb-4">🏷️ श्रेणी अनुसार</p>
+          <p className="text-[11px] text-gray-400 mb-4">श्रेणी अनुसार</p>
           {categoryData.length > 0 ? (
             <>
               <ResponsiveContainer width="100%" height={160}>
@@ -408,8 +401,7 @@ export default function Dashboard() {
             </>
           ) : (
             <div className="flex flex-col items-center justify-center h-[200px] text-gray-400 text-sm gap-2">
-              <span className="text-4xl">📦</span>
-              <span>कोई product नहीं</span>
+              <span className="text-gray-400 font-medium">- कोई product नहीं -</span>
             </div>
           )}
         </div>
@@ -418,8 +410,8 @@ export default function Dashboard() {
       {/* ═══════════════════ TOP PRODUCTS + RECENT INVOICES ═══════════════════ */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Top Products */}
-        <div className="glass-card bg-white rounded-2xl shadow-sm p-6 fade-in-up border border-gray-100" style={{ animationDelay: '600ms' }}>
-          <h2 className="text-[20px] font-semibold text-[#1F2937] mb-1">🏆 {t('topProducts')}</h2>
+        <div className="bg-white border border-gray-200 rounded-lg p-6 fade-in-up border border-gray-100">
+          <h2 className="text-[20px] font-semibold text-[#1F2937] mb-1">{t('topProducts')}</h2>
           <p className="text-[11px] text-gray-400 mb-4">सबसे ज़्यादा बिकने वाले</p>
           {topProducts.length > 0 ? (
             <ResponsiveContainer width="100%" height={200}>
@@ -435,17 +427,16 @@ export default function Dashboard() {
             </ResponsiveContainer>
           ) : (
             <div className="flex flex-col items-center justify-center h-[200px] text-gray-400 text-sm gap-2">
-              <span className="text-4xl">🏪</span>
-              <span>अभी कोई data नहीं</span>
+              <span className="text-gray-400 font-medium">- अभी कोई data नहीं -</span>
             </div>
           )}
         </div>
 
         {/* Recent Invoices */}
-        <div className="glass-card bg-white rounded-2xl shadow-sm p-6 fade-in-up border border-gray-100" style={{ animationDelay: '700ms' }}>
+        <div className="bg-white border border-gray-200 rounded-lg p-6 fade-in-up border border-gray-100">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h2 className="text-[20px] font-semibold text-[#1F2937]">🧾 {t('recentInvoices')}</h2>
+              <h2 className="text-[20px] font-semibold text-[#1F2937]">{t('recentInvoices')}</h2>
               <p className="text-[11px] text-gray-400 mt-0.5">हाल के बिल</p>
             </div>
             <button onClick={() => navigate('/payments')} className="text-xs text-brand-purple hover:text-brand-purple-light font-semibold transition-colors">
@@ -460,8 +451,8 @@ export default function Dashboard() {
               <div className="w-10"></div>
             </div>
             <div className="space-y-0">
-              {recentInvoices.length > 0 ? recentInvoices.map((inv, i) => (
-                <div key={inv.id} className="flex items-center py-2.5 px-3 bg-white border-b border-gray-100 table-row-hover hover:bg-purple-50/30 transition-all cursor-pointer fade-in-up" style={{ animationDelay: `${700 + i * 80}ms` }}>
+              {recentInvoices.length > 0 ? recentInvoices.map((inv) => (
+                <div key={inv.id} className="flex items-center py-2.5 px-3 bg-white border-b border-gray-100 table-row-hover hover:bg-gray-50 transition-all cursor-pointer fade-in-up">
                   <div className="flex-1 flex items-center gap-3">
                     <div className="w-9 h-9 rounded-lg bg-purple-50 flex items-center justify-center text-[#6D28D9] text-xs font-bold">
                       {inv.id.slice(-3)}
@@ -490,8 +481,7 @@ export default function Dashboard() {
                 </div>
               )) : (
                 <div className="text-center py-8 text-gray-400 text-sm">
-                  <span className="text-4xl block mb-2">📄</span>
-                  कोई बिल नहीं — पहला बिल बनाओ!
+                  <span className="text-gray-400 font-medium">- कोई बिल नहीं — पहला बिल बनाओ! -</span>
                 </div>
               )}
             </div>
@@ -500,13 +490,12 @@ export default function Dashboard() {
       </div>
 
       {/* ═══════════════════ QUICK ACTIONS ═══════════════════ */}
-      <div className="glass-card bg-white rounded-2xl shadow-sm p-6 fade-in-up border border-gray-100" style={{ animationDelay: '800ms' }}>
-        <h2 className="text-[20px] font-semibold text-[#1F2937] mb-4">⚡ {t('quickActions')}</h2>
+      <div className="bg-white border border-gray-200 rounded-lg p-6 fade-in-up border border-gray-100">
+        <h2 className="text-[20px] font-semibold text-[#1F2937] mb-4">{t('quickActions')}</h2>
         <div className="grid grid-cols-4 md:grid-cols-8 gap-3">
-          {quickActions.map((action, i) => (
+          {quickActions.map((action) => (
             <button key={action.label} onClick={() => navigate(action.path)}
-              className="quick-action bg-white border border-gray-200 rounded-xl p-2 group hover:scale-105 active:scale-95 transition-all duration-200 fade-in-up flex flex-col items-center justify-center gap-2"
-              style={{ animationDelay: `${800 + i * 60}ms` }}>
+              className="quick-action bg-white border border-gray-200 rounded-xl p-2 group transition-all duration-200 fade-in-up flex flex-col items-center justify-center gap-2">
               <div className={`w-11 h-11 rounded-full flex items-center justify-center bg-gray-50 group-hover:shadow-md transition-all`}>
                 <action.icon size={20} className={`${action.color} transition-transform group-hover:scale-110`} />
               </div>
@@ -519,11 +508,11 @@ export default function Dashboard() {
       </div>
 
       {/* ═══════════════════ VYAPAAR SCORE ═══════════════════ */}
-      <div className="glass-card bg-white rounded-2xl shadow-sm overflow-hidden fade-in-up border border-gray-100" style={{ animationDelay: '900ms' }}>
+      <div className="bg-white border border-gray-200 rounded-lg overflow-hidden fade-in-up border border-gray-100">
         <button onClick={() => setScoreOpen(!scoreOpen)}
-          className="w-full flex items-center justify-between p-6 hover:bg-purple-50/50 transition-colors">
+          className="w-full flex items-center justify-between p-6 hover:bg-gray-50 transition-colors">
           <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-2xl flex items-center justify-center relative bg-purple-50">
+            <div className="w-14 h-14 rounded-lg flex items-center justify-center relative bg-purple-50">
               <Star size={24} className="text-[#6D28D9]" />
             </div>
             <div className="text-left">
@@ -569,8 +558,8 @@ export default function Dashboard() {
               </div>
               {/* Breakdown */}
               <div className="space-y-4">
-                {scoreBreakdown.map((item, i) => (
-                  <div key={item.label} className="fade-in-up" style={{ animationDelay: `${i * 100}ms` }}>
+                {scoreBreakdown.map((item) => (
+                  <div key={item.label} className="fade-in-up">
                     <div className="flex justify-between text-sm mb-1.5">
                       <span className="text-gray-600 font-medium">{item.label}</span>
                       <span className="font-bold" style={{ color: item.color }}>{item.score}%</span>

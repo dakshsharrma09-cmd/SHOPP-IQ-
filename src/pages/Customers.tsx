@@ -12,7 +12,7 @@ import { EmptyState } from '../components/EmptyState';
 
 const segments = ['all', 'vip', 'regular', 'new', 'at_risk'] as const;
 const segmentLabels: Record<string, { en: string; hi: string }> = {
-  all: { en: 'All', hi: 'Sab' }, vip: { en: 'VIP ⭐', hi: 'VIP ⭐' },
+  all: { en: 'All', hi: 'Sab' }, vip: { en: 'VIP ', hi: 'VIP ' },
   regular: { en: 'Regular', hi: 'Niyamit' }, new: { en: 'New', hi: 'Naye' },
   at_risk: { en: 'At Risk', hi: 'Khatare mein' },
 };
@@ -79,7 +79,7 @@ export default function Customers() {
       });
       setShowAddModal(false);
       setNewCust({ fullName: '', phoneNumber: '', city: '', email: '', address: '', creditLimit: 5000 });
-      showToast('✅ Naya customer add ho gaya!', 'success');
+      showToast(' Naya customer add ho gaya!', 'success');
     } catch (err) {
       showToast('Customer add nahi hua. Dobara try karo.', 'error');
     } finally {
@@ -89,8 +89,8 @@ export default function Customers() {
 
   const handleWhatsApp = (phone: string) => {
     const msg = language === 'hi'
-      ? `Namaste! Aapka ShoppIQ account update hua hai. 🙏`
-      : `Hello! Your ShoppIQ account has been updated. 🙏`;
+      ? `Namaste! Aapka ShoppIQ account update hua hai. `
+      : `Hello! Your ShoppIQ account has been updated. `;
     window.open(whatsappLink(phone, msg), '_blank');
   };
 
@@ -130,7 +130,7 @@ export default function Customers() {
   if (loaded && customers.length === 0) {
     return (
       <EmptyState
-        icon="👥"
+        icon=""
         title="Koi customer nahi hai"
         subtitle="Apna pehla customer add karo!"
         actionLabel="+ Customer Add Karo"
@@ -141,39 +141,36 @@ export default function Customers() {
 
   return (
     <div className="animate-fade-in">
-      <style>{`
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
-        .fade-in-up { animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
-      `}</style>
+      
 
       {/* Header Banner */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 p-6 rounded-2xl shadow-lg bg-gradient-to-r from-purple-50 to-pink-50">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-2xl md:text-3xl font-heading font-bold text-gray-900 mb-1 flex items-center gap-2">
-            {t('customers')} 👥
+          <h1 className="text-2xl font-bold text-gray-900 mb-1 flex items-center gap-2">
+            {t('customers')} 
           </h1>
-          <p className="text-blue-600 text-sm">{language === 'hi' ? 'Apne grahakon aur unke khate manage karein' : 'Manage your customers and their accounts'}</p>
+          <p className="text-gray-500 text-sm">{language === 'hi' ? 'Apne grahakon aur unke khate manage karein' : 'Manage your customers and their accounts'}</p>
         </div>
-        <button onClick={() => setShowAddModal(true)} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white text-blue-900 hover:bg-gray-50 transition-all text-sm font-bold shadow-md w-fit">
+        <button onClick={() => setShowAddModal(true)} className="flex items-center gap-2 px-4 py-2 rounded-md bg-white border border-gray-200 text-gray-900 hover:bg-gray-50 transition-all text-sm font-bold w-fit">
           <Plus size={15} /> {language === 'hi' ? 'Naya Grahak' : 'New Customer'}
         </button>
       </div>
 
       {/* Stat Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <div className="fade-in-up p-5 rounded-2xl shadow-lg text-gray-900" style={{ background: 'linear-gradient(135deg, #7C3AED, #5B21B6)', animationDelay: '0.1s' }}>
+        <div className=" p-5 rounded-lg border border-gray-200 text-gray-900" style={{ background: 'linear-gradient(135deg, #7C3AED, #5B21B6)'}}>
           <div className="text-purple-200 text-xs font-medium mb-1 uppercase tracking-wider">Total Customers</div>
           <div className="text-2xl font-bold font-heading">{customers.length}</div>
         </div>
-        <div className="fade-in-up p-5 rounded-2xl shadow-lg text-gray-900" style={{ background: 'linear-gradient(135deg, #10B981, #065F46)', animationDelay: '0.2s' }}>
+        <div className=" p-5 rounded-lg border border-gray-200 text-gray-900" style={{ background: 'linear-gradient(135deg, #10B981, #065F46)'}}>
           <div className="text-green-600 text-xs font-medium mb-1 uppercase tracking-wider">Active (Regular)</div>
           <div className="text-2xl font-bold font-heading">{customers.filter(c => c.customerSegment === 'regular').length}</div>
         </div>
-        <div className="fade-in-up p-5 rounded-2xl shadow-lg text-gray-900" style={{ background: 'linear-gradient(135deg, #EAB308, #854D0E)', animationDelay: '0.3s' }}>
+        <div className=" p-5 rounded-lg border border-gray-200 text-gray-900" style={{ background: 'linear-gradient(135deg, #EAB308, #854D0E)'}}>
           <div className="text-yellow-200 text-xs font-medium mb-1 uppercase tracking-wider">VIP Customers</div>
           <div className="text-2xl font-bold font-heading">{customers.filter(c => c.customerSegment === 'vip').length}</div>
         </div>
-        <div className="fade-in-up p-5 rounded-2xl shadow-lg text-gray-900" style={{ background: 'linear-gradient(135deg, #3B82F6, #1E40AF)', animationDelay: '0.4s' }}>
+        <div className=" p-5 rounded-lg border border-gray-200 text-gray-900" style={{ background: 'linear-gradient(135deg, #3B82F6, #1E40AF)'}}>
           <div className="text-blue-600 text-xs font-medium mb-1 uppercase tracking-wider">New Customers</div>
           <div className="text-2xl font-bold font-heading">{customers.filter(c => c.customerSegment === 'new').length}</div>
         </div>
@@ -199,7 +196,7 @@ export default function Customers() {
       </div>
 
       {/* Table */}
-      <div className="glass-card card-glow overflow-hidden">
+      <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
@@ -226,7 +223,7 @@ export default function Customers() {
                     </div>
                   </td>
                   <td className="px-4 py-3 text-gray-500">{c.phoneNumber}</td>
-                  <td className="px-4 py-3 text-center"><span className="text-brand-gold font-medium">🎁 {c.loyaltyPoints}</span></td>
+                  <td className="px-4 py-3 text-center"><span className="text-brand-gold font-medium"> {c.loyaltyPoints}</span></td>
                   <td className="px-4 py-3 text-right font-medium text-gray-900">{formatINR(c.totalLifetimeValue)}</td>
                   <td className="px-4 py-3 text-center text-gray-500">{c.visitCount}</td>
                   <td className="px-4 py-3 text-center">{segmentBadge(c.customerSegment)}</td>
@@ -253,7 +250,7 @@ export default function Customers() {
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
-                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-brand-purple to-purple-400 flex items-center justify-center text-white text-xl font-bold">
+                  <div className="w-14 h-14 rounded-lg bg-gradient-to-br from-brand-purple to-purple-400 flex items-center justify-center text-white text-xl font-bold">
                     {selectedCustomer.fullName.charAt(0)}
                   </div>
                   <div>
@@ -303,7 +300,7 @@ export default function Customers() {
                 {[
                   { label: 'Total Spent', value: formatINR(selectedCustomer.totalLifetimeValue), color: 'text-brand-purple' },
                   { label: 'Visits', value: selectedCustomer.visitCount, color: 'text-blue-500' },
-                  { label: 'Loyalty Points', value: `🎁 ${selectedCustomer.loyaltyPoints}`, color: 'text-brand-gold' },
+                  { label: 'Loyalty Points', value: ` ${selectedCustomer.loyaltyPoints}`, color: 'text-brand-gold' },
                   { label: 'Outstanding', value: formatINR(selectedCustomer.currentOutstanding), color: selectedCustomer.currentOutstanding > 0 ? 'text-red-500' : 'text-brand-green' },
                 ].map(s => (
                   <div key={s.label} className="p-3 rounded-xl bg-gray-50">
@@ -343,7 +340,7 @@ export default function Customers() {
               {profileTab === 'loyalty' && (
                 <div className="space-y-2 animate-fade-in">
                   <div className="text-center py-4">
-                    <div className="text-3xl font-bold font-heading text-brand-gold mb-1">🎁 {selectedCustomer.loyaltyPoints}</div>
+                    <div className="text-2xl font-bold font-heading text-brand-gold mb-1"> {selectedCustomer.loyaltyPoints}</div>
                     <div className="text-sm text-gray-500">Total loyalty points</div>
                   </div>
                 </div>
@@ -364,13 +361,13 @@ export default function Customers() {
                       try {
                         await updateCustomer(tenantId, selectedCustomer.id, { notes: customerNotes });
                         setSelectedCustomer(prev => prev ? { ...prev, notes: customerNotes } : null);
-                        showToast('✅ Notes save ho gaye!', 'success');
+                        showToast(' Notes save ho gaye!', 'success');
                       } catch (e) { showToast('Notes save nahi hua.', 'error'); }
                     }}
-                    className="mt-3 px-4 py-2 rounded-xl text-sm font-semibold text-gray-900 transition-all hover:scale-105 active:scale-95 bg-gradient-to-r from-purple-50 to-pink-50">
-                    💾 {language === 'hi' ? 'Notes सेव करो' : 'Save Notes'}
+                    className="mt-3 px-4 py-2 rounded-xl text-sm font-semibold text-gray-900 transition-all hover:bg-gray-50  ">
+                     {language === 'hi' ? 'Notes सेव करो' : 'Save Notes'}
                   </button>
-                  <p className="text-xs text-gray-500 mt-2">✅ {language === 'hi' ? 'Notes Firestore mein save hoti hain' : 'Notes are saved to cloud'}</p>
+                  <p className="text-xs text-gray-500 mt-2"> {language === 'hi' ? 'Notes Firestore mein save hoti hain' : 'Notes are saved to cloud'}</p>
                 </div>
               )}
 
@@ -398,7 +395,7 @@ export default function Customers() {
       {/* Add Customer Modal */}
       {showAddModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fade-in">
-          <div className="bg-white rounded-2xl p-6 w-full max-w-sm mx-4 animate-scale-in">
+          <div className="bg-white rounded-lg p-6 w-full max-w-sm mx-4 animate-scale-in">
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-heading font-bold text-gray-900">{language === 'hi' ? 'Naya Grahak' : 'New Customer'}</h3>
               <button onClick={() => setShowAddModal(false)} className="p-1 rounded-lg hover:bg-gray-100">

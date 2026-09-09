@@ -140,7 +140,7 @@ export default function Login() {
       {/* Language Toggle - top right */}
       <button
         onClick={() => setLanguage(language === 'en' ? 'hi' : 'en')}
-        className="absolute top-6 right-6 z-20 flex items-center gap-1.5 px-3 py-2 rounded-xl border border-gray-200 text-gray-600 hover:text-gray-900 hover:border-gray-300 transition-all text-sm font-medium bg-white/70 backdrop-blur-sm"
+        className="absolute top-6 right-6 z-20 flex items-center gap-1.5 px-3 py-2 rounded-md border border-gray-200 text-gray-600 hover:text-gray-900 hover:border-gray-300 transition-all text-sm font-medium bg-white/70 backdrop-blur-sm"
       >
         <Globe size={14} />
         {language === 'en' ? 'हिंदी' : 'English'}

@@ -60,7 +60,7 @@ export default function Expenses() {
       setShowAddModal(false);
       setAmount('');
       setDescription('');
-      showToast('✅ Expense add ho gaya!', 'success');
+      showToast(' Expense add ho gaya!', 'success');
     } catch (error) {
       showToast('Expense add nahi hua.', 'error');
     } finally {
@@ -134,7 +134,7 @@ export default function Expenses() {
   if (loaded && expenses.length === 0) {
     return (
       <EmptyState
-        icon="💸"
+        icon=""
         title="Koi expense nahi hai"
         subtitle="Apna pehla kharcha add karo!"
         actionLabel="+ Expense Add Karo"
@@ -145,35 +145,32 @@ export default function Expenses() {
 
   return (
     <div className="animate-fade-in">
-      <style>{`
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
-        .fade-in-up { animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
-      `}</style>
+      
 
       {/* Header Banner */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 p-6 rounded-2xl shadow-sm border border-gray-100 bg-white">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-2xl md:text-3xl font-heading font-bold text-gray-900 mb-1 flex items-center gap-2">
-            Expenses 💸
+          <h1 className="text-2xl font-bold text-gray-900 mb-1 flex items-center gap-2">
+            Expenses 
           </h1>
           <p className="text-gray-500 text-sm">{language === 'hi' ? 'खर्चे ट्रैक करो' : 'Track your expenses'}</p>
         </div>
-        <button onClick={() => setShowAddModal(true)} className="flex items-center gap-2 btn-primary text-white px-4 py-2.5 rounded-xl font-medium shadow-sm">
+        <button onClick={() => setShowAddModal(true)} className="flex items-center gap-2 btn-primary text-white px-4 py-2 rounded-md font-medium">
           <Plus size={18} /> {language === 'hi' ? 'खर्चा जोड़ें' : 'Add Expense'}
         </button>
       </div>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <div className="glass-card card-glow p-5 bg-gradient-to-br from-red-500/10 to-red-600/5 border-red-500/20">
+        <div className="bg-white border border-gray-200 rounded-lg p-5 bg-gradient-to-br from-red-500/10 to-red-600/5 border-red-500/20">
           <div className="text-red-600 dark:text-red-400 text-sm font-semibold tracking-wide uppercase mb-1">Total Expenses</div>
           <div className="text-2xl font-bold font-heading">{formatINR(stats.total)}</div>
         </div>
-        <div className="glass-card card-glow p-5 bg-gradient-to-br from-amber-500/10 to-amber-600/5 border-amber-500/20">
+        <div className="bg-white border border-gray-200 rounded-lg p-5 bg-gradient-to-br from-amber-500/10 to-amber-600/5 border-amber-500/20">
           <div className="text-amber-600 dark:text-amber-400 text-sm font-semibold tracking-wide uppercase mb-1">This Month</div>
           <div className="text-2xl font-bold font-heading">{formatINR(stats.thisMonth)}</div>
         </div>
-        <div className="glass-card card-glow p-5 bg-gradient-to-br from-blue-500/10 to-blue-600/5 border-blue-500/20">
+        <div className="bg-white border border-gray-200 rounded-lg p-5 bg-gradient-to-br from-blue-500/10 to-blue-600/5 border-blue-500/20">
           <div className="text-blue-600 dark:text-blue-400 text-sm font-semibold tracking-wide uppercase mb-1">Average Daily</div>
           <div className="text-2xl font-bold font-heading">{formatINR(stats.avgDaily)}</div>
         </div>
@@ -182,7 +179,7 @@ export default function Expenses() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Main List */}
         <div className="lg:col-span-2">
-          <div className="glass-card card-glow mb-4 p-4 flex gap-3">
+          <div className="bg-white border border-gray-200 rounded-lg mb-4 p-4 flex gap-3">
             <div className="relative flex-1">
               <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
               <input type="text" value={search} onChange={e => setSearch(e.target.value)}
@@ -196,7 +193,7 @@ export default function Expenses() {
             </select>
           </div>
 
-          <div className="glass-card card-glow overflow-hidden">
+          <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
             <table className="w-full text-sm">
               <thead>
                 <tr className="bg-gray-50 bg-gray-50/50">
@@ -210,7 +207,7 @@ export default function Expenses() {
               </thead>
               <tbody>
                 {filteredExpenses.map((exp, index) => (
-                  <tr key={exp.id} className="border-b border-gray-50 border-gray-200 table-row-hover fade-in-up" style={{ animationDelay: `${index * 0.05}s` }}>
+                  <tr key={exp.id} className="border-b border-gray-50 border-gray-200 table-row-hover " style={{ animationDelay: `${index * 0.05}s` }}>
                     <td className="px-4 py-3 text-gray-500 text-xs">{exp.expenseDate.toDate().toLocaleDateString('en-IN')}</td>
                     <td className="px-4 py-3 font-medium text-brand-purple">{exp.categoryName}</td>
                     <td className="px-4 py-3 text-gray-700 ">{exp.description}</td>
@@ -233,7 +230,7 @@ export default function Expenses() {
 
         {/* Sidebar Chart */}
         <div>
-          <div className="glass-card card-glow p-5">
+          <div className="bg-white border border-gray-200 rounded-lg p-5">
             <h3 className="font-heading font-bold text-gray-900 text-gray-900 mb-4">{language === 'hi' ? 'खर्चों का विवरण' : 'Expense Breakdown'}</h3>
             {chartData.length > 0 ? (
               <div className="h-64">
@@ -266,7 +263,7 @@ export default function Expenses() {
       {/* Add Modal */}
       {showAddModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fade-in">
-          <div className="bg-white  rounded-2xl p-6 w-full max-w-sm mx-4 animate-scale-in">
+          <div className="bg-white  rounded-lg p-6 w-full max-w-sm mx-4 animate-scale-in">
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-heading font-bold text-gray-900 text-gray-900">{language === 'hi' ? 'खर्चा जोड़ें' : 'Add Expense'}</h3>
               <button onClick={() => setShowAddModal(false)} className="p-1 rounded-lg hover:bg-gray-100 ">

@@ -91,7 +91,7 @@ export default function Payments() {
         payMethod, payNotes, tenantId
       );
       setShowRecordModal(false);
-      showToast('✅ Payment record ho gaya!', 'success');
+      showToast(' Payment record ho gaya!', 'success');
     } catch (err) {
       showToast('Payment record nahi hua. Dobara try karo.', 'error');
     } finally {
@@ -101,8 +101,8 @@ export default function Payments() {
 
   const handleRemind = (phone: string, name: string, amount: number, invoiceId: string) => {
     const msg = language === 'hi'
-      ? `🙏 Namaste ${name}!\n\nAapka ${invoiceId} pe ₹${amount} baaki hai. Jaldi se jaldi bhugtan kar dein.\n\nDhanyavaad! 🙏`
-      : `Hello ${name},\n\nA friendly reminder that ₹${amount} is pending for ${invoiceId}.\n\nThank you! 🙏`;
+      ? ` Namaste ${name}!\n\nAapka ${invoiceId} pe ₹${amount} baaki hai. Jaldi se jaldi bhugtan kar dein.\n\nDhanyavaad! `
+      : `Hello ${name},\n\nA friendly reminder that ₹${amount} is pending for ${invoiceId}.\n\nThank you! `;
     window.open(whatsappLink(phone, msg), '_blank');
   };
 
@@ -113,7 +113,7 @@ export default function Payments() {
   if (loaded && payments.length === 0) {
     return (
       <EmptyState
-        icon="💰"
+        icon=""
         title="Koi payment record nahi hai"
         subtitle="Billing se payment automatically track hoga"
       />
@@ -122,23 +122,20 @@ export default function Payments() {
 
   return (
     <div className="animate-fade-in">
-      <style>{`
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
-        .fade-in-up { animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
-      `}</style>
+      
 
       {/* Header Banner */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 p-6 rounded-2xl shadow-lg bg-gradient-to-r from-purple-50 to-pink-50">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-2xl md:text-3xl font-heading font-bold text-gray-900 mb-1 flex items-center gap-2">
-            {t('payments')} 💰
+          <h1 className="text-2xl font-bold text-gray-900 mb-1 flex items-center gap-2">
+            {t('payments')} 
           </h1>
-          <p className="text-green-600 text-sm">{language === 'hi' ? 'Apne len-den aur bakaaya rashi manage karein' : 'Manage your transactions and outstandings'}</p>
+          <p className="text-gray-500 text-sm">{language === 'hi' ? 'Apne len-den aur bakaaya rashi manage karein' : 'Manage your transactions and outstandings'}</p>
         </div>
         <div className="flex items-center gap-3">
-          <div className="bg-white/10 backdrop-blur-sm border border-white/20 px-5 py-3 rounded-xl">
-            <span className="text-xs text-green-100 uppercase tracking-wider font-medium">Total Outstanding</span>
-            <div className="text-xl font-bold font-heading text-gray-900 mt-1">{formatINR(totalOutstanding)}</div>
+          <div className="bg-gray-50 border border-gray-200 px-5 py-3 rounded-lg">
+            <span className="text-xs text-gray-500 uppercase tracking-wider font-medium">Total Outstanding</span>
+            <div className="text-xl font-bold text-gray-900 mt-1">{formatINR(totalOutstanding)}</div>
           </div>
         </div>
       </div>
@@ -163,7 +160,7 @@ export default function Payments() {
       </div>
 
       {tab === 'recent' && (
-        <div className="glass-card card-glow overflow-hidden">
+        <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
           <table className="w-full text-sm">
             <thead>
               <tr className="bg-gray-50">
@@ -178,7 +175,7 @@ export default function Payments() {
               {recentPayments.map((p, index) => {
                 const inv = getInvoiceForPayment(p);
                 return (
-                  <tr key={p.id} className="border-b border-gray-50 table-row-hover fade-in-up" style={{ animationDelay: `${index * 0.05}s` }}>
+                  <tr key={p.id} className="border-b border-gray-50 table-row-hover " style={{ animationDelay: `${index * 0.05}s` }}>
                     <td className="px-4 py-3 font-medium text-brand-purple font-mono text-xs">{inv?.invoiceNumber || p.invoiceId.slice(0, 8)}</td>
                     <td className="px-4 py-3 text-gray-700">{inv?.customerName || '—'}</td>
                     <td className="px-4 py-3 text-right font-bold text-brand-green">{formatINR(p.amount)}</td>
@@ -204,7 +201,7 @@ export default function Payments() {
       )}
 
       {tab === 'outstanding' && (
-        <div className="glass-card card-glow overflow-hidden">
+        <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
           <table className="w-full text-sm">
             <thead>
               <tr className="bg-gray-50">
@@ -221,7 +218,7 @@ export default function Payments() {
                 const colorClass = daysSince > 30 ? 'text-red-500 bg-red-500/10' : daysSince > 7 ? 'text-amber-500 bg-amber-500/10' : 'text-gray-500';
                 
                 return (
-                  <tr key={inv.id} className={`border-b border-gray-50 table-row-hover fade-in-up`} style={{ animationDelay: `${index * 0.05}s` }}>
+                  <tr key={inv.id} className={`border-b border-gray-50 table-row-hover `} style={{ animationDelay: `${index * 0.05}s` }}>
                     <td className="px-4 py-3 font-medium text-brand-purple font-mono text-xs">{inv.invoiceNumber}</td>
                     <td className="px-4 py-3">
                       <div className="text-gray-700">{inv.customerName}</div>
@@ -249,7 +246,7 @@ export default function Payments() {
               );
               })}
               {outstandingInvoices.length === 0 && (
-                <tr><td colSpan={5} className="px-4 py-8 text-center text-brand-green font-medium">✅ No outstanding payments!</td></tr>
+                <tr><td colSpan={5} className="px-4 py-8 text-center text-brand-green font-medium"> No outstanding payments!</td></tr>
               )}
             </tbody>
           </table>
@@ -259,7 +256,7 @@ export default function Payments() {
       {/* Record Payment Modal */}
       {showRecordModal && selectedInvoice && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fade-in">
-          <div className="bg-white rounded-2xl p-6 w-full max-w-sm mx-4 animate-scale-in">
+          <div className="bg-white rounded-lg p-6 w-full max-w-sm mx-4 animate-scale-in">
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-heading font-bold text-gray-900">{language === 'hi' ? 'Bhugtan Darj Karein' : 'Record Payment'}</h3>
               <button onClick={() => setShowRecordModal(false)} className="p-1 rounded-lg hover:bg-gray-100">

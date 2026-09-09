@@ -47,10 +47,10 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
   };
 
   const SidebarContent = () => (
-    <div className="flex flex-col h-full bg-[#FFFFFF] w-[240px] border-r border-[#E5E7EB]">
+    <div className="flex flex-col h-full bg-white w-[240px] border-r border-gray-200">
       {/* LOGO AREA */}
-      <div className="h-[72px] flex items-center px-4 border-b border-[#E5E7EB] flex-shrink-0">
-        <img src="/logo.png" alt="ShoppIQ" className="h-[52px] w-auto" />
+      <div className="h-[56px] flex items-center px-4 border-b border-gray-200 flex-shrink-0">
+        <img src="/logo.png" alt="ShoppIQ" className="h-[44px] w-auto" />
       </div>
 
       {/* NAV SECTIONS */}
@@ -58,16 +58,16 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
         
         {/* MAIN SECTION */}
         <div>
-          <div className="text-[10px] uppercase text-[#9CA3AF] font-bold px-3 mb-2 tracking-wider mt-[16px]">MAIN</div>
+          <div className="text-[10px] uppercase text-[#9CA3AF] font-bold px-3 mb-1.5 tracking-wider mt-2">MAIN</div>
           <div className="space-y-1">
             {mainNavItems.map((item) => (
               <NavLink
                 key={item.path}
                 to={item.path}
                 onClick={onClose}
-                className={({ isActive }) => cn('nav-item h-[44px]', isActive && 'active')}
+                className={({ isActive }) => cn('nav-item', isActive && 'active')}
               >
-                <item.icon size={20} />
+                <item.icon size={18} />
                 <span className="font-medium text-sm">{t(item.key) || item.label}</span>
               </NavLink>
             ))}
@@ -76,16 +76,16 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
 
         {/* REPORTS SECTION */}
         <div>
-          <div className="text-[10px] uppercase text-[#9CA3AF] font-bold px-3 mb-2 tracking-wider mt-[16px]">REPORTS</div>
+          <div className="text-[10px] uppercase text-[#9CA3AF] font-bold px-3 mb-1.5 tracking-wider mt-2">REPORTS</div>
           <div className="space-y-1">
             {reportsNavItems.map((item) => (
               <NavLink
                 key={item.path}
                 to={item.path}
                 onClick={onClose}
-                className={({ isActive }) => cn('nav-item h-[44px]', isActive && 'active')}
+                className={({ isActive }) => cn('nav-item', isActive && 'active')}
               >
-                <item.icon size={20} />
+                <item.icon size={18} />
                 <span className="font-medium text-sm">{t(item.key) || item.label}</span>
               </NavLink>
             ))}
@@ -94,16 +94,16 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
 
         {/* SETTINGS SECTION */}
         <div>
-          <div className="text-[10px] uppercase text-[#9CA3AF] font-bold px-3 mb-2 tracking-wider mt-[16px]">SETTINGS</div>
+          <div className="text-[10px] uppercase text-[#9CA3AF] font-bold px-3 mb-1.5 tracking-wider mt-2">SETTINGS</div>
           <div className="space-y-1">
             {settingsNavItems.map((item) => (
               <NavLink
                 key={item.path}
                 to={item.path}
                 onClick={onClose}
-                className={({ isActive }) => cn('nav-item h-[44px]', isActive && 'active')}
+                className={({ isActive }) => cn('nav-item', isActive && 'active')}
               >
-                <item.icon size={20} />
+                <item.icon size={18} />
                 <span className="font-medium text-sm">{t(item.key) || item.label}</span>
               </NavLink>
             ))}
