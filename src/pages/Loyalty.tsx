@@ -46,19 +46,16 @@ export default function Loyalty() {
       {/* Stats */}
       <div className="grid grid-cols-3 gap-4">
         {[
-          { label: 'Total Points', value: totalPoints.toLocaleString('en-IN'), icon: Star, gradient: 'linear-gradient(135deg, #F59E0B, #B45309)' },
-          { label: 'Members', value: String(memberCount), icon: Gift, gradient: 'linear-gradient(135deg, #7C3AED, #5B21B6)' },
-          { label: 'Avg Points', value: memberCount > 0 ? Math.round(totalPoints / memberCount).toLocaleString('en-IN') : '0', icon: Trophy, gradient: 'linear-gradient(135deg, #10B981, #047857)' },
-        ].map((s, i) => (
-          <div key={s.label} className="p-5 rounded-lg border-none relative overflow-hidden group " style={{ animationDelay: `${0.2 + i * 0.1}s`, background: s.gradient }}>
-            <div className="absolute -right-6 -top-6 text-white/10 transform group-hover:scale-110 transition-transform duration-500">
-              <s.icon size={100} />
+          { label: 'Total Points', value: totalPoints.toLocaleString('en-IN'), icon: Star, borderColor: 'border-l-amber-500' },
+          { label: 'Members', value: String(memberCount), icon: Gift, borderColor: 'border-l-purple-600' },
+          { label: 'Avg Points', value: memberCount > 0 ? Math.round(totalPoints / memberCount).toLocaleString('en-IN') : '0', icon: Trophy, borderColor: 'border-l-emerald-500' },
+        ].map((s) => (
+          <div key={s.label} className={`p-4 rounded-lg bg-white border border-gray-200 border-l-[3px] ${s.borderColor}`}>
+            <div className="w-8 h-8 rounded-md flex items-center justify-center mb-2 bg-gray-50">
+              <s.icon size={16} className="text-gray-500" />
             </div>
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-3 bg-white/20 backdrop-blur-sm border border-white/20 relative z-10">
-              <s.icon size={20} className="text-white" />
-            </div>
-            <div className="text-2xl font-bold font-bold text-white relative z-10 drop-shadow-md">{s.value}</div>
-            <div className="text-sm text-white/90 font-medium relative z-10">{s.label}</div>
+            <div className="text-xl font-bold text-gray-900">{s.value}</div>
+            <div className="text-xs text-gray-500 font-medium mt-0.5">{s.label}</div>
           </div>
         ))}
       </div>

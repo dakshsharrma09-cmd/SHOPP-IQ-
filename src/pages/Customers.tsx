@@ -158,30 +158,30 @@ export default function Customers() {
 
       {/* Stat Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <div className=" p-5 rounded-lg border border-gray-200 text-gray-900" style={{ background: 'linear-gradient(135deg, #7C3AED, #5B21B6)'}}>
-          <div className="text-purple-200 text-xs font-medium mb-1 uppercase tracking-wider">Total Customers</div>
-          <div className="text-2xl font-bold font-heading">{customers.length}</div>
+        <div className="p-4 rounded-lg bg-white border border-gray-200 border-l-[3px] border-l-purple-600">
+          <div className="text-gray-500 text-xs font-medium mb-1 uppercase tracking-wider">Total Customers</div>
+          <div className="text-xl font-bold text-gray-900 font-heading">{customers.length}</div>
         </div>
-        <div className=" p-5 rounded-lg border border-gray-200 text-gray-900" style={{ background: 'linear-gradient(135deg, #10B981, #065F46)'}}>
-          <div className="text-green-600 text-xs font-medium mb-1 uppercase tracking-wider">Active (Regular)</div>
-          <div className="text-2xl font-bold font-heading">{customers.filter(c => c.customerSegment === 'regular').length}</div>
+        <div className="p-4 rounded-lg bg-white border border-gray-200 border-l-[3px] border-l-emerald-500">
+          <div className="text-gray-500 text-xs font-medium mb-1 uppercase tracking-wider">Active (Regular)</div>
+          <div className="text-xl font-bold text-gray-900 font-heading">{customers.filter(c => c.customerSegment === 'regular').length}</div>
         </div>
-        <div className=" p-5 rounded-lg border border-gray-200 text-gray-900" style={{ background: 'linear-gradient(135deg, #EAB308, #854D0E)'}}>
-          <div className="text-yellow-200 text-xs font-medium mb-1 uppercase tracking-wider">VIP Customers</div>
-          <div className="text-2xl font-bold font-heading">{customers.filter(c => c.customerSegment === 'vip').length}</div>
+        <div className="p-4 rounded-lg bg-white border border-gray-200 border-l-[3px] border-l-amber-500">
+          <div className="text-gray-500 text-xs font-medium mb-1 uppercase tracking-wider">VIP Customers</div>
+          <div className="text-xl font-bold text-gray-900 font-heading">{customers.filter(c => c.customerSegment === 'vip').length}</div>
         </div>
-        <div className=" p-5 rounded-lg border border-gray-200 text-gray-900" style={{ background: 'linear-gradient(135deg, #3B82F6, #1E40AF)'}}>
-          <div className="text-blue-600 text-xs font-medium mb-1 uppercase tracking-wider">New Customers</div>
-          <div className="text-2xl font-bold font-heading">{customers.filter(c => c.customerSegment === 'new').length}</div>
+        <div className="p-4 rounded-lg bg-white border border-gray-200 border-l-[3px] border-l-blue-500">
+          <div className="text-gray-500 text-xs font-medium mb-1 uppercase tracking-wider">New Customers</div>
+          <div className="text-xl font-bold text-gray-900 font-heading">{customers.filter(c => c.customerSegment === 'new').length}</div>
         </div>
       </div>
 
       {/* Segment Tabs */}
-      <div className="flex gap-1 p-1 bg-gray-100 rounded-xl w-fit mb-4 overflow-x-auto">
+      <div className="flex gap-1 p-1 bg-gray-100 rounded-md w-fit mb-4 overflow-x-auto">
         {segments.map(s => (
           <button key={s} onClick={() => setSegment(s)}
-            className={cn('px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-all',
-              segment === s ? 'bg-purple-50 text-brand-purple shadow' : 'text-gray-500')}>
+            className={cn('px-3 py-1.5 rounded text-sm font-medium whitespace-nowrap transition-colors',
+              segment === s ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700')}>
             {language === 'hi' ? segmentLabels[s].hi : segmentLabels[s].en}
           </button>
         ))}
@@ -189,10 +189,10 @@ export default function Customers() {
 
       {/* Search */}
       <div className="relative mb-4">
-        <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
+        <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
         <input type="text" value={search} onChange={e => setSearch(e.target.value)}
           placeholder={language === 'hi' ? 'Naam ya phone se dhundho...' : 'Search by name or phone...'}
-          className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 bg-white text-sm outline-none focus:border-brand-purple transition-all" />
+          className="w-full pl-10 pr-4 py-2 rounded-md border border-gray-200 bg-white text-sm outline-none focus:border-purple-600 focus:ring-1 focus:ring-purple-600/20 transition-colors" />
       </div>
 
       {/* Table */}
@@ -216,7 +216,7 @@ export default function Customers() {
                   className="border-b border-gray-50 table-row-hover cursor-pointer">
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-full bg-gradient-to-br from-brand-purple to-purple-400 flex items-center justify-center text-white text-xs font-bold">
+                      <div className="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 text-xs font-bold">
                         {c.fullName.charAt(0)}
                       </div>
                       <span className="font-medium text-gray-900">{c.fullName}</span>
@@ -250,7 +250,7 @@ export default function Customers() {
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
-                  <div className="w-14 h-14 rounded-lg bg-gradient-to-br from-brand-purple to-purple-400 flex items-center justify-center text-white text-xl font-bold">
+                  <div className="w-14 h-14 rounded-lg bg-gray-100 flex items-center justify-center text-gray-600 text-xl font-bold">
                     {selectedCustomer.fullName.charAt(0)}
                   </div>
                   <div>

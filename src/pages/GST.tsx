@@ -238,15 +238,15 @@ export default function GST() {
       {/* ── GST Stat Cards ────────────────────────────────── */}
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
         {[
-          { label: 'Total Invoices', value: String(monthInvoices.length), gradient: 'linear-gradient(135deg, #6366f1, #4338ca)' },
-          { label: 'Taxable Value', value: formatINR(Math.round(totalTaxable)), gradient: 'linear-gradient(135deg, #475569, #334155)' },
-          { label: 'CGST', value: formatINR(Math.round(totalCGST)), gradient: 'linear-gradient(135deg, #3b82f6, #1d4ed8)' },
-          { label: 'SGST', value: formatINR(Math.round(totalSGST)), gradient: 'linear-gradient(135deg, #10b981, #047857)' },
-          { label: 'Total Tax', value: formatINR(Math.round(totalTax)), gradient: 'linear-gradient(135deg, #f59e0b, #b45309)' },
-        ].map((s, i) => (
-          <div key={s.label} className="stat-card border-none relative overflow-hidden " style={{ animationDelay: `${0.3 + i * 0.1}s`, background: s.gradient }}>
-            <div className="text-xs text-gray-900/80 font-medium mb-1 relative z-10">{s.label}</div>
-            <div className="text-xl font-bold font-heading text-gray-900 relative z-10 drop-shadow-md">{s.value}</div>
+          { label: 'Total Invoices', value: String(monthInvoices.length), borderColor: 'border-l-indigo-500' },
+          { label: 'Taxable Value', value: formatINR(Math.round(totalTaxable)), borderColor: 'border-l-slate-500' },
+          { label: 'CGST', value: formatINR(Math.round(totalCGST)), borderColor: 'border-l-blue-500' },
+          { label: 'SGST', value: formatINR(Math.round(totalSGST)), borderColor: 'border-l-emerald-500' },
+          { label: 'Total Tax', value: formatINR(Math.round(totalTax)), borderColor: 'border-l-amber-500' },
+        ].map((s) => (
+          <div key={s.label} className={`p-4 rounded-lg bg-white border border-gray-200 border-l-[3px] ${s.borderColor}`}>
+            <div className="text-xs text-gray-500 font-medium mb-1">{s.label}</div>
+            <div className="text-lg font-bold font-heading text-gray-900">{s.value}</div>
           </div>
         ))}
       </div>

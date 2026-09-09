@@ -318,7 +318,7 @@ export default function WhatsAppChat() {
           <ArrowLeft size={20} />
         </button>
         <div className="relative">
-          <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #7C3AED, #6D28D9)' }}>
+          <div className="w-10 h-10 rounded-full flex items-center justify-center bg-purple-700">
             <Bot size={22} className="text-white" />
           </div>
           <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-[#25D366] rounded-full border-2" style={{ borderColor: '#075E54' }} />
