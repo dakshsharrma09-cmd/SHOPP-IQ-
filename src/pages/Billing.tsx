@@ -11,7 +11,7 @@ import { Timestamp } from 'firebase/firestore';
 import {
   Search, Plus, Minus, X, Camera, Calendar, CreditCard,
   Smartphone, Banknote, HandCoins, MessageCircle, Printer,
-  Download, Check, ChevronDown, Gift
+  Download, Check, Gift
 } from 'lucide-react';
 import { InvoiceReceipt } from '../components/InvoiceReceipt';
 import { generateInvoicePDF } from '../utils/generateInvoicePDF';
@@ -62,7 +62,7 @@ export default function Billing() {
   const [invoiceNumber, setInvoiceNumber] = useState('INV-2026-0001');
   const [showScanner, setShowScanner] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
-  const [customerCollapsed, setCustomerCollapsed] = useState(false);
+  // const [customerCollapsed, setCustomerCollapsed] = useState(false);
   const [saving, setSaving] = useState(false);
 
   // Get next invoice number
@@ -229,7 +229,7 @@ export default function Billing() {
       }, invoiceItems);
 
       setShowSuccess(true);
-      showToast('✅ Bill safalta se ban gaya!', 'success');
+      showToast('Bill safalta se ban gaya!', 'success');
       // Get next invoice number for the next bill
       const nextNum = await getNextInvoiceNumber(tenantId);
       setInvoiceNumber(nextNum);
@@ -240,7 +240,7 @@ export default function Billing() {
     }
   };
 
-  const loyaltyPointsEarned = Math.floor(Math.round(totals.grand) / 10);
+  // const loyaltyPointsEarned = Math.floor(Math.round(totals.grand) / 10);
 
   const handleWhatsAppSend = () => {
     const phone = selectedCustomer?.phoneNumber || '';
@@ -255,8 +255,8 @@ export default function Billing() {
 
   if (showSuccess) {
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-        <div className="bg-white rounded-lg p-8 max-w-md w-full mx-4 text-center shadow-lg">
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/50 shadow-modal">
+        <div className="bg-white rounded-md p-6 max-w-md w-full mx-4 text-center">
           <InvoiceReceipt 
             data={{
               items: items.map(i => ({ productName: i.productName, quantity: i.quantity, unitPrice: i.unitPrice, totalAmount: i.totalAmount })),
@@ -272,26 +272,17 @@ export default function Billing() {
               paymentMethod,
             }}
           />
-          <div className="w-20 h-20 rounded-full bg-brand-green/20 flex items-center justify-center mx-auto mb-4">
-            <Check size={40} className="text-brand-green" />
+          <div className="w-12 h-12 rounded bg-gray-50 border border-gray-200 flex items-center justify-center mx-auto mb-3">
+            <Check size={24} className="text-gray-900" />
           </div>
-          <h2 className="text-2xl font-heading font-bold text-gray-900 mb-2">
-            Bill #{invoiceNumber} ban gaya!
+          <h2 className="text-lg font-semibold text-gray-900 mb-1">
+            Bill #{invoiceNumber} created
           </h2>
-          <p className="text-gray-500 mb-1">{selectedCustomer?.fullName || 'Walk-in Customer'}</p>
-          <p className="text-2xl font-bold font-heading text-brand-purple mb-1">{formatINR(Math.round(totals.grand))}</p>
-          <p className="text-sm text-gray-500 mb-2">{items.length} items</p>
-          {loyaltyPointsEarned > 0 && (
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-gold/10 mb-4">
-              <Gift size={16} className="text-brand-gold" />
-              <span className="text-sm font-heading font-semibold text-brand-gold">
-                +{loyaltyPointsEarned} Loyalty Points Earned!
-              </span>
-            </div>
-          )}
-          <div className="flex gap-3 mt-2">
-            <button onClick={() => window.print()} className="flex-1 flex items-center justify-center gap-2 py-3 rounded-md border border-gray-200 text-gray-600 hover:bg-gray-50 text-sm font-medium transition-all">
-              <Printer size={16} /> Print
+          <p className="text-gray-500 text-sm mb-1">{selectedCustomer?.fullName || 'Walk-in Customer'}</p>
+          <p className="text-xl font-bold text-gray-900 mb-3">{formatINR(Math.round(totals.grand))}</p>
+          <div className="flex gap-3 mb-4">
+            <button onClick={() => window.print()} className="flex-1 flex items-center justify-center gap-2 h-9 rounded bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 text-sm font-medium">
+              <Printer size={14} /> Print
             </button>
             <button onClick={() => {
               try {
@@ -325,16 +316,16 @@ export default function Billing() {
               } catch (err) {
                 showToast('PDF download failed. Try again.', 'error');
               }
-            }} className="flex-1 flex items-center justify-center gap-2 py-3 rounded-md border border-gray-200 text-gray-600 hover:bg-gray-50 text-sm font-medium transition-all">
-              <Download size={16} /> PDF
+            }} className="flex-1 flex items-center justify-center gap-2 h-9 rounded bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 text-sm font-medium">
+              <Download size={14} /> PDF
             </button>
-            <button onClick={handleWhatsAppSend} className="flex-1 flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#1ebd5c] text-white py-3 rounded-md text-sm font-medium transition-all">
-              <MessageCircle size={16} /> WhatsApp
+            <button onClick={handleWhatsAppSend} className="flex-1 flex items-center justify-center gap-2 h-9 rounded bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 text-sm font-medium">
+              <MessageCircle size={14} /> WhatsApp
             </button>
           </div>
           <button onClick={() => { setShowSuccess(false); setItems([]); setSelectedCustomer(null); setLoyaltyRedeem(0); setCashTendered(''); setNotes(''); }}
-            className="mt-4 text-sm text-brand-purple hover:underline font-medium">
-            Naya Bill Banao →
+            className="text-sm text-purple-700 hover:underline font-medium">
+            New Bill
           </button>
         </div>
       </div>
@@ -343,47 +334,44 @@ export default function Billing() {
 
   return (
     <div>
-      <div className="mb-4">
-        <h1 className="text-2xl font-heading font-bold text-gray-900">Create Invoice</h1>
-        <p className="text-sm text-gray-500">Create and collect payment for this sale.</p>
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <h1 className="text-lg font-semibold text-gray-900">Create Invoice</h1>
+          <p className="text-xs text-gray-500">New customer invoice</p>
+        </div>
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-6">
+      <div className="flex flex-col lg:flex-row gap-6 items-start">
         {/* LEFT: Items (70%) */}
-        <div className="flex-1 space-y-4">
+        <div className="flex-1 w-full pr-0 lg:pr-4 lg:border-r lg:border-gray-200">
           {/* Customer Section */}
-          <div className="bg-white border border-gray-200 rounded-lg p-4">
-            <button onClick={() => setCustomerCollapsed(!customerCollapsed)}
-              className="flex items-center justify-between w-full mb-2">
-              <h3 className="text-gray-900 font-heading text-section-heading text-sm">{t('customer')}</h3>
-              <ChevronDown size={16} className={cn('text-gray-500 transition-transform', customerCollapsed && '-rotate-180')} />
-            </button>
-            {!customerCollapsed && (
-              <div>
-                {selectedCustomer ? (
-                  <div className="flex items-center justify-between p-3 rounded-md bg-brand-purple/5 border border-brand-purple/20">
-                    <div>
-                      <span className="font-medium text-gray-900 text-sm">{selectedCustomer.fullName}</span>
-                      <span className="text-gray-500 text-xs ml-2">{selectedCustomer.phoneNumber}</span>
-                      <div className="flex gap-3 mt-1">
-                        <span className="text-xs text-brand-gold">{selectedCustomer.loyaltyPoints} pts</span>
-                        {selectedCustomer.currentOutstanding > 0 && (
-                          <span className="text-xs text-red-500">{formatINR(selectedCustomer.currentOutstanding)} due</span>
-                        )}
-                      </div>
+          <div className="border-b border-gray-200 pb-4 mb-4">
+            <h3 className="text-gray-900 text-sm font-semibold uppercase tracking-wide mb-3">{t('customer')}</h3>
+            <div>
+              {selectedCustomer ? (
+                <div className="flex items-center justify-between p-2 rounded border border-gray-200 bg-gray-50">
+                  <div>
+                    <span className="font-medium text-gray-900 text-sm">{selectedCustomer.fullName}</span>
+                    <span className="text-gray-500 text-xs ml-2">{selectedCustomer.phoneNumber}</span>
+                    <div className="flex gap-3 mt-1">
+                      <span className="text-xs text-gray-600">{selectedCustomer.loyaltyPoints} pts</span>
+                      {selectedCustomer.currentOutstanding > 0 && (
+                        <span className="text-xs text-red-500">{formatINR(selectedCustomer.currentOutstanding)} due</span>
+                      )}
                     </div>
-                    <button onClick={() => setSelectedCustomer(null)} className="text-gray-500 hover:text-red-500">
-                      <X size={16} />
-                    </button>
                   </div>
-                ) : (
-                  <div className="relative">
-                    <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
-                    <input type="text" value={customerSearch}
-                      onChange={e => { setCustomerSearch(e.target.value); setShowCustomerDropdown(true); }}
-                      onFocus={() => setShowCustomerDropdown(true)}
-                      placeholder={language === 'hi' ? 'Customer ka naam ya phone...' : 'Search customer name or phone...'}
-                      className="w-full pl-10 pr-4 py-2.5 rounded-md border border-gray-200 bg-white text-sm text-gray-900 focus:border-brand-purple focus:ring-2 focus:ring-brand-purple/20 outline-none transition-all" />
+                  <button onClick={() => setSelectedCustomer(null)} className="text-gray-400 hover:text-gray-600">
+                    <X size={16} />
+                  </button>
+                </div>
+              ) : (
+                <div className="relative">
+                  <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
+                  <input type="text" value={customerSearch}
+                    onChange={e => { setCustomerSearch(e.target.value); setShowCustomerDropdown(true); }}
+                    onFocus={() => setShowCustomerDropdown(true)}
+                    placeholder={language === 'hi' ? 'Customer ka naam ya phone...' : 'Search customer name or phone...'}
+                    className="w-full pl-9 pr-4 h-9 rounded-md border border-gray-200 bg-white text-sm text-gray-900 outline-none" />
                     {showCustomerDropdown && customerSearch && (
                       <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-md border border-gray-100 shadow-lg z-20 overflow-hidden">
                         {filteredCustomers.length ? filteredCustomers.map(c => (
@@ -403,13 +391,12 @@ export default function Billing() {
                   </div>
                 )}
               </div>
-            )}
           </div>
 
           {/* Product Search */}
-          <div className="bg-white border border-gray-200 rounded-lg p-4">
+          <div className="border-b border-gray-200 pb-4 mb-4">
             <div className="relative mb-4">
-              <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
+              <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
               <input type="text" value={productSearch}
                 onChange={e => { setProductSearch(e.target.value); setShowProductDropdown(true); setHighlightedIndex(-1); }}
                 onFocus={() => productSearch && setShowProductDropdown(true)}
@@ -431,9 +418,9 @@ export default function Billing() {
                   }
                 }}
                 placeholder={language === 'hi' ? 'Product dhundho ya barcode scan karo...' : 'Search product or scan barcode...'}
-                className="w-full pl-10 pr-20 py-3 rounded-md border border-gray-200 bg-white text-sm text-gray-900 focus:border-brand-purple focus:ring-2 focus:ring-brand-purple/20 outline-none transition-all" />
+                className="w-full pl-9 pr-20 h-9 rounded-md border border-gray-200 bg-white text-sm text-gray-900 outline-none" />
               <button onClick={() => setShowScanner(true)}
-                className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1 px-3 py-1.5 rounded-lg bg-purple-100 text-purple-700 text-xs font-medium hover:bg-purple-200 transition-all active:scale-95">
+                className="absolute right-1 top-1/2 -translate-y-1/2 flex items-center gap-1 px-2 h-7 rounded bg-gray-100 text-gray-700 text-xs font-medium hover:bg-gray-200">
                 <Camera size={14} /> Scan
               </button>
               {showProductDropdown && productSearch && (
@@ -461,7 +448,7 @@ export default function Billing() {
 
             {/* Items Table */}
             {items.length === 0 ? (
-              <div className="text-center py-10">
+              <div className="text-center py-6">
                 <p className="text-gray-500 text-sm">
                   {language === 'hi' ? 'Koi product nahi add kiya abhi. Upar search karein.' : 'No products added yet. Search above to add.'}
                 </p>
@@ -470,53 +457,53 @@ export default function Billing() {
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="bg-gray-50 text-gray-500 uppercase text-xs border-b border-gray-100 ">
-                      <th className="pb-2 font-medium">#</th>
-                      <th className="pb-2 font-medium">Product</th>
-                      <th className="pb-2 font-medium text-center">Qty</th>
-                      <th className="pb-2 font-medium text-right">Rate</th>
-                      <th className="pb-2 font-medium text-center">Disc%</th>
-                      <th className="pb-2 font-medium text-right">GST</th>
-                      <th className="pb-2 font-medium text-right">Total</th>
-                      <th className="pb-2"></th>
+                    <tr className="bg-gray-50 text-gray-500 uppercase text-xs border-b border-gray-100">
+                      <th className="py-2 px-3 font-medium text-left">#</th>
+                      <th className="py-2 px-3 font-medium text-left">Product</th>
+                      <th className="py-2 px-3 font-medium text-center">Qty</th>
+                      <th className="py-2 px-3 font-medium text-right">Rate</th>
+                      <th className="py-2 px-3 font-medium text-center">Disc%</th>
+                      <th className="py-2 px-3 font-medium text-right">GST</th>
+                      <th className="py-2 px-3 font-medium text-right">Total</th>
+                      <th className="py-2 px-3"></th>
                     </tr>
                   </thead>
                   <tbody>
                     {items.map((item, idx) => (
-                      <tr key={item.productId} className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
-                        <td className="py-3 text-gray-500">{idx + 1}</td>
-                        <td className="py-3 font-medium text-gray-900 max-w-[160px] truncate">{item.productName}</td>
-                        <td className="py-3">
+                      <tr key={item.productId} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                        <td className="py-2 px-3 text-gray-500">{idx + 1}</td>
+                        <td className="py-2 px-3 font-medium text-gray-900 max-w-[160px] truncate">{item.productName}</td>
+                        <td className="py-2 px-3">
                           <div className="flex items-center gap-1 justify-center">
                             <button onClick={() => updateQuantity(item.productId, item.quantity - 1)}
-                              className="w-7 h-7 rounded-md bg-gray-100 flex items-center justify-center hover:bg-brand-purple/10 transition-colors">
+                              className="w-6 h-6 rounded bg-gray-100 flex items-center justify-center hover:bg-gray-200">
                               <Minus size={12} />
                             </button>
                             <input type="number" min="1" max={products.find(p => p.id === item.productId)?.currentStock || 1}
                               value={item.quantity} onChange={e => updateQuantity(item.productId, parseInt(e.target.value, 10) || 1)}
-                              className="w-12 text-center font-bold bg-transparent border-b border-gray-200 outline-none focus:border-brand-purple" />
+                              className="w-10 text-center font-bold bg-transparent border-b border-gray-200 outline-none text-sm h-6" />
                             <button onClick={() => updateQuantity(item.productId, item.quantity + 1)}
-                              className="w-7 h-7 rounded-md bg-gray-100 flex items-center justify-center hover:bg-brand-purple/10 transition-colors">
+                              className="w-6 h-6 rounded bg-gray-100 flex items-center justify-center hover:bg-gray-200">
                               <Plus size={12} />
                             </button>
                           </div>
                         </td>
-                        <td className="py-3 text-right">
+                        <td className="py-2 px-3 text-right">
                           <input type="number" value={item.unitPrice} onChange={e => updateUnitPrice(item.productId, Number(e.target.value))}
-                            className="w-20 text-right py-1 rounded-md border border-gray-200 bg-transparent text-sm outline-none focus:border-brand-purple" />
+                            className="w-20 text-right px-2 h-7 rounded-md border border-gray-200 bg-transparent text-sm outline-none" />
                         </td>
-                        <td className="py-3">
+                        <td className="py-2 px-3 text-center">
                           <input type="number" value={item.discountPercent} min={0} max={100}
                             onChange={e => updateDiscount(item.productId, Number(e.target.value))}
-                            className="w-14 text-center py-1 rounded-md border border-gray-200 bg-transparent text-sm outline-none focus:border-brand-purple" />
+                            className="w-14 text-center px-2 h-7 rounded-md border border-gray-200 bg-transparent text-sm outline-none" />
                         </td>
-                        <td className="py-3 text-right text-xs text-gray-500">
+                        <td className="py-2 px-3 text-right text-xs text-gray-500">
                           {item.gstRate}%
-                          {item.isGstInclusive && <span className="block text-[9px] text-brand-purple">(incl)</span>}
+                          {item.isGstInclusive && <span className="block text-[9px]">(incl)</span>}
                         </td>
-                        <td className="py-3 text-right font-bold text-gray-900 ">{formatINR(Math.round(item.totalAmount))}</td>
-                        <td className="py-3">
-                          <button onClick={() => removeItem(item.productId)} className="text-gray-600 hover:text-red-500 transition-colors">
+                        <td className="py-2 px-3 text-right font-medium text-gray-900">{formatINR(Math.round(item.totalAmount))}</td>
+                        <td className="py-2 px-3 text-right">
+                          <button onClick={() => removeItem(item.productId)} className="text-gray-400 hover:text-gray-600 transition-colors">
                             <X size={14} />
                           </button>
                         </td>
@@ -530,114 +517,113 @@ export default function Billing() {
         </div>
 
         {/* RIGHT: Summary (30%) — sticky */}
-        <div className="w-full lg:w-80 xl:w-96 space-y-4 lg:sticky lg:top-20 lg:self-start">
-          {/* Invoice Info */}
-          <div className="bg-white border border-gray-200 rounded-lg p-4 space-y-3">
+        <div className="w-full lg:w-80 xl:w-96 lg:sticky lg:top-4 lg:self-start">
+          <div className="border border-gray-200 rounded-md p-3 space-y-4">
+            {/* Invoice Info */}
             <div className="flex gap-3">
               <div className="flex-1">
-                <label className="text-[10px] text-gray-500 font-heading mb-1 block">Date</label>
-                <div className="flex items-center gap-2 px-3 py-2 rounded-md border border-gray-200 text-sm text-gray-700 ">
+                <label className="text-[10px] text-gray-500 font-semibold uppercase block mb-1">Date</label>
+                <div className="flex items-center gap-2 px-2 h-9 rounded-md border border-gray-200 text-sm text-gray-700 bg-gray-50">
                   <Calendar size={14} className="text-gray-500" /> {invoiceDate}
                 </div>
               </div>
               <div className="flex-1">
-                <label className="text-[10px] text-gray-500 font-heading mb-1 block">Invoice #</label>
-                <input value={invoiceNumber} readOnly className="w-full px-3 py-2 rounded-md border border-gray-200 bg-gray-50 text-sm text-gray-700 font-mono" />
+                <label className="text-[10px] text-gray-500 font-semibold uppercase block mb-1">Invoice #</label>
+                <input value={invoiceNumber} readOnly className="w-full px-2 h-9 rounded-md border border-gray-200 bg-gray-50 text-sm text-gray-700 font-mono" />
               </div>
             </div>
-          </div>
 
-          {/* Totals */}
-          <div className="bg-white border border-gray-200 rounded-lg p-4 space-y-2">
-            <div className="flex justify-between text-sm text-gray-600 ">
-              <span>{t('subtotal')}</span><span>{formatINR(Math.round(totals.subtotal))}</span>
-            </div>
-            {totals.discount > 0 && (
-              <div className="flex justify-between text-sm text-brand-green">
-                <span>{t('discount')}</span><span>-{formatINR(Math.round(totals.discount))}</span>
-              </div>
-            )}
-            <div className="flex justify-between text-sm text-gray-600 ">
-              <span>CGST</span><span>{formatINR(Math.round(totals.cgst))}</span>
-            </div>
-            <div className="flex justify-between text-sm text-gray-600 ">
-              <span>SGST</span><span>{formatINR(Math.round(totals.sgst))}</span>
-            </div>
-            <div className="border-t border-dashed border-gray-200 my-2" />
-            <div className="flex justify-between items-center">
-              <span className="font-heading font-bold text-gray-900 ">{t('grandTotal')}</span>
-              <span className="text-2xl font-bold font-heading text-brand-purple">{formatINR(Math.round(totals.grand))}</span>
-            </div>
-          </div>
+            <div className="border-b border-gray-100"></div>
 
-          {/* Payment Method */}
-          <div className="bg-white border border-gray-200 rounded-lg p-4">
-            <h3 className="text-gray-900 font-heading text-section-heading text-sm mb-3">{t('payment')}</h3>
-            <div className="grid grid-cols-4 gap-2 mb-3">
-              {([
-                { id: 'cash', icon: Banknote, label: 'Cash' },
-                { id: 'upi', icon: Smartphone, label: 'UPI' },
-                { id: 'credit', icon: HandCoins, label: 'Credit' },
-                { id: 'mixed', icon: CreditCard, label: 'Mixed' },
-              ] as const).map(m => (
-                <button key={m.id} onClick={() => setPaymentMethod(m.id)}
-                  className={cn('flex flex-col items-center gap-1 py-2.5 rounded-md border text-xs font-medium transition-all',
-                    paymentMethod === m.id ? 'border-purple-600 bg-purple-50 text-purple-700' : 'border-gray-200 text-gray-500')}>
-                  <m.icon size={16} />{m.label}
-                </button>
-              ))}
-            </div>
-            {paymentMethod === 'cash' && (
-              <div className="space-y-2">
-                <input type="number" value={cashTendered} onChange={e => setCashTendered(e.target.value)}
-                  placeholder="Amount tendered" className="w-full px-3 py-2 rounded-md border border-gray-200 bg-transparent text-sm outline-none focus:border-brand-purple" />
-                {change > 0 && <div className="text-sm text-brand-green font-medium">Change: {formatINR(Math.round(change))}</div>}
+            {/* Totals */}
+            <div className="space-y-2">
+              <div className="flex justify-between text-sm text-gray-600">
+                <span>{t('subtotal')}</span><span>{formatINR(Math.round(totals.subtotal))}</span>
               </div>
-            )}
-            {paymentMethod === 'upi' && (
-              <div className="text-center py-4">
-                <div className="w-24 h-24 mx-auto mb-2 rounded-md border-2 border-dashed border-brand-purple/30 flex items-center justify-center bg-brand-purple/5">
-                  <Smartphone size={28} className="text-brand-purple/50" />
+              {totals.discount > 0 && (
+                <div className="flex justify-between text-sm text-gray-900">
+                  <span>{t('discount')}</span><span>-{formatINR(Math.round(totals.discount))}</span>
                 </div>
-                <p className="text-xs text-gray-500">UPI QR Code</p>
-                <p className="text-lg font-bold font-heading text-brand-purple mt-1">{formatINR(Math.round(totals.grand))}</p>
+              )}
+              <div className="flex justify-between text-sm text-gray-600">
+                <span>CGST</span><span>{formatINR(Math.round(totals.cgst))}</span>
+              </div>
+              <div className="flex justify-between text-sm text-gray-600">
+                <span>SGST</span><span>{formatINR(Math.round(totals.sgst))}</span>
+              </div>
+              <div className="border-t border-gray-200 pt-2 mt-2">
+                <div className="flex justify-between items-center">
+                  <span className="font-semibold text-gray-900">{t('grandTotal')}</span>
+                  <span className="text-xl font-semibold text-gray-900">{formatINR(Math.round(totals.grand))}</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="border-b border-gray-100"></div>
+
+            {/* Payment Method */}
+            <div>
+              <h3 className="text-gray-900 text-sm font-semibold uppercase tracking-wide mb-2">{t('payment')}</h3>
+              <div className="grid grid-cols-4 gap-2 mb-3">
+                {([
+                  { id: 'cash', icon: Banknote, label: 'Cash' },
+                  { id: 'upi', icon: Smartphone, label: 'UPI' },
+                  { id: 'credit', icon: HandCoins, label: 'Credit' },
+                  { id: 'mixed', icon: CreditCard, label: 'Mixed' },
+                ] as const).map(m => (
+                  <button key={m.id} onClick={() => setPaymentMethod(m.id)}
+                    className={cn('flex flex-col items-center gap-1 py-2 rounded border text-xs font-medium transition-all',
+                      paymentMethod === m.id ? 'border-gray-900 bg-gray-50 text-gray-900' : 'border-gray-200 text-gray-500 hover:bg-gray-50')}>
+                    <m.icon size={14} />{m.label}
+                  </button>
+                ))}
+              </div>
+              {paymentMethod === 'cash' && (
+                <div className="space-y-2">
+                  <input type="number" value={cashTendered} onChange={e => setCashTendered(e.target.value)}
+                    placeholder="Amount tendered" className="w-full px-3 h-9 rounded-md border border-gray-200 bg-white text-sm outline-none" />
+                  {change > 0 && <div className="text-sm text-gray-900 font-medium">Change: {formatINR(Math.round(change))}</div>}
+                </div>
+              )}
+              {paymentMethod === 'upi' && (
+                <div className="text-center py-2">
+                  <div className="w-16 h-16 mx-auto mb-1 rounded border border-gray-200 flex items-center justify-center bg-gray-50">
+                    <Smartphone size={20} className="text-gray-400" />
+                  </div>
+                  <p className="text-[10px] text-gray-500 uppercase">UPI QR Code</p>
+                </div>
+              )}
+            </div>
+
+            {/* Loyalty */}
+            {selectedCustomer && selectedCustomer.loyaltyPoints > 0 && (
+              <div className="border-t border-gray-100 pt-3">
+                <div className="flex items-center gap-2 mb-2">
+                  <Gift size={14} className="text-gray-600" />
+                  <span className="text-sm font-semibold text-gray-900 uppercase">Loyalty Points</span>
+                </div>
+                <p className="text-xs text-gray-500 mb-2">Balance: {selectedCustomer.loyaltyPoints} pts</p>
+                <input type="range" min={0} max={Math.min(selectedCustomer.loyaltyPoints, Math.floor(totals.grand))}
+                  value={loyaltyRedeem} onChange={e => setLoyaltyRedeem(Number(e.target.value))}
+                  className="w-full" />
+                <p className="text-xs text-gray-700 font-medium mt-1">Redeem: {loyaltyRedeem} pts = {formatINR(loyaltyRedeem)}</p>
               </div>
             )}
+
+            {/* Notes */}
+            <textarea value={notes} onChange={e => setNotes(e.target.value)} rows={2}
+              placeholder={language === 'hi' ? 'Notes...' : 'Add notes...'}
+              className="w-full px-3 py-2 rounded-md border border-gray-200 bg-white text-sm resize-none outline-none" />
+
+            {/* Action Buttons */}
+            <button onClick={() => handleCreateBill()} disabled={items.length === 0 || saving}
+              className={cn('bg-purple-700 text-white rounded w-full h-10 text-sm font-medium flex items-center justify-center gap-2', (items.length === 0 || saving) && 'opacity-50 cursor-not-allowed')}>
+              {saving ? 'Saving...' : 'COMPLETE SALE'}
+            </button>
           </div>
-
-          {/* Loyalty */}
-          {selectedCustomer && selectedCustomer.loyaltyPoints > 0 && (
-            <div className="bg-white border border-gray-200 rounded-lg p-4">
-              <div className="flex items-center gap-2 mb-2">
-                <Gift size={16} className="text-brand-gold" />
-                <span className="text-sm font-heading font-semibold text-gray-900 ">Loyalty Points</span>
-              </div>
-              <p className="text-xs text-gray-500 mb-2">Balance: {selectedCustomer.loyaltyPoints} pts</p>
-              <input type="range" min={0} max={Math.min(selectedCustomer.loyaltyPoints, Math.floor(totals.grand))}
-                value={loyaltyRedeem} onChange={e => setLoyaltyRedeem(Number(e.target.value))}
-                className="w-full accent-brand-purple" />
-              <p className="text-xs text-brand-purple font-medium mt-1">Redeem: {loyaltyRedeem} pts = {formatINR(loyaltyRedeem)}</p>
-            </div>
-          )}
-
-          {/* Notes */}
-          <textarea value={notes} onChange={e => setNotes(e.target.value)} rows={2}
-            placeholder={language === 'hi' ? 'Notes...' : 'Add notes...'}
-            className="w-full px-4 py-3 rounded-md border border-gray-200 bg-white text-sm resize-none outline-none focus:border-brand-purple" />
-
-          {/* Action Buttons */}
-          <button onClick={() => handleCreateBill()} disabled={items.length === 0 || saving}
-            className={cn('bg-purple-700 hover:bg-purple-800 text-white rounded-md w-full py-3 font-semibold flex items-center justify-center gap-2 transition-colors', (items.length === 0 || saving) && 'opacity-50 cursor-not-allowed')}>
-            <MessageCircle size={20} />
-            {saving ? 'Saving...' : language === 'hi' ? 'Bill Banao & WhatsApp Bhejo' : 'Create Bill & Send WhatsApp'}
-          </button>
-          <button onClick={() => handleCreateBill()} disabled={items.length === 0 || saving}
-            className={cn('w-full py-3 rounded-md border border-gray-200 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-all', (items.length === 0 || saving) && 'opacity-40 cursor-not-allowed')}>
-            {saving ? 'Saving...' : language === 'hi' ? 'Sirf Save Karo' : 'Save Only'}
-          </button>
         </div>
       </div>
-      <div className='made-in-india text-center text-sm py-4 font-medium text-gray-500 mt-8'>Made with ❤️ in Jabalpur, India 🇮🇳</div>
+      <div className='text-center text-xs py-4 text-gray-400 mt-4'>Made in Jabalpur, India</div>
 
       {/* Barcode Scanner Modal */}
       <BarcodeScanner

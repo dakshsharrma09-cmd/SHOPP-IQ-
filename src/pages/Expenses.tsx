@@ -144,16 +144,16 @@ export default function Expenses() {
   }
 
   return (
-    <div className="animate-fade-in">
+    <div className="">
       
 
       {/* Header Banner */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-1 flex items-center gap-2">
+          <h1 className="text-lg font-semibold text-gray-900">
             Expenses 
           </h1>
-          <p className="text-gray-500 text-sm">{language === 'hi' ? 'खर्चे ट्रैक करो' : 'Track your expenses'}</p>
+          <p className="text-xs text-gray-500 mt-0.5">{language === 'hi' ? 'खर्चे ट्रैक करो' : 'Track your expenses'}</p>
         </div>
         <button onClick={() => setShowAddModal(true)} className="flex items-center gap-2 btn-primary text-white px-4 py-2 rounded-md font-medium">
           <Plus size={18} /> {language === 'hi' ? 'खर्चा जोड़ें' : 'Add Expense'}
@@ -161,60 +161,60 @@ export default function Expenses() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <div className="bg-white border border-gray-200 rounded-lg p-5 bg-gradient-to-br from-red-500/10 to-red-600/5 border-red-500/20">
-          <div className="text-red-600 dark:text-red-400 text-sm font-semibold tracking-wide uppercase mb-1">Total Expenses</div>
-          <div className="text-2xl font-bold font-heading">{formatINR(stats.total)}</div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+        <div className="p-3 border border-gray-200 rounded-md">
+          <div className="text-xs text-gray-500 mb-1">Total Expenses</div>
+          <div className="text-xl font-semibold text-gray-900">{formatINR(stats.total)}</div>
         </div>
-        <div className="bg-white border border-gray-200 rounded-lg p-5 bg-gradient-to-br from-amber-500/10 to-amber-600/5 border-amber-500/20">
-          <div className="text-amber-600 dark:text-amber-400 text-sm font-semibold tracking-wide uppercase mb-1">This Month</div>
-          <div className="text-2xl font-bold font-heading">{formatINR(stats.thisMonth)}</div>
+        <div className="p-3 border border-gray-200 rounded-md">
+          <div className="text-xs text-gray-500 mb-1">This Month</div>
+          <div className="text-xl font-semibold text-gray-900">{formatINR(stats.thisMonth)}</div>
         </div>
-        <div className="bg-white border border-gray-200 rounded-lg p-5 bg-gradient-to-br from-blue-500/10 to-blue-600/5 border-blue-500/20">
-          <div className="text-blue-600 dark:text-blue-400 text-sm font-semibold tracking-wide uppercase mb-1">Average Daily</div>
-          <div className="text-2xl font-bold font-heading">{formatINR(stats.avgDaily)}</div>
+        <div className="p-3 border border-gray-200 rounded-md">
+          <div className="text-xs text-gray-500 mb-1">Average Daily</div>
+          <div className="text-xl font-semibold text-gray-900">{formatINR(stats.avgDaily)}</div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
         {/* Main List */}
         <div className="lg:col-span-2">
-          <div className="bg-white border border-gray-200 rounded-lg mb-4 p-4 flex gap-3">
+          <div className="bg-white border border-gray-200 rounded-md mb-4 p-4 flex gap-3">
             <div className="relative flex-1">
               <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
               <input type="text" value={search} onChange={e => setSearch(e.target.value)}
                 placeholder={language === 'hi' ? 'खोजें...' : 'Search expenses...'}
-                className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 border-gray-200 bg-white  text-sm outline-none focus:border-brand-purple transition-all" />
+                className="w-full pl-10 pr-4 py-2.5 rounded-md border border-gray-200 border-gray-200 bg-white  text-sm outline-none focus:border-brand-purple transition-all" />
             </div>
             <select value={filterCategory} onChange={e => setFilterCategory(e.target.value)}
-              className="px-4 py-2.5 rounded-xl border border-gray-200 border-gray-200 bg-white  text-sm outline-none focus:border-brand-purple transition-all">
+              className="px-4 py-2.5 rounded-md border border-gray-200 border-gray-200 bg-white  text-sm outline-none focus:border-brand-purple transition-all">
               <option value="all">All Categories</option>
               {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
             </select>
           </div>
 
-          <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+          <div className="bg-white border border-gray-200 rounded-md overflow-hidden">
             <table className="w-full text-sm">
               <thead>
-                <tr className="bg-gray-50 bg-gray-50/50">
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">Date</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">Category</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">Description</th>
-                  <th className="px-4 py-3 text-right text-xs font-medium text-gray-500">Amount</th>
-                  <th className="px-4 py-3 text-center text-xs font-medium text-gray-500">Method</th>
-                  <th className="px-4 py-3 text-center text-xs font-medium text-gray-500">Action</th>
+                <tr className="bg-gray-50">
+                  <th className="px-3 py-2 text-left text-xs font-semibold text-gray-900 uppercase tracking-wide">Date</th>
+                  <th className="px-3 py-2 text-left text-xs font-semibold text-gray-900 uppercase tracking-wide">Category</th>
+                  <th className="px-3 py-2 text-left text-xs font-semibold text-gray-900 uppercase tracking-wide">Description</th>
+                  <th className="px-3 py-2 text-right text-xs font-semibold text-gray-900 uppercase tracking-wide">Amount</th>
+                  <th className="px-3 py-2 text-center text-xs font-semibold text-gray-900 uppercase tracking-wide">Method</th>
+                  <th className="px-3 py-2 text-center text-xs font-semibold text-gray-900 uppercase tracking-wide">Action</th>
                 </tr>
               </thead>
               <tbody>
-                {filteredExpenses.map((exp, index) => (
-                  <tr key={exp.id} className="border-b border-gray-50 border-gray-200 table-row-hover " style={{ animationDelay: `${index * 0.05}s` }}>
-                    <td className="px-4 py-3 text-gray-500 text-xs">{exp.expenseDate.toDate().toLocaleDateString('en-IN')}</td>
-                    <td className="px-4 py-3 font-medium text-brand-purple">{exp.categoryName}</td>
-                    <td className="px-4 py-3 text-gray-700 ">{exp.description}</td>
-                    <td className="px-4 py-3 text-right font-bold text-red-500">{formatINR(exp.amount)}</td>
-                    <td className="px-4 py-3 text-center text-xs text-gray-500">{exp.paymentMethod}</td>
-                    <td className="px-4 py-3 text-center">
-                      <button onClick={() => handleDelete(exp.id)} className="p-1.5 rounded-lg hover:bg-red-50 text-gray-500 hover:text-red-500 transition-colors">
+                {filteredExpenses.map((exp) => (
+                  <tr key={exp.id} className="border-b border-gray-100 hover:bg-gray-50 " >
+                    <td className="px-3 py-2 text-gray-500 text-xs">{exp.expenseDate.toDate().toLocaleDateString('en-IN')}</td>
+                    <td className="px-3 py-2 font-medium text-brand-purple">{exp.categoryName}</td>
+                    <td className="px-3 py-2 text-gray-700 ">{exp.description}</td>
+                    <td className="px-3 py-2 text-right font-bold text-red-500">{formatINR(exp.amount)}</td>
+                    <td className="px-3 py-2 text-center text-xs text-gray-500">{exp.paymentMethod}</td>
+                    <td className="px-3 py-2 text-center">
+                      <button onClick={() => handleDelete(exp.id)} className="p-1.5 rounded-md hover:bg-red-50 text-gray-500 hover:text-red-500 transition-colors">
                         <Trash2 size={16} />
                       </button>
                     </td>
@@ -230,8 +230,8 @@ export default function Expenses() {
 
         {/* Sidebar Chart */}
         <div>
-          <div className="bg-white border border-gray-200 rounded-lg p-5">
-            <h3 className="font-heading font-bold text-gray-900 text-gray-900 mb-4">{language === 'hi' ? 'खर्चों का विवरण' : 'Expense Breakdown'}</h3>
+          <div className="bg-white border border-gray-200 rounded-md p-3">
+            <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-4">{language === 'hi' ? 'खर्चों का विवरण' : 'Expense Breakdown'}</h3>
             {chartData.length > 0 ? (
               <div className="h-64">
                 <ResponsiveContainer width="100%" height="100%">
@@ -241,9 +241,9 @@ export default function Expenses() {
                     <YAxis type="category" dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#6B7280' }} />
                     <Tooltip 
                       formatter={(value: any) => formatINR(value)}
-                      contentStyle={{ backgroundColor: 'rgba(17, 24, 39, 0.9)', borderColor: 'rgba(75, 85, 99, 0.4)', borderRadius: '8px', color: '#fff' }}
+                      contentStyle={{ background: '#fff', border: '1px solid #E5E7EB', borderRadius: 6, fontSize: 12 }}
                     />
-                    <Bar dataKey="value" radius={[0, 4, 4, 0]} barSize={20}>
+                    <Bar dataKey="value" radius={[0, 0, 0, 0]} barSize={20}>
                       {chartData.map((_entry, index) => (
                         <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                       ))}
@@ -262,11 +262,11 @@ export default function Expenses() {
 
       {/* Add Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fade-in">
-          <div className="bg-white  rounded-lg p-6 w-full max-w-sm mx-4 animate-scale-in">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm ">
+          <div className="bg-white  rounded-md p-3 w-full max-w-sm mx-4 animate-scale-in">
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-heading font-bold text-gray-900 text-gray-900">{language === 'hi' ? 'खर्चा जोड़ें' : 'Add Expense'}</h3>
-              <button onClick={() => setShowAddModal(false)} className="p-1 rounded-lg hover:bg-gray-100 ">
+              <button onClick={() => setShowAddModal(false)} className="p-1 rounded-md hover:bg-gray-100 ">
                 <X size={18} className="text-gray-500" />
               </button>
             </div>
@@ -274,35 +274,35 @@ export default function Expenses() {
             <div className="space-y-4">
               <div>
                 <label className="block text-xs font-medium text-gray-500 mb-1">{language === 'hi' ? 'श्रेणी' : 'Category'}</label>
-                <select value={category} onChange={e => setCategory(e.target.value)} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 border-gray-200 bg-white  text-sm outline-none focus:border-brand-purple">
+                <select value={category} onChange={e => setCategory(e.target.value)} className="w-full px-4 py-2.5 rounded-md border border-gray-200 border-gray-200 bg-white  text-sm outline-none focus:border-brand-purple">
                   {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
                 </select>
               </div>
               
               <div>
                 <label className="block text-xs font-medium text-gray-500 mb-1">{language === 'hi' ? 'रकम' : 'Amount'}</label>
-                <input type="number" value={amount} onChange={e => setAmount(e.target.value)} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 border-gray-200 bg-white  text-sm outline-none focus:border-brand-purple" />
+                <input type="number" value={amount} onChange={e => setAmount(e.target.value)} className="w-full px-4 py-2.5 rounded-md border border-gray-200 border-gray-200 bg-white  text-sm outline-none focus:border-brand-purple" />
               </div>
 
               <div>
                 <label className="block text-xs font-medium text-gray-500 mb-1">{language === 'hi' ? 'विवरण' : 'Description'}</label>
-                <input type="text" value={description} onChange={e => setDescription(e.target.value)} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 border-gray-200 bg-white  text-sm outline-none focus:border-brand-purple" />
+                <input type="text" value={description} onChange={e => setDescription(e.target.value)} className="w-full px-4 py-2.5 rounded-md border border-gray-200 border-gray-200 bg-white  text-sm outline-none focus:border-brand-purple" />
               </div>
 
               <div>
                 <label className="block text-xs font-medium text-gray-500 mb-1">{language === 'hi' ? 'तारीख' : 'Date'}</label>
-                <input type="date" value={date} onChange={e => setDate(e.target.value)} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 border-gray-200 bg-white  text-sm outline-none focus:border-brand-purple" />
+                <input type="date" value={date} onChange={e => setDate(e.target.value)} className="w-full px-4 py-2.5 rounded-md border border-gray-200 border-gray-200 bg-white  text-sm outline-none focus:border-brand-purple" />
               </div>
 
               <div>
                 <label className="block text-xs font-medium text-gray-500 mb-1">{language === 'hi' ? 'भुगतान का तरीका' : 'Payment Method'}</label>
-                <select value={method} onChange={e => setMethod(e.target.value)} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 border-gray-200 bg-white  text-sm outline-none focus:border-brand-purple">
+                <select value={method} onChange={e => setMethod(e.target.value)} className="w-full px-4 py-2.5 rounded-md border border-gray-200 border-gray-200 bg-white  text-sm outline-none focus:border-brand-purple">
                   {PAYMENT_METHODS.map(m => <option key={m} value={m}>{m}</option>)}
                 </select>
               </div>
 
               <div className="flex gap-2 pt-2">
-                <button onClick={() => setShowAddModal(false)} className="flex-1 py-2.5 rounded-xl border border-gray-200 text-sm font-medium text-gray-600 ">{language === 'hi' ? 'रद्द करें' : 'Cancel'}</button>
+                <button onClick={() => setShowAddModal(false)} className="flex-1 py-2.5 rounded-md border border-gray-200 text-sm font-medium text-gray-600 ">{language === 'hi' ? 'रद्द करें' : 'Cancel'}</button>
                 <button onClick={handleAddExpense} disabled={saving || !amount || !description} className={cn('flex-1 btn-primary justify-center py-2.5 text-sm', (saving || !amount || !description) && 'opacity-50')}>
                   {saving ? (language === 'hi' ? 'सेव हो रहा है...' : 'Saving...') : (language === 'hi' ? 'सेव करें' : 'Save')}
                 </button>
@@ -312,7 +312,7 @@ export default function Expenses() {
         </div>
       )}
 
-      <div className='made-in-india mt-8 text-center text-sm text-gray-500 font-medium py-4'>Made with ❤️ in Jabalpur, India 🇮🇳</div>
+      <div className='made-in-india mt-8 text-center text-sm text-gray-500 font-medium py-4'>Made with  in Jabalpur, India </div>
     </div>
   );
 }

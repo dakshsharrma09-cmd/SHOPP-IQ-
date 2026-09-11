@@ -36,11 +36,11 @@ export default function Loyalty() {
   return (
     <div className="space-y-6">
       
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900 mb-1 flex items-center gap-2">
+      <div className="mb-4">
+        <h1 className="text-lg font-semibold text-gray-900">
           {t('loyalty')} 
         </h1>
-        <p className="text-gray-500 text-sm uppercase">लॉयल्टी कार्यक्रम</p>
+        <p className="text-xs text-gray-500 mt-0.5">लॉयल्टी कार्यक्रम</p>
       </div>
 
       {/* Stats */}
@@ -50,19 +50,19 @@ export default function Loyalty() {
           { label: 'Members', value: String(memberCount), icon: Gift, borderColor: 'border-l-purple-600' },
           { label: 'Avg Points', value: memberCount > 0 ? Math.round(totalPoints / memberCount).toLocaleString('en-IN') : '0', icon: Trophy, borderColor: 'border-l-emerald-500' },
         ].map((s) => (
-          <div key={s.label} className={`p-4 rounded-lg bg-white border border-gray-200 border-l-[3px] ${s.borderColor}`}>
-            <div className="w-8 h-8 rounded-md flex items-center justify-center mb-2 bg-gray-50">
-              <s.icon size={16} className="text-gray-500" />
+          <div key={s.label} className="p-3 border border-gray-200 rounded-md">
+            <div className="flex items-center gap-1.5 text-xs text-gray-500 mb-1">
+              <s.icon size={16} />
+              {s.label}
             </div>
-            <div className="text-xl font-bold text-gray-900">{s.value}</div>
-            <div className="text-xs text-gray-500 font-medium mt-0.5">{s.label}</div>
+            <div className="text-xl font-semibold text-gray-900">{s.value}</div>
           </div>
         ))}
       </div>
 
       {/* Program Rules */}
-      <div className="bg-white border border-gray-200 rounded-lg p-6 " >
-        <h2 className="font-heading font-semibold text-gray-900 text-gray-900 mb-4">
+      <div className="bg-white border border-gray-200 rounded-md p-3 " >
+        <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-4">
           {language === 'hi' ? 'Program Niyam' : 'Program Rules'}
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -71,7 +71,7 @@ export default function Loyalty() {
             { title: language === 'hi' ? 'Istemal' : 'Redeem', desc: '1 point = ₹1 discount', icon: '', bg: 'bg-purple-50 ' },
             { title: language === 'hi' ? 'Nyuntam' : 'Minimum', desc: '50 points to redeem', icon: '', bg: 'bg-amber-50 ' },
           ].map(rule => (
-            <div key={rule.title} className={cn('p-4 rounded-xl', rule.bg)}>
+            <div key={rule.title} className={cn('p-4 rounded-md', rule.bg)}>
               <div className="text-2xl mb-2">{rule.icon}</div>
               <div className="font-heading font-semibold text-gray-900 text-gray-900 text-sm">{rule.title}</div>
               <div className="text-xs text-gray-500 mt-1">{rule.desc}</div>
@@ -81,21 +81,21 @@ export default function Loyalty() {
       </div>
 
       {/* Leaderboard */}
-      <div className="bg-white border border-gray-200 rounded-lg overflow-hidden " >
+      <div className="bg-white border border-gray-200 rounded-md overflow-hidden " >
         <div className="px-6 py-4 border-b border-gray-100 border-gray-200">
-          <h2 className="font-heading font-semibold text-gray-900 text-gray-900">
+          <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">
             {language === 'hi' ? 'Leaderboard ' : 'Leaderboard '}
           </h2>
         </div>
         <table className="w-full text-sm">
           <thead>
-            <tr className="bg-gray-50 bg-gray-50/50">
-              <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 w-16">Rank</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">Customer</th>
-              <th className="px-4 py-3 text-center text-xs font-medium text-gray-500">Points</th>
-              <th className="px-4 py-3 text-center text-xs font-medium text-gray-500">Tier</th>
-              <th className="px-4 py-3 text-right text-xs font-medium text-gray-500">Total Spent</th>
-              <th className="px-4 py-3 text-center text-xs font-medium text-gray-500">Segment</th>
+            <tr className="bg-gray-50">
+              <th className="px-3 py-2 text-center text-xs font-semibold text-gray-900 uppercase tracking-wide">Rank</th>
+              <th className="px-3 py-2 text-left text-xs font-semibold text-gray-900 uppercase tracking-wide">Customer</th>
+              <th className="px-3 py-2 text-center text-xs font-semibold text-gray-900 uppercase tracking-wide">Points</th>
+              <th className="px-3 py-2 text-center text-xs font-semibold text-gray-900 uppercase tracking-wide">Tier</th>
+              <th className="px-3 py-2 text-right text-xs font-semibold text-gray-900 uppercase tracking-wide">Total Spent</th>
+              <th className="px-3 py-2 text-center text-xs font-semibold text-gray-900 uppercase tracking-wide">Segment</th>
             </tr>
           </thead>
           <tbody>
@@ -105,11 +105,11 @@ export default function Loyalty() {
                 : c.loyaltyPoints >= 500 ? { label: 'Silver', class: 'bg-gray-100 text-gray-600  ' }
                 : { label: 'Bronze', class: 'bg-orange-100 text-orange-700  ' };
               return (
-              <tr key={c.id} className={cn('border-b border-gray-50 border-gray-200 table-row-hover', i < 3 && 'bg-amber-50/50  shadow-[inset_0_0_15px_rgba(245,158,11,0.15)] relative')}>
-                <td className="px-4 py-3 text-center">{getRankBadge(i + 1)}</td>
-                <td className="px-4 py-3">
+              <tr key={c.id} className={cn('border-b border-gray-100 hover:bg-gray-50', i < 3 && 'bg-amber-50/50  shadow-[inset_0_0_15px_rgba(245,158,11,0.15)] relative')}>
+                <td className="px-3 py-2 text-center">{getRankBadge(i + 1)}</td>
+                <td className="px-3 py-2">
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-brand-purple to-purple-400 flex items-center justify-center text-gray-900 text-xs font-bold">
+                    <div className="w-8 h-8 rounded-full  flex items-center justify-center text-gray-900 text-xs font-bold">
                       {c.fullName.charAt(0)}
                     </div>
                     <div>
@@ -118,16 +118,16 @@ export default function Loyalty() {
                     </div>
                   </div>
                 </td>
-                <td className="px-4 py-3 text-center">
+                <td className="px-3 py-2 text-center">
                   <span className="text-brand-gold font-bold font-heading"> {c.loyaltyPoints}</span>
                 </td>
-                <td className="px-4 py-3 text-center">
+                <td className="px-3 py-2 text-center">
                   <span className={cn('text-[10px] px-2 py-1 rounded-full font-semibold', tier.class)}>
                     {tier.label}
                   </span>
                 </td>
-                <td className="px-4 py-3 text-right font-medium text-gray-900 text-gray-900">{formatINR(c.totalLifetimeValue)}</td>
-                <td className="px-4 py-3 text-center">
+                <td className="px-3 py-2 text-right font-medium text-gray-900 text-gray-900">{formatINR(c.totalLifetimeValue)}</td>
+                <td className="px-3 py-2 text-center">
                   <span className={cn('text-xs px-2 py-1 rounded-full font-medium',
                     c.customerSegment === 'vip' ? 'badge-purple' :
                     c.customerSegment === 'regular' ? 'badge-blue' :
@@ -145,7 +145,7 @@ export default function Loyalty() {
         </table>
       </div>
       
-      <div className='made-in-india mt-8 text-center text-sm text-gray-500 font-medium py-4'>Made with ❤️ in Jabalpur, India 🇮🇳</div>
+      <div className='made-in-india mt-8 text-center text-sm text-gray-500 font-medium py-4'>Made with  in Jabalpur, India </div>
     </div>
   );
 }

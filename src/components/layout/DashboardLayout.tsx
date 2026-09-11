@@ -10,21 +10,17 @@ export default function DashboardLayout() {
   const isWhatsApp = location.pathname === '/whatsapp';
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen" style={{ background: '#F4F5F7' }}>
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-      <div className={cn(
-        'transition-all duration-300',
-        'pl-0 md:pl-60'
-      )}>
+      <div className="transition-all duration-200 pl-0 md:pl-[220px]">
         {!isWhatsApp && <Header onMenuClick={() => setSidebarOpen(true)} />}
         
-        {/* Main Content */}
         <main className={cn(
           'min-h-screen',
-          isWhatsApp ? 'pt-0 pb-0' : 'pt-16 pb-20 md:pb-0'
+          isWhatsApp ? 'pt-0 pb-0' : 'pb-16 md:pb-0'
         )}>
-          <div key={location.pathname} className={cn('page-enter', isWhatsApp ? 'p-0 h-screen' : 'p-4 md:p-6')}>
+          <div key={location.pathname} className={cn(isWhatsApp ? 'p-0 h-screen' : 'p-4 md:p-5')}>
             <Outlet />
           </div>
         </main>

@@ -11,32 +11,13 @@ import {
 import type { Invoice, Product, DailySnapshot, Customer } from '../types/firestore';
 import {
   TrendingUp, AlertTriangle, Users, Package,
-  FileText, Plus, CreditCard, MessageSquare, MessageCircle,
-  Receipt, DollarSign, Star, ChevronDown, ChevronUp, ArrowUpRight, Sprout
+  FileText, Plus, CreditCard, MessageCircle,
+  Receipt, DollarSign, Star, ChevronDown, ChevronUp, Sprout
 } from 'lucide-react';
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, BarChart, Bar
 } from 'recharts';
-
-
-
-function AnimatedNumber({ value, prefix = '', suffix = '' }: { value: number; prefix?: string; suffix?: string }) {
-  const [display, setDisplay] = useState(0);
-  useEffect(() => {
-    const duration = 1500;
-    const steps = 40;
-    const inc = value / steps;
-    let cur = 0;
-    const t = setInterval(() => {
-      cur += inc;
-      if (cur >= value) { setDisplay(value); clearInterval(t); }
-      else setDisplay(Math.floor(cur));
-    }, duration / steps);
-    return () => clearInterval(t);
-  }, [value]);
-  return <>{prefix}{display.toLocaleString('en-IN')}{suffix}</>;
-}
 
 function StatusBadge({ status }: { status: string }) {
   const map: Record<string, string> = {
@@ -48,14 +29,13 @@ function StatusBadge({ status }: { status: string }) {
 export default function Dashboard() {
   const { tenantId, tenant } = useAuth();
   const { showToast } = useToast();
-  const { t, language } = useLanguage();
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const [chartPeriod, setChartPeriod] = useState<'7D' | '30D'>('30D');
   const [scoreOpen, setScoreOpen] = useState(false);
   const [seeding, setSeeding] = useState(false);
   const [seeded, setSeeded] = useState(false);
 
-  // Firestore state — all real-time via onSnapshot
   const [snapshots, setSnapshots] = useState<Array<DailySnapshot & { dateKey: string }>>([]);
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
@@ -71,7 +51,6 @@ export default function Dashboard() {
     return () => { unsub1(); unsub2(); unsub3(); unsub4(); };
   }, [tenantId]);
 
-  // Compute chart data from daily snapshots
   const salesData30 = useMemo(() => snapshots.map(s => ({
     day: new Date(s.dateKey).toLocaleDateString('en-IN', { day: '2-digit', month: 'short' }),
     sales: s.totalSales,
@@ -79,7 +58,6 @@ export default function Dashboard() {
   const salesData7 = salesData30.slice(-7);
   const chartData = chartPeriod === '7D' ? salesData7 : salesData30;
 
-  // === STAT 1: Aaj ki Bikri — sum of today's invoice grandTotal ===
   const todayInvoices = useMemo(() => {
     const todayStart = new Date();
     todayStart.setHours(0, 0, 0, 0);
@@ -90,17 +68,14 @@ export default function Dashboard() {
   }, [invoices]);
   const todaySales = todayInvoices.reduce((s, inv) => s + inv.grandTotal, 0);
 
-  // === STAT 2: Pending Payments — invoices with status unpaid/partial/overdue ===
   const pendingInvoices = useMemo(() =>
     invoices.filter(inv => ['unpaid', 'partial', 'overdue'].includes(inv.paymentStatus))
   , [invoices]);
   const pendingTotal = pendingInvoices.reduce((s, inv) => s + inv.amountPending, 0);
   const pendingCount = pendingInvoices.length;
 
-  // === STAT 3: Low Stock — products where currentStock <= minimumStockAlert ===
   const lowStockProducts = products.filter(p => p.isActive && p.currentStock <= p.minimumStockAlert);
 
-  // === STAT 4: Naye Customers — customers created today ===
   const newCustomersToday = useMemo(() => {
     const todayStart = new Date();
     todayStart.setHours(0, 0, 0, 0);
@@ -111,7 +86,6 @@ export default function Dashboard() {
     }).length;
   }, [customers]);
 
-  // Category breakdown from products
   const categoryData = useMemo(() => {
     const catMap: Record<string, number> = {};
     products.filter(p => p.isActive).forEach(p => {
@@ -119,13 +93,12 @@ export default function Dashboard() {
       catMap[cat] = (catMap[cat] || 0) + 1;
     });
     const total = Object.values(catMap).reduce((a, b) => a + b, 0) || 1;
-    const colors = ['#7C3AED', '#F59E0B', '#10B981', '#3B82F6', '#EC4899', '#EF4444', '#06B6D4'];
+    const colors = ['#6D28D9', '#D97706', '#059669', '#3B82F6', '#DC2626', '#6B7280'];
     return Object.entries(catMap).map(([name, count], i) => ({
       name, value: Math.round((count / total) * 100), color: colors[i % colors.length],
     }));
   }, [products]);
 
-  // Top products from invoices
   const topProducts = useMemo(() => {
     const prodMap: Record<string, number> = {};
     invoices.forEach(inv => {
@@ -139,7 +112,6 @@ export default function Dashboard() {
       .map(([name, revenue]) => ({ name, revenue: Math.round(revenue) }));
   }, [invoices]);
 
-  // Recent invoices (last 5)
   const recentInvoices = useMemo(() =>
     invoices.slice(0, 5).map(inv => ({
       id: inv.invoiceNumber,
@@ -152,50 +124,37 @@ export default function Dashboard() {
   , [invoices]);
 
   const quickActions = [
-    { icon: FileText, label: 'Naya Bill', labelHi: 'Naya Bill', path: '/billing/new', color: 'text-brand-purple' },
-    { icon: Plus, label: 'Add Stock', labelHi: 'Stock Jodein', path: '/inventory', color: 'text-brand-green' },
-    { icon: Users, label: 'Add Customer', labelHi: 'Grahak Jodein', path: '/customers', color: 'text-brand-blue' },
-    { icon: CreditCard, label: 'Record Payment', labelHi: 'Bhugtan Darj', path: '/payments', color: 'text-brand-gold' },
-    { icon: MessageSquare, label: 'WhatsApp Report', labelHi: 'WhatsApp Report', path: '/analytics', color: 'text-brand-whatsapp' },
-    { icon: Receipt, label: 'GST Report', labelHi: 'GST Report', path: '/gst', color: 'text-purple-500' },
-    { icon: DollarSign, label: 'Add Expense', labelHi: 'Kharcha Jodein', path: '/payments', color: 'text-red-500' },
-    { icon: Star, label: 'Vyapaar Score', labelHi: 'Vyapaar Score', path: '/analytics', color: 'text-brand-gold' },
+    { icon: FileText, label: 'New Bill', path: '/billing/new' },
+    { icon: Plus, label: 'Add Stock', path: '/inventory' },
+    { icon: Users, label: 'Add Customer', path: '/customers' },
+    { icon: CreditCard, label: 'Record Payment', path: '/payments' },
+    { icon: Receipt, label: 'GST Report', path: '/gst' },
+    { icon: DollarSign, label: 'Add Expense', path: '/expenses' },
   ];
+
   const scoreBreakdown = useMemo(() => {
-    // Invoice regularity (200 pts): invoices in last 7 days
     const weekAgo = new Date(); weekAgo.setDate(weekAgo.getDate() - 7);
     const weekInvoices = invoices.filter(inv => inv.invoiceDate && inv.invoiceDate.toDate() >= weekAgo);
     const invoiceHealth = Math.min(200, Math.round((weekInvoices.length / 7) * 200));
-
-    // Collections rate (250 pts): paid / total
     const paidInvoices = invoices.filter(inv => inv.paymentStatus === 'paid').length;
     const collectionsRate = invoices.length > 0 ? Math.round((paidInvoices / invoices.length) * 250) : 0;
-
-    // Inventory health (200 pts): normal stock / total
     const activeProds = products.filter(p => p.isActive !== false);
     const normalStock = activeProds.filter(p => (p.currentStock || 0) > (p.minimumStockAlert || 0)).length;
     const inventoryMgmt = activeProds.length > 0 ? Math.round((normalStock / activeProds.length) * 200) : 0;
-
-    // Customer retention (200 pts): repeat customers / total
     const repeatCustomers = customers.filter(c => (c.visitCount || 0) > 1).length;
     const customerRetention = customers.length > 0 ? Math.round((repeatCustomers / customers.length) * 200) : 0;
-
-    // GST compliance (150 pts): invoices with GST / total
     const gstInvoices = invoices.filter(inv => (inv.cgstTotal || 0) + (inv.sgstTotal || 0) > 0).length;
     const gstCompliance = invoices.length > 0 ? Math.round((gstInvoices / invoices.length) * 150) : 0;
-
     return [
-      { label: 'Invoice Health', score: invoiceHealth, color: '#3B82F6' },
-      { label: 'Collections Rate', score: collectionsRate, color: '#EC4899' },
-      { label: 'Inventory Mgmt', score: inventoryMgmt, color: '#F59E0B' },
-      { label: 'Customer Retention', score: customerRetention, color: '#8B5CF6' },
-      { label: 'GST Compliance', score: gstCompliance, color: '#10B981' },
+      { label: 'Invoice Health', score: invoiceHealth, max: 200 },
+      { label: 'Collections', score: collectionsRate, max: 250 },
+      { label: 'Inventory', score: inventoryMgmt, max: 200 },
+      { label: 'Retention', score: customerRetention, max: 200 },
+      { label: 'GST', score: gstCompliance, max: 150 },
     ];
   }, [invoices, products, customers]);
 
-  const vyapaarScore = useMemo(() => {
-    return scoreBreakdown.reduce((sum, item) => sum + item.score, 0);
-  }, [scoreBreakdown]);
+  const vyapaarScore = useMemo(() => scoreBreakdown.reduce((sum, item) => sum + item.score, 0), [scoreBreakdown]);
 
   const handleSeed = async () => {
     if (!tenantId) return;
@@ -210,378 +169,252 @@ export default function Dashboard() {
     }
   };
 
-
+  const tooltipStyle = { background: '#fff', border: '1px solid #E5E7EB', borderRadius: 6, fontSize: 12 };
 
   return (
-    <div className="space-y-6">
-      <style>{`
-        @keyframes scoreRing { from { stroke-dasharray: 0 251.2; } }
-        .score-ring-anim { animation: scoreRing 1.5s ease-out forwards; }
-      `}</style>
-      {/* ═══════════════════ HERO BANNER ═══════════════════ */}
-      <div className="relative overflow-hidden rounded-lg p-6 md:p-8">
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-bold text-[#1F2937] flex items-center gap-3 mb-1" style={{ fontFamily: '"Plus Jakarta Sans", sans-serif' }}>
-              Namaste, {tenant?.ownerName?.split(' ')[0] || 'Boss'}!
-              {isLive && (
-                <span className="relative flex h-2.5 w-2.5 mt-1">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-400" />
-                </span>
-              )}
-            </h1>
-            <p className="text-sm text-gray-500 font-medium">
-              {new Date().toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })} • IST
-            </p>
-          </div>
-
-          <div className="flex items-center gap-3">
-            {!seeded && (
-              <button onClick={handleSeed} disabled={seeding}
-                className="flex items-center gap-2 px-5 py-2.5 rounded-md text-sm font-semibold transition-all bg-purple-100 text-purple-700 border border-purple-200">
-                <Sprout size={15} />
-                {seeding ? 'Loading...' : 'Load Demo Data'}
-              </button>
-            )}
-            <button onClick={() => navigate('/billing/new')}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-md text-sm font-bold text-white transition-all bg-purple-700 hover:bg-purple-800">
-              <Plus size={16} /> {t('createBill').split('&')[0]}
+    <div className="space-y-4">
+      {/* PAGE HEADER */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-lg font-semibold text-gray-900">
+            Namaste, {tenant?.ownerName?.split(' ')[0] || 'Boss'}
+            {isLive && <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500 ml-2 align-middle" />}
+          </h1>
+          <p className="text-xs text-gray-500">
+            {new Date().toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })}
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          {!seeded && (
+            <button onClick={handleSeed} disabled={seeding}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-medium border border-gray-200 text-gray-600 hover:bg-gray-50">
+              <Sprout size={14} />
+              {seeding ? 'Loading...' : 'Demo Data'}
             </button>
-          </div>
+          )}
+          <button onClick={() => navigate('/billing/new')}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-medium text-white bg-purple-700 hover:bg-purple-800">
+            <Plus size={14} />
+            New Bill
+          </button>
         </div>
       </div>
 
-      {/* ═══════════════════ STAT CARDS ═══════════════════ */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-        {/* Today Sales */}
-        <div className="fade-in-up stat-card rounded-lg p-5 cursor-pointer transition-all duration-300 hover:bg-gray-50 group bg-white border-l-4 border-gray-100"
-          style={{ borderLeftColor: '#6D28D9' }}
-          onClick={() => navigate('/analytics')}>
-          <div className="flex items-start justify-between mb-3">
-            <div className="w-11 h-11 rounded-xl flex items-center justify-center" style={{ backgroundColor: 'rgba(109, 40, 217, 0.1)' }}>
-              <TrendingUp size={20} className="text-[#6D28D9]" />
-            </div>
-            <div className="flex items-center text-green-600 text-xs font-semibold">
-              <ArrowUpRight size={14} /> 12%
-            </div>
+      {/* KEY METRICS — plain, quiet */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        <div className="p-3 border border-gray-200 rounded-md bg-white cursor-pointer hover:bg-gray-50" onClick={() => navigate('/analytics')}>
+          <div className="flex items-center justify-between mb-1">
+            <span className="text-[11px] text-gray-500 font-medium">{t('todaySales')}</span>
+            <TrendingUp size={14} className="text-gray-400" />
           </div>
-          <div className="text-2xl font-bold font-stat text-gray-900 mb-0.5"><AnimatedNumber value={todaySales} prefix="₹" /></div>
-          <div className="text-xs text-gray-500 font-medium">{t('todaySales')}</div>
-          <div className="text-[10px] text-gray-400 mt-1">{todayInvoices.length} बिल आज</div>
+          <div className="text-xl font-semibold text-gray-900">₹{todaySales.toLocaleString('en-IN')}</div>
+          <div className="text-[10px] text-gray-400 mt-0.5">{todayInvoices.length} bills today</div>
         </div>
 
-        {/* Pending */}
-        <div className="fade-in-up stat-card rounded-lg p-5 cursor-pointer transition-all duration-300 hover:bg-gray-50 group bg-white border-l-4 border-gray-100"
-          style={{ borderLeftColor: '#DB2777' }}
-          onClick={() => navigate('/payments')}>
-          <div className="flex items-start justify-between mb-3">
-            <div className="w-11 h-11 rounded-xl flex items-center justify-center" style={{ backgroundColor: 'rgba(219, 39, 119, 0.1)' }}>
-              <AlertTriangle size={20} className="text-[#DB2777]" />
-            </div>
-            <div className="flex items-center text-red-600 text-xs font-semibold">
-              <ArrowUpRight size={14} className="rotate-90" /> 5%
-            </div>
+        <div className="p-3 border border-gray-200 rounded-md bg-white cursor-pointer hover:bg-gray-50" onClick={() => navigate('/payments')}>
+          <div className="flex items-center justify-between mb-1">
+            <span className="text-[11px] text-gray-500 font-medium">{t('pendingPayments')}</span>
+            <AlertTriangle size={14} className="text-gray-400" />
           </div>
-          <div className="text-2xl font-bold font-stat text-gray-900 mb-0.5"><AnimatedNumber value={pendingTotal} prefix="₹" /></div>
-          <div className="text-xs text-gray-500 font-medium">{t('pendingPayments')}</div>
-          <div className="text-[10px] text-gray-400 mt-1">{pendingCount} बिल बाकी</div>
+          <div className="text-xl font-semibold text-gray-900">₹{pendingTotal.toLocaleString('en-IN')}</div>
+          <div className="text-[10px] text-gray-400 mt-0.5">{pendingCount} pending</div>
         </div>
 
-        {/* Low Stock */}
-        <div className="fade-in-up stat-card rounded-lg p-5 cursor-pointer transition-all duration-300 hover:bg-gray-50 group bg-white border-l-4 border-gray-100"
-          style={{ borderLeftColor: '#D97706' }}
-          onClick={() => navigate('/inventory')}>
-          <div className="flex items-start justify-between mb-3">
-            <div className="w-11 h-11 rounded-xl flex items-center justify-center" style={{ backgroundColor: 'rgba(217, 119, 6, 0.1)' }}>
-              <Package size={20} className="text-[#D97706]" />
-            </div>
+        <div className="p-3 border border-gray-200 rounded-md bg-white cursor-pointer hover:bg-gray-50" onClick={() => navigate('/inventory')}>
+          <div className="flex items-center justify-between mb-1">
+            <span className="text-[11px] text-gray-500 font-medium">{t('lowStock')}</span>
+            <Package size={14} className="text-gray-400" />
           </div>
-          <div className="text-2xl font-bold font-stat text-gray-900 mb-0.5"><AnimatedNumber value={lowStockProducts.length} /></div>
-          <div className="text-xs text-gray-500 font-medium">{t('lowStock')}</div>
-          <div className="text-[10px] text-gray-400 mt-1">{lowStockProducts.length > 0 ? '⚠️ Reorder करो' : '✅ सब ठीक'}</div>
+          <div className="text-xl font-semibold text-gray-900">{lowStockProducts.length}</div>
+          <div className="text-[10px] text-gray-400 mt-0.5">{lowStockProducts.length > 0 ? 'Reorder needed' : 'Stock OK'}</div>
         </div>
 
-        {/* New Customers */}
-        <div className="fade-in-up stat-card rounded-lg p-5 cursor-pointer transition-all duration-300 hover:bg-gray-50 group bg-white border-l-4 border-gray-100"
-          style={{ borderLeftColor: '#059669' }}
-          onClick={() => navigate('/customers')}>
-          <div className="flex items-start justify-between mb-3">
-            <div className="w-11 h-11 rounded-xl flex items-center justify-center" style={{ backgroundColor: 'rgba(5, 150, 105, 0.1)' }}>
-              <Users size={20} className="text-[#059669]" />
-            </div>
-            <div className="flex items-center text-green-600 text-xs font-semibold">
-              <ArrowUpRight size={14} /> 8%
-            </div>
+        <div className="p-3 border border-gray-200 rounded-md bg-white cursor-pointer hover:bg-gray-50" onClick={() => navigate('/customers')}>
+          <div className="flex items-center justify-between mb-1">
+            <span className="text-[11px] text-gray-500 font-medium">{t('newCustomers')}</span>
+            <Users size={14} className="text-gray-400" />
           </div>
-          <div className="text-2xl font-bold font-stat text-gray-900 mb-0.5"><AnimatedNumber value={newCustomersToday} /></div>
-          <div className="text-xs text-gray-500 font-medium">{t('newCustomers')}</div>
-          <div className="text-[10px] text-gray-400 mt-1">कुल {customers.length} ग्राहक</div>
+          <div className="text-xl font-semibold text-gray-900">{newCustomersToday}</div>
+          <div className="text-[10px] text-gray-400 mt-0.5">Total {customers.length}</div>
         </div>
       </div>
 
-      {/* ═══════════════════ CHARTS ROW ═══════════════════ */}
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
-        {/* Sales Trend */}
-        <div className="lg:col-span-3 bg-white border border-gray-200 rounded-lg p-6 fade-in-up border border-gray-100">
-          <div className="flex items-center justify-between mb-5">
-            <div>
-              <h2 className="text-[20px] font-semibold text-[#1F2937]">{t('salesTrend')}</h2>
-              <p className="text-[11px] text-gray-400 mt-0.5">बिक्री का रुझान</p>
-            </div>
-            <div className="flex gap-1 bg-gray-50 rounded-md p-1">
+      {/* CHARTS */}
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-3">
+        <div className="lg:col-span-3 bg-white border border-gray-200 rounded-md p-3">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-sm font-semibold text-gray-900">{t('salesTrend')}</h2>
+            <div className="flex gap-0.5 bg-gray-100 rounded p-0.5">
               {(['7D', '30D'] as const).map(p => (
                 <button key={p} onClick={() => setChartPeriod(p)}
-                  className={`px-3.5 py-1.5 rounded text-xs font-semibold transition-all ${chartPeriod === p ? 'bg-[#6D28D9] text-white' : 'text-gray-500 hover:text-gray-700'}`}>
-                  {p === '7D' ? '7 दिन' : '30 दिन'}
+                  className={`px-2.5 py-1 rounded text-[11px] font-medium ${chartPeriod === p ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500'}`}>
+                  {p === '7D' ? '7D' : '30D'}
                 </button>
               ))}
             </div>
           </div>
           {chartData.length > 0 ? (
-            <ResponsiveContainer width="100%" height={230}>
+            <ResponsiveContainer width="100%" height={200}>
               <LineChart data={chartData}>
-                <defs>
-                  <linearGradient id="salesFill" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#7C3AED" stopOpacity={0.15}/>
-                    <stop offset="95%" stopColor="#7C3AED" stopOpacity={0}/>
-                  </linearGradient>
-                  <linearGradient id="lineGrad" x1="0" y1="0" x2="1" y2="0">
-                    <stop offset="0%" stopColor="#6D28D9" />
-                    <stop offset="50%" stopColor="#7C3AED" />
-                    <stop offset="100%" stopColor="#A78BFA" />
-                  </linearGradient>
-                </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="#F3F4F6" vertical={false} />
                 <XAxis dataKey="day" tick={{ fontSize: 10, fill: '#9CA3AF' }} tickLine={false} axisLine={false}
                   interval={chartPeriod === '30D' ? 4 : 0} />
                 <YAxis tick={{ fontSize: 10, fill: '#9CA3AF' }} tickLine={false} axisLine={false}
-                  tickFormatter={v => `₹${v/1000}k`} width={50} />
-                <Tooltip formatter={(v: any) => [formatINR(v), 'बिक्री']}
-                  contentStyle={{ background: '#fff', border: '1px solid #F3F4F6', borderRadius: 14, boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}
-                  labelStyle={{ color: '#4B5563', fontSize: 11, fontWeight: 600 }} itemStyle={{ color: '#6D28D9' }} />
-                <Line type="monotone" dataKey="sales" stroke="#6D28D9" strokeWidth={3}
-                  dot={false} activeDot={{ r: 6, fill: '#6D28D9', stroke: 'white', strokeWidth: 3 }} />
+                  tickFormatter={v => `₹${v/1000}k`} width={45} />
+                <Tooltip formatter={(v: any) => [formatINR(v), 'Sales']} contentStyle={tooltipStyle} />
+                <Line type="monotone" dataKey="sales" stroke="#6D28D9" strokeWidth={2} dot={false}
+                  activeDot={{ r: 4, fill: '#6D28D9', stroke: '#fff', strokeWidth: 2 }} />
               </LineChart>
             </ResponsiveContainer>
           ) : (
-            <div className="flex flex-col items-center justify-center h-[230px] text-gray-400 text-sm gap-2">
-              <span className="text-gray-400 font-medium">अभी कोई data नहीं — Demo Data लोड करें ↗</span>
-            </div>
+            <div className="flex items-center justify-center h-[200px] text-gray-400 text-xs">No data — load demo data</div>
           )}
         </div>
 
-        {/* Category Pie */}
-        <div className="lg:col-span-2 bg-white border border-gray-200 rounded-lg p-6 fade-in-up border border-gray-100">
-          <h2 className="text-[20px] font-semibold text-[#1F2937] mb-1">{t('revenueByCategory')}</h2>
-          <p className="text-[11px] text-gray-400 mb-4">श्रेणी अनुसार</p>
+        <div className="lg:col-span-2 bg-white border border-gray-200 rounded-md p-3">
+          <h2 className="text-sm font-semibold text-gray-900 mb-3">{t('revenueByCategory')}</h2>
           {categoryData.length > 0 ? (
             <>
-              <ResponsiveContainer width="100%" height={160}>
+              <ResponsiveContainer width="100%" height={140}>
                 <PieChart>
-                  <Pie data={categoryData} cx="50%" cy="50%" innerRadius={48} outerRadius={72}
-                    paddingAngle={4} dataKey="value" stroke="none">
+                  <Pie data={categoryData} cx="50%" cy="50%" innerRadius={40} outerRadius={60}
+                    paddingAngle={2} dataKey="value" stroke="none">
                     {categoryData.map((entry, i) => <Cell key={i} fill={entry.color} />)}
                   </Pie>
-                  <Tooltip formatter={(v: any) => [`${v}%`, '']}
-                    contentStyle={{ background: '#fff', border: '1px solid #F3F4F6', borderRadius: 12, boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }} />
+                  <Tooltip formatter={(v: any) => [`${v}%`, '']} contentStyle={tooltipStyle} />
                 </PieChart>
               </ResponsiveContainer>
-              <div className="space-y-2 mt-2">
+              <div className="space-y-1 mt-2">
                 {categoryData.map(c => (
-                  <div key={c.name} className="flex items-center justify-between text-xs group cursor-pointer hover:bg-gray-50 rounded-lg px-2 py-1 -mx-2 transition-colors">
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-3 h-3 rounded-full shadow-sm" style={{ background: c.color }} />
-                      <span className="text-gray-600 font-medium">{c.name}</span>
+                  <div key={c.name} className="flex items-center justify-between text-xs py-0.5">
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 rounded-sm" style={{ background: c.color }} />
+                      <span className="text-gray-600">{c.name}</span>
                     </div>
-                    <span className="font-bold text-gray-900">{c.value}%</span>
+                    <span className="font-medium text-gray-900">{c.value}%</span>
                   </div>
                 ))}
               </div>
             </>
           ) : (
-            <div className="flex flex-col items-center justify-center h-[200px] text-gray-400 text-sm gap-2">
-              <span className="text-gray-400 font-medium">- कोई product नहीं -</span>
-            </div>
+            <div className="flex items-center justify-center h-[180px] text-gray-400 text-xs">No products</div>
           )}
         </div>
       </div>
 
-      {/* ═══════════════════ TOP PRODUCTS + RECENT INVOICES ═══════════════════ */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {/* Top Products */}
-        <div className="bg-white border border-gray-200 rounded-lg p-6 fade-in-up border border-gray-100">
-          <h2 className="text-[20px] font-semibold text-[#1F2937] mb-1">{t('topProducts')}</h2>
-          <p className="text-[11px] text-gray-400 mb-4">सबसे ज़्यादा बिकने वाले</p>
+      {/* TOP PRODUCTS + RECENT INVOICES */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+        <div className="bg-white border border-gray-200 rounded-md p-3">
+          <h2 className="text-sm font-semibold text-gray-900 mb-3">{t('topProducts')}</h2>
           {topProducts.length > 0 ? (
-            <ResponsiveContainer width="100%" height={200}>
-              <BarChart data={topProducts} layout="vertical" barSize={12}>
+            <ResponsiveContainer width="100%" height={180}>
+              <BarChart data={topProducts} layout="vertical" barSize={10}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#F3F4F6" horizontal={false} />
                 <XAxis type="number" tick={{ fontSize: 10, fill: '#9CA3AF' }} tickLine={false} axisLine={false}
                   tickFormatter={v => `₹${v/1000}k`} />
-                <YAxis type="category" dataKey="name" tick={{ fontSize: 11, fill: '#6B7280' }} tickLine={false} axisLine={false} width={110} />
-                <Tooltip formatter={(v: any) => [formatINR(v), 'Revenue']}
-                  contentStyle={{ background: '#fff', border: '1px solid #F3F4F6', borderRadius: 12, boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }} />
-                <Bar dataKey="revenue" radius={[0, 8, 8, 0]} fill="#6D28D9" />
+                <YAxis type="category" dataKey="name" tick={{ fontSize: 11, fill: '#6B7280' }} tickLine={false} axisLine={false} width={100} />
+                <Tooltip formatter={(v: any) => [formatINR(v), 'Revenue']} contentStyle={tooltipStyle} />
+                <Bar dataKey="revenue" radius={[0, 3, 3, 0]} fill="#6D28D9" />
               </BarChart>
             </ResponsiveContainer>
           ) : (
-            <div className="flex flex-col items-center justify-center h-[200px] text-gray-400 text-sm gap-2">
-              <span className="text-gray-400 font-medium">- अभी कोई data नहीं -</span>
-            </div>
+            <div className="flex items-center justify-center h-[180px] text-gray-400 text-xs">No data</div>
           )}
         </div>
 
-        {/* Recent Invoices */}
-        <div className="bg-white border border-gray-200 rounded-lg p-6 fade-in-up border border-gray-100">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h2 className="text-[20px] font-semibold text-[#1F2937]">{t('recentInvoices')}</h2>
-              <p className="text-[11px] text-gray-400 mt-0.5">हाल के बिल</p>
-            </div>
-            <button onClick={() => navigate('/payments')} className="text-xs text-brand-purple hover:text-brand-purple-light font-semibold transition-colors">
-              सब देखें →
-            </button>
+        <div className="bg-white border border-gray-200 rounded-md p-3">
+          <div className="flex items-center justify-between mb-2">
+            <h2 className="text-sm font-semibold text-gray-900">{t('recentInvoices')}</h2>
+            <button onClick={() => navigate('/payments')} className="text-[11px] text-purple-700 font-medium hover:underline">View all</button>
           </div>
-          <div className="w-full">
-            <div className="flex bg-gray-50 text-gray-500 uppercase text-[11px] font-semibold px-3 py-2 rounded-t-lg">
-              <div className="flex-1">Bill / Customer</div>
-              <div className="w-24 text-right">Amount</div>
-              <div className="w-20 text-center">Status</div>
-              <div className="w-10"></div>
-            </div>
-            <div className="space-y-0">
-              {recentInvoices.length > 0 ? recentInvoices.map((inv) => (
-                <div key={inv.id} className="flex items-center py-2.5 px-3 bg-white border-b border-gray-100 table-row-hover hover:bg-gray-50 transition-all cursor-pointer fade-in-up">
-                  <div className="flex-1 flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-lg bg-purple-50 flex items-center justify-center text-[#6D28D9] text-xs font-bold">
-                      {inv.id.slice(-3)}
-                    </div>
-                    <div>
-                      <div className="text-sm font-semibold text-gray-900">{inv.customer || 'Walk-in'}</div>
-                      <div className="text-[10px] text-gray-400">{inv.date}</div>
-                    </div>
-                  </div>
-                  <div className="w-24 text-right text-sm font-bold text-gray-900">{formatINR(inv.amount)}</div>
-                  <div className="w-20 text-center flex justify-center"><StatusBadge status={inv.status} /></div>
-                  <div className="w-10 flex justify-end">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="text-[11px] text-gray-500 uppercase border-b border-gray-200">
+                <th className="text-left py-1.5 font-medium">Customer</th>
+                <th className="text-right py-1.5 font-medium">Amount</th>
+                <th className="text-center py-1.5 font-medium">Status</th>
+                <th className="w-6"></th>
+              </tr>
+            </thead>
+            <tbody>
+              {recentInvoices.length > 0 ? recentInvoices.map(inv => (
+                <tr key={inv.id} className="border-b border-gray-50 hover:bg-gray-50 cursor-pointer">
+                  <td className="py-2">
+                    <div className="text-sm font-medium text-gray-900">{inv.customer || 'Walk-in'}</div>
+                    <div className="text-[10px] text-gray-400">{inv.date}</div>
+                  </td>
+                  <td className="py-2 text-right font-medium text-gray-900">{formatINR(inv.amount)}</td>
+                  <td className="py-2 text-center"><StatusBadge status={inv.status} /></td>
+                  <td className="py-2">
                     {inv.customerPhone && (
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          window.open(`https://wa.me/91${inv.customerPhone}?text=${encodeURIComponent(`Namaste ${inv.customer}! Aapka bill ${inv.id} ready hai. Total: ${formatINR(inv.amount)}. - ShoppIQ`)}`, '_blank');
-                        }}
-                        className="text-green-500 hover:text-green-400 transition-colors"
-                        title="WhatsApp"
-                      >
-                        <MessageCircle size={16} />
+                      <button onClick={(e) => {
+                        e.stopPropagation();
+                        window.open(`https://wa.me/91${inv.customerPhone}?text=${encodeURIComponent(`Namaste ${inv.customer}! Aapka bill ${inv.id} ready hai. Total: ${formatINR(inv.amount)}. - ShoppIQ`)}`, '_blank');
+                      }} className="text-gray-400 hover:text-green-600">
+                        <MessageCircle size={14} />
                       </button>
                     )}
-                  </div>
-                </div>
+                  </td>
+                </tr>
               )) : (
-                <div className="text-center py-8 text-gray-400 text-sm">
-                  <span className="text-gray-400 font-medium">- कोई बिल नहीं — पहला बिल बनाओ! -</span>
-                </div>
+                <tr><td colSpan={4} className="text-center py-6 text-gray-400 text-xs">No invoices yet</td></tr>
               )}
-            </div>
-          </div>
+            </tbody>
+          </table>
         </div>
       </div>
 
-      {/* ═══════════════════ QUICK ACTIONS ═══════════════════ */}
-      <div className="bg-white border border-gray-200 rounded-lg p-6 fade-in-up border border-gray-100">
-        <h2 className="text-[20px] font-semibold text-[#1F2937] mb-4">{t('quickActions')}</h2>
-        <div className="grid grid-cols-4 md:grid-cols-8 gap-3">
-          {quickActions.map((action) => (
-            <button key={action.label} onClick={() => navigate(action.path)}
-              className="quick-action bg-white border border-gray-200 rounded-xl p-2 group transition-all duration-200 fade-in-up flex flex-col items-center justify-center gap-2">
-              <div className={`w-11 h-11 rounded-full flex items-center justify-center bg-gray-50 group-hover:shadow-md transition-all`}>
-                <action.icon size={20} className={`${action.color} transition-transform group-hover:scale-110`} />
-              </div>
-              <span className="text-[12px] font-medium text-[#374151] text-center leading-tight">
-                {language === 'hi' ? action.labelHi : action.label}
-              </span>
-            </button>
-          ))}
-        </div>
+      {/* QUICK ACTIONS — compact inline row */}
+      <div className="flex flex-wrap gap-2">
+        {quickActions.map(action => (
+          <button key={action.label} onClick={() => navigate(action.path)}
+            className="flex items-center gap-1.5 px-3 py-1.5 border border-gray-200 rounded bg-white text-xs font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors">
+            <action.icon size={14} className="text-gray-400" />
+            {action.label}
+          </button>
+        ))}
       </div>
 
-      {/* ═══════════════════ VYAPAAR SCORE ═══════════════════ */}
-      <div className="bg-white border border-gray-200 rounded-lg overflow-hidden fade-in-up border border-gray-100">
+      {/* VYAPAAR SCORE — collapsible */}
+      <div className="border border-gray-200 rounded-md bg-white">
         <button onClick={() => setScoreOpen(!scoreOpen)}
-          className="w-full flex items-center justify-between p-6 hover:bg-gray-50 transition-colors">
-          <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-lg flex items-center justify-center relative bg-purple-50">
-              <Star size={24} className="text-[#6D28D9]" />
-            </div>
-            <div className="text-left">
-              <div className="text-[20px] font-semibold text-[#1F2937]">{t('vyapaarScore')}</div>
-              <div className="text-xs text-gray-500 flex items-center gap-2 mt-1">
-                आपके व्यापार की सेहत
-                <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${vyapaarScore >= 600 ? 'bg-green-100 text-green-700' : vyapaarScore >= 400 ? 'bg-amber-100 text-amber-700' : 'bg-red-100 text-red-700'}`}>
-                  {vyapaarScore >= 600 ? '🟢 अच्छा' : vyapaarScore >= 400 ? '🟡 ठीक-ठाक' : '🔴 सुधारो'}
-                </span>
-              </div>
-            </div>
+          className="w-full flex items-center justify-between p-3 hover:bg-gray-50 transition-colors">
+          <div className="flex items-center gap-2">
+            <Star size={16} className="text-gray-400" />
+            <span className="text-sm font-semibold text-gray-900">{t('vyapaarScore')}</span>
+            <span className="text-xs text-gray-500">Business Health</span>
           </div>
-          <div className="flex items-center gap-3">
-            <span className="text-[32px] font-bold text-[#1F2937]" style={{ fontFamily: 'Poppins, sans-serif' }}>{vyapaarScore}<span className="text-sm text-gray-400 font-normal">/1000</span></span>
-            {scoreOpen ? <ChevronUp size={18} className="text-gray-400" /> : <ChevronDown size={18} className="text-gray-400" />}
+          <div className="flex items-center gap-2">
+            <span className="text-lg font-semibold text-gray-900">{vyapaarScore}<span className="text-xs text-gray-400 font-normal">/1000</span></span>
+            {scoreOpen ? <ChevronUp size={14} className="text-gray-400" /> : <ChevronDown size={14} className="text-gray-400" />}
           </div>
         </button>
 
         {scoreOpen && (
-          <div className="px-6 pb-6 animate-slide-up">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {/* Animated Circular Score */}
-              <div className="flex flex-col items-center justify-center">
-                <div className="relative w-44 h-44">
-                  <svg viewBox="0 0 100 100" className="w-full h-full -rotate-90">
-                    <defs>
-                      <linearGradient id="scoreGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stopColor="#6D28D9" />
-                        <stop offset="100%" stopColor="#DB2777" />
-                      </linearGradient>
-                    </defs>
-                    <circle cx="50" cy="50" r="40" fill="none" stroke="#F3F4F6" strokeWidth="7" />
-                    <circle cx="50" cy="50" r="40" fill="none" strokeWidth="7" strokeLinecap="round"
-                      className="score-ring-anim"
-                      stroke="url(#scoreGradient)"
-                      style={{ strokeDasharray: `${(vyapaarScore/1000)*251.2} 251.2` }} />
-                  </svg>
-                  <div className="absolute inset-0 flex flex-col items-center justify-center">
-                    <span className="text-[32px] font-bold text-[#1F2937]" style={{ fontFamily: 'Poppins, sans-serif' }}>{vyapaarScore}</span>
-                    <span className="text-[10px] text-gray-400 font-medium mt-0.5">1000 में से</span>
+          <div className="px-3 pb-3 border-t border-gray-100">
+            <div className="space-y-2.5 mt-3">
+              {scoreBreakdown.map(item => (
+                <div key={item.label}>
+                  <div className="flex justify-between text-xs mb-1">
+                    <span className="text-gray-600">{item.label}</span>
+                    <span className="font-medium text-gray-900">{item.score}/{item.max}</span>
+                  </div>
+                  <div className="h-1.5 rounded-full bg-gray-100 overflow-hidden">
+                    <div className="h-full rounded-full bg-purple-700 transition-all" style={{ width: `${(item.score / item.max) * 100}%` }} />
                   </div>
                 </div>
-              </div>
-              {/* Breakdown */}
-              <div className="space-y-4">
-                {scoreBreakdown.map((item) => (
-                  <div key={item.label} className="fade-in-up">
-                    <div className="flex justify-between text-sm mb-1.5">
-                      <span className="text-gray-600 font-medium">{item.label}</span>
-                      <span className="font-bold" style={{ color: item.color }}>{item.score}%</span>
-                    </div>
-                    <div className="h-2 rounded-full bg-gray-100 overflow-hidden">
-                      <div className="h-full rounded-full transition-all duration-1000 ease-out"
-                        style={{ width: `${item.score}%`, backgroundColor: item.color }} />
-                    </div>
-                  </div>
-                ))}
-                <div className="mt-4 p-3.5 rounded-xl border border-purple-100 bg-purple-50">
-                  <p className="text-xs text-gray-700">
-                    💡 <strong>टिप:</strong> {pendingCount} बाकी बिल remind करो → <span className="text-[#6D28D9] font-bold">+15 pts</span>
-                  </p>
-                </div>
-              </div>
+              ))}
             </div>
+            {pendingCount > 0 && (
+              <p className="text-[11px] text-gray-500 mt-3 p-2 bg-gray-50 rounded">
+                Tip: Remind {pendingCount} pending bills to improve score by ~15 pts
+              </p>
+            )}
           </div>
         )}
       </div>
 
-      <div className='made-in-india text-center text-sm text-gray-500 py-4 mt-8'>Made with ❤️ in Jabalpur, India 🇮🇳</div>
+      <div className="text-center text-[11px] text-gray-400 py-3">Made with ❤️ in Jabalpur, India 🇮🇳</div>
     </div>
   );
 }

@@ -140,48 +140,44 @@ export default function Customers() {
   }
 
   return (
-    <div className="animate-fade-in">
-      
-
+    <div>
       {/* Header Banner */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+      <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-1 flex items-center gap-2">
-            {t('customers')} 
-          </h1>
-          <p className="text-gray-500 text-sm">{language === 'hi' ? 'Apne grahakon aur unke khate manage karein' : 'Manage your customers and their accounts'}</p>
+          <h1 className="text-lg font-semibold text-gray-900">{t('customers')}</h1>
+          <p className="text-xs text-gray-500 mt-0.5">{language === 'hi' ? 'Apne grahakon aur unke khate manage karein' : 'Manage your customers and their accounts'}</p>
         </div>
-        <button onClick={() => setShowAddModal(true)} className="flex items-center gap-2 px-4 py-2 rounded-md bg-white border border-gray-200 text-gray-900 hover:bg-gray-50 transition-all text-sm font-bold w-fit">
-          <Plus size={15} /> {language === 'hi' ? 'Naya Grahak' : 'New Customer'}
+        <button onClick={() => setShowAddModal(true)} className="btn-primary text-sm px-3 py-1.5 rounded flex items-center gap-1">
+          <Plus size={14} /> {language === 'hi' ? 'Naya Grahak' : 'New Customer'}
         </button>
       </div>
 
       {/* Stat Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <div className="p-4 rounded-lg bg-white border border-gray-200 border-l-[3px] border-l-purple-600">
-          <div className="text-gray-500 text-xs font-medium mb-1 uppercase tracking-wider">Total Customers</div>
-          <div className="text-xl font-bold text-gray-900 font-heading">{customers.length}</div>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+        <div className="p-3 border border-gray-200 rounded-md bg-white">
+          <div className="text-xs text-gray-500 mb-1">Total Customers</div>
+          <div className="text-xl font-semibold text-gray-900">{customers.length}</div>
         </div>
-        <div className="p-4 rounded-lg bg-white border border-gray-200 border-l-[3px] border-l-emerald-500">
-          <div className="text-gray-500 text-xs font-medium mb-1 uppercase tracking-wider">Active (Regular)</div>
-          <div className="text-xl font-bold text-gray-900 font-heading">{customers.filter(c => c.customerSegment === 'regular').length}</div>
+        <div className="p-3 border border-gray-200 rounded-md bg-white">
+          <div className="text-xs text-gray-500 mb-1">Active (Regular)</div>
+          <div className="text-xl font-semibold text-gray-900">{customers.filter(c => c.customerSegment === 'regular').length}</div>
         </div>
-        <div className="p-4 rounded-lg bg-white border border-gray-200 border-l-[3px] border-l-amber-500">
-          <div className="text-gray-500 text-xs font-medium mb-1 uppercase tracking-wider">VIP Customers</div>
-          <div className="text-xl font-bold text-gray-900 font-heading">{customers.filter(c => c.customerSegment === 'vip').length}</div>
+        <div className="p-3 border border-gray-200 rounded-md bg-white">
+          <div className="text-xs text-gray-500 mb-1">VIP Customers</div>
+          <div className="text-xl font-semibold text-gray-900">{customers.filter(c => c.customerSegment === 'vip').length}</div>
         </div>
-        <div className="p-4 rounded-lg bg-white border border-gray-200 border-l-[3px] border-l-blue-500">
-          <div className="text-gray-500 text-xs font-medium mb-1 uppercase tracking-wider">New Customers</div>
-          <div className="text-xl font-bold text-gray-900 font-heading">{customers.filter(c => c.customerSegment === 'new').length}</div>
+        <div className="p-3 border border-gray-200 rounded-md bg-white">
+          <div className="text-xs text-gray-500 mb-1">New Customers</div>
+          <div className="text-xl font-semibold text-gray-900">{customers.filter(c => c.customerSegment === 'new').length}</div>
         </div>
       </div>
 
       {/* Segment Tabs */}
-      <div className="flex gap-1 p-1 bg-gray-100 rounded-md w-fit mb-4 overflow-x-auto">
+      <div className="flex gap-4 border-b border-gray-200 mb-4 overflow-x-auto">
         {segments.map(s => (
           <button key={s} onClick={() => setSegment(s)}
-            className={cn('px-3 py-1.5 rounded text-sm font-medium whitespace-nowrap transition-colors',
-              segment === s ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700')}>
+            className={cn('pb-2 text-sm font-medium whitespace-nowrap transition-colors',
+              segment === s ? 'text-gray-900 border-b-2 border-gray-900' : 'text-gray-500 hover:text-gray-700')}>
             {language === 'hi' ? segmentLabels[s].hi : segmentLabels[s].en}
           </button>
         ))}
@@ -189,106 +185,104 @@ export default function Customers() {
 
       {/* Search */}
       <div className="relative mb-4">
-        <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+        <Search size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400" />
         <input type="text" value={search} onChange={e => setSearch(e.target.value)}
           placeholder={language === 'hi' ? 'Naam ya phone se dhundho...' : 'Search by name or phone...'}
-          className="w-full pl-10 pr-4 py-2 rounded-md border border-gray-200 bg-white text-sm outline-none focus:border-purple-600 focus:ring-1 focus:ring-purple-600/20 transition-colors" />
+          className="w-full pl-8 pr-3 py-1.5 rounded text-sm border border-gray-200 bg-white outline-none focus:border-gray-400" />
       </div>
 
       {/* Table */}
-      <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="bg-gray-50">
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Customer</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Phone</th>
-                <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Loyalty</th>
-                <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">Total Spent</th>
-                <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Visits</th>
-                <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">Segment</th>
-                <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">Outstanding</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.map(c => (
-                <tr key={c.id} onClick={() => { setSelectedCustomer(c); setCustomerNotes(c.notes || ''); setProfileTab('purchases'); }}
-                  className="border-b border-gray-50 table-row-hover cursor-pointer">
-                  <td className="px-4 py-3">
-                    <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 text-xs font-bold">
-                        {c.fullName.charAt(0)}
-                      </div>
-                      <span className="font-medium text-gray-900">{c.fullName}</span>
+      <div className="overflow-x-auto border-t border-gray-200">
+        <table className="w-full text-sm text-left">
+          <thead>
+            <tr className="bg-gray-50 border-b border-gray-200">
+              <th className="px-3 py-2 font-medium text-gray-600">Customer</th>
+              <th className="px-3 py-2 font-medium text-gray-600">Phone</th>
+              <th className="px-3 py-2 font-medium text-gray-600 text-center">Loyalty</th>
+              <th className="px-3 py-2 font-medium text-gray-600 text-right">Total Spent</th>
+              <th className="px-3 py-2 font-medium text-gray-600 text-center">Visits</th>
+              <th className="px-3 py-2 font-medium text-gray-600 text-center">Segment</th>
+              <th className="px-3 py-2 font-medium text-gray-600 text-right">Outstanding</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filtered.map(c => (
+              <tr key={c.id} onClick={() => { setSelectedCustomer(c); setCustomerNotes(c.notes || ''); setProfileTab('purchases'); }}
+                className="border-b border-gray-100 hover:bg-gray-50 cursor-pointer">
+                <td className="px-3 py-2">
+                  <div className="flex items-center gap-2">
+                    <div className="w-7 h-7 rounded bg-gray-100 flex items-center justify-center text-gray-600 text-xs font-medium">
+                      {c.fullName.charAt(0)}
                     </div>
-                  </td>
-                  <td className="px-4 py-3 text-gray-500">{c.phoneNumber}</td>
-                  <td className="px-4 py-3 text-center"><span className="text-brand-gold font-medium"> {c.loyaltyPoints}</span></td>
-                  <td className="px-4 py-3 text-right font-medium text-gray-900">{formatINR(c.totalLifetimeValue)}</td>
-                  <td className="px-4 py-3 text-center text-gray-500">{c.visitCount}</td>
-                  <td className="px-4 py-3 text-center">{segmentBadge(c.customerSegment)}</td>
-                  <td className="px-4 py-3 text-right">
-                    {c.currentOutstanding > 0 ? (
-                      <span className="text-red-500 font-medium">{formatINR(c.currentOutstanding)}</span>
-                    ) : <span className="text-brand-green">—</span>}
-                  </td>
-                </tr>
-              ))}
-              {filtered.length === 0 && (
-                <tr><td colSpan={7} className="px-4 py-8 text-center text-gray-500">No customers found</td></tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+                    <span className="font-medium text-gray-900">{c.fullName}</span>
+                  </div>
+                </td>
+                <td className="px-3 py-2 text-gray-500">{c.phoneNumber}</td>
+                <td className="px-3 py-2 text-center text-gray-700">{c.loyaltyPoints}</td>
+                <td className="px-3 py-2 text-right font-medium text-gray-900">{formatINR(c.totalLifetimeValue)}</td>
+                <td className="px-3 py-2 text-center text-gray-500">{c.visitCount}</td>
+                <td className="px-3 py-2 text-center">{segmentBadge(c.customerSegment)}</td>
+                <td className="px-3 py-2 text-right">
+                  {c.currentOutstanding > 0 ? (
+                    <span className="text-red-500 font-medium">{formatINR(c.currentOutstanding)}</span>
+                  ) : <span className="text-gray-500">—</span>}
+                </td>
+              </tr>
+            ))}
+            {filtered.length === 0 && (
+              <tr><td colSpan={7} className="px-3 py-6 text-center text-gray-500">No customers found</td></tr>
+            )}
+          </tbody>
+        </table>
       </div>
 
       {/* Customer Profile Slide-Over */}
       {selectedCustomer && (
-        <div className="fixed inset-0 z-50 flex">
-          <div className="flex-1 bg-black/40 backdrop-blur-sm" onClick={() => setSelectedCustomer(null)} />
-          <div className="slide-over overflow-y-auto">
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-6">
+        <div className="fixed inset-0 z-50 flex justify-end">
+          <div className="absolute inset-0 bg-black/20" onClick={() => setSelectedCustomer(null)} />
+          <div className="relative w-full max-w-sm bg-white h-full overflow-y-auto border-l border-gray-200">
+            <div className="p-4">
+              <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-14 h-14 rounded-lg bg-gray-100 flex items-center justify-center text-gray-600 text-xl font-bold">
+                  <div className="w-10 h-10 rounded bg-gray-100 flex items-center justify-center text-gray-600 text-lg font-medium">
                     {selectedCustomer.fullName.charAt(0)}
                   </div>
                   <div>
-                    <h2 className="text-xl font-heading font-bold text-gray-900">{selectedCustomer.fullName}</h2>
+                    <h2 className="text-base font-semibold text-gray-900">{selectedCustomer.fullName}</h2>
                     <div className="flex items-center gap-2 mt-0.5">
-                      <span className="text-sm text-gray-500">{selectedCustomer.phoneNumber}</span>
+                      <span className="text-xs text-gray-500">{selectedCustomer.phoneNumber}</span>
                       {segmentBadge(selectedCustomer.customerSegment)}
                     </div>
                   </div>
                 </div>
-                <button onClick={() => setSelectedCustomer(null)} className="p-2 rounded-xl hover:bg-gray-100">
-                  <X size={20} className="text-gray-500" />
+                <button onClick={() => setSelectedCustomer(null)} className="text-gray-500 hover:text-gray-700">
+                  <X size={18} />
                 </button>
               </div>
 
               {/* Edit button */}
               {!editingCustomer && (
                 <button onClick={startEditCustomer}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-brand-purple border border-brand-purple/20 hover:bg-brand-purple/5 transition-all mb-4">
+                  className="flex items-center gap-1 text-xs font-medium text-blue-600 hover:text-blue-700 mb-4">
                   <Pencil size={12} /> Edit Customer
                 </button>
               )}
 
               {/* Inline Edit Form */}
               {editingCustomer && (
-                <div className="space-y-2 mb-4 p-4 rounded-xl bg-brand-purple/5 border border-brand-purple/10 animate-fade-in">
+                <div className="space-y-2 mb-4 p-3 rounded-md bg-gray-50 border border-gray-200">
                   <input value={editForm.fullName} onChange={e => setEditForm(p => ({ ...p, fullName: e.target.value }))}
-                    placeholder="Full Name" className="w-full px-3 py-2 rounded-lg border border-gray-200 bg-white text-sm outline-none focus:border-brand-purple" />
+                    placeholder="Full Name" className="w-full px-2 py-1.5 rounded border border-gray-200 bg-white text-sm outline-none" />
                   <input value={editForm.phoneNumber} onChange={e => setEditForm(p => ({ ...p, phoneNumber: e.target.value }))}
-                    placeholder="Phone" className="w-full px-3 py-2 rounded-lg border border-gray-200 bg-white text-sm outline-none focus:border-brand-purple" />
+                    placeholder="Phone" className="w-full px-2 py-1.5 rounded border border-gray-200 bg-white text-sm outline-none" />
                   <input value={editForm.city} onChange={e => setEditForm(p => ({ ...p, city: e.target.value }))}
-                    placeholder="City" className="w-full px-3 py-2 rounded-lg border border-gray-200 bg-white text-sm outline-none focus:border-brand-purple" />
+                    placeholder="City" className="w-full px-2 py-1.5 rounded border border-gray-200 bg-white text-sm outline-none" />
                   <input type="number" value={editForm.creditLimit} onChange={e => setEditForm(p => ({ ...p, creditLimit: Number(e.target.value) }))}
-                    placeholder="Credit Limit ₹" className="w-full px-3 py-2 rounded-lg border border-gray-200 bg-white text-sm outline-none focus:border-brand-purple" />
+                    placeholder="Credit Limit ₹" className="w-full px-2 py-1.5 rounded border border-gray-200 bg-white text-sm outline-none" />
                   <div className="flex gap-2">
-                    <button onClick={() => setEditingCustomer(false)} className="flex-1 py-2 rounded-lg border border-gray-200 text-sm">Cancel</button>
+                    <button onClick={() => setEditingCustomer(false)} className="flex-1 py-1.5 rounded border border-gray-200 text-sm">Cancel</button>
                     <button onClick={handleUpdateCustomer} disabled={saving}
-                      className={cn('flex-1 btn-primary justify-center py-2 text-sm', saving && 'opacity-50')}>
+                      className={cn('flex-1 btn-primary py-1.5 text-sm rounded', saving && 'opacity-50')}>
                       {saving ? 'Saving...' : 'Save'}
                     </button>
                   </div>
@@ -296,40 +290,40 @@ export default function Customers() {
               )}
 
               {/* Stats */}
-              <div className="grid grid-cols-2 gap-3 mb-6">
+              <div className="grid grid-cols-2 gap-2 mb-4">
                 {[
-                  { label: 'Total Spent', value: formatINR(selectedCustomer.totalLifetimeValue), color: 'text-brand-purple' },
-                  { label: 'Visits', value: selectedCustomer.visitCount, color: 'text-blue-500' },
-                  { label: 'Loyalty Points', value: ` ${selectedCustomer.loyaltyPoints}`, color: 'text-brand-gold' },
-                  { label: 'Outstanding', value: formatINR(selectedCustomer.currentOutstanding), color: selectedCustomer.currentOutstanding > 0 ? 'text-red-500' : 'text-brand-green' },
+                  { label: 'Total Spent', value: formatINR(selectedCustomer.totalLifetimeValue) },
+                  { label: 'Visits', value: selectedCustomer.visitCount },
+                  { label: 'Loyalty Points', value: selectedCustomer.loyaltyPoints },
+                  { label: 'Outstanding', value: formatINR(selectedCustomer.currentOutstanding), color: selectedCustomer.currentOutstanding > 0 ? 'text-red-500' : 'text-gray-900' },
                 ].map(s => (
-                  <div key={s.label} className="p-3 rounded-xl bg-gray-50">
-                    <div className="text-xs text-gray-500 mb-1">{s.label}</div>
-                    <div className={cn('text-lg font-bold font-heading', s.color)}>{s.value}</div>
+                  <div key={s.label} className="p-2 border border-gray-200 rounded-md">
+                    <div className="text-xs text-gray-500 mb-0.5">{s.label}</div>
+                    <div className={cn('text-sm font-semibold', s.color || 'text-gray-900')}>{s.value}</div>
                   </div>
                 ))}
               </div>
 
               {/* Profile Tabs */}
-              <div className="flex gap-1 p-1 bg-gray-100 rounded-xl mb-4">
+              <div className="flex gap-4 border-b border-gray-200 mb-3">
                 {(['purchases', 'loyalty', 'notes'] as const).map(t2 => (
                   <button key={t2} onClick={() => setProfileTab(t2)}
-                    className={cn('flex-1 px-3 py-2 rounded-lg text-sm font-medium capitalize transition-all',
-                      profileTab === t2 ? 'bg-white text-brand-purple shadow' : 'text-gray-500')}>
+                    className={cn('pb-1 text-sm font-medium capitalize',
+                      profileTab === t2 ? 'text-gray-900 border-b-2 border-gray-900' : 'text-gray-500')}>
                     {t2}
                   </button>
                 ))}
               </div>
 
               {profileTab === 'purchases' && (
-                <div className="space-y-2 animate-fade-in">
+                <div className="space-y-2">
                   {customerInvoices(selectedCustomer.id).length > 0 ? customerInvoices(selectedCustomer.id).slice(0, 10).map(inv => (
-                    <div key={inv.id} className="flex items-center justify-between p-3 rounded-xl border border-gray-100">
+                    <div key={inv.id} className="flex items-center justify-between p-2 border-b border-gray-100">
                       <div>
                         <div className="text-sm font-medium text-gray-900">{inv.invoiceNumber}</div>
                         <div className="text-xs text-gray-500">{inv.invoiceDate ? new Date(inv.invoiceDate.seconds * 1000).toLocaleDateString('en-IN') : ''}</div>
                       </div>
-                      <span className="font-bold text-brand-purple">{formatINR(inv.grandTotal)}</span>
+                      <span className="font-semibold text-gray-900">{formatINR(inv.grandTotal)}</span>
                     </div>
                   )) : (
                     <div className="text-center py-4 text-gray-500 text-sm">No purchases yet</div>
@@ -338,22 +332,20 @@ export default function Customers() {
               )}
 
               {profileTab === 'loyalty' && (
-                <div className="space-y-2 animate-fade-in">
-                  <div className="text-center py-4">
-                    <div className="text-2xl font-bold font-heading text-brand-gold mb-1"> {selectedCustomer.loyaltyPoints}</div>
-                    <div className="text-sm text-gray-500">Total loyalty points</div>
-                  </div>
+                <div className="py-4 text-center">
+                  <div className="text-xl font-semibold text-gray-900 mb-1">{selectedCustomer.loyaltyPoints}</div>
+                  <div className="text-xs text-gray-500">Total loyalty points</div>
                 </div>
               )}
 
               {profileTab === 'notes' && (
-                <div className="animate-fade-in">
+                <div>
                   <textarea
                     value={customerNotes}
                     onChange={e => setCustomerNotes(e.target.value)}
                     rows={4}
                     placeholder={language === 'hi' ? 'Customer ke baare mein notes likhen...' : 'Write notes about this customer...'}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-sm resize-none outline-none focus:border-brand-purple"
+                    className="w-full px-3 py-2 rounded-md border border-gray-200 bg-white text-sm resize-none outline-none"
                   />
                   <button
                     onClick={async () => {
@@ -361,30 +353,31 @@ export default function Customers() {
                       try {
                         await updateCustomer(tenantId, selectedCustomer.id, { notes: customerNotes });
                         setSelectedCustomer(prev => prev ? { ...prev, notes: customerNotes } : null);
-                        showToast(' Notes save ho gaye!', 'success');
-                      } catch (e) { showToast('Notes save nahi hua.', 'error'); }
+                        showToast('Notes saved!', 'success');
+                      } catch (e) { showToast('Error saving notes.', 'error'); }
                     }}
-                    className="mt-3 px-4 py-2 rounded-xl text-sm font-semibold text-gray-900 transition-all hover:bg-gray-50  ">
-                     {language === 'hi' ? 'Notes सेव करो' : 'Save Notes'}
+                    className="mt-2 px-3 py-1.5 rounded text-sm font-medium border border-gray-200 hover:bg-gray-50">
+                     {language === 'hi' ? 'Notes Save Karo' : 'Save Notes'}
                   </button>
-                  <p className="text-xs text-gray-500 mt-2"> {language === 'hi' ? 'Notes Firestore mein save hoti hain' : 'Notes are saved to cloud'}</p>
                 </div>
               )}
 
               {/* Quick Actions */}
-              <div className="flex gap-2 mt-6">
+              <div className="flex gap-2 mt-4 pt-4 border-t border-gray-100">
                 <button
                   onClick={() => { setSelectedCustomer(null); navigate('/billing/new'); }}
-                  className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border border-gray-200 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-all">
-                  <FileText size={16} /> New Invoice
+                  className="flex items-center gap-1 text-sm font-medium text-blue-600 hover:text-blue-700">
+                  <FileText size={14} /> New Invoice
                 </button>
+                <div className="w-px bg-gray-200"></div>
                 <button
                   onClick={() => { setSelectedCustomer(null); navigate('/payments'); }}
-                  className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border border-gray-200 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-all">
-                  <CreditCard size={16} /> Payment
+                  className="flex items-center gap-1 text-sm font-medium text-blue-600 hover:text-blue-700">
+                  <CreditCard size={14} /> Payment
                 </button>
-                <button onClick={() => handleWhatsApp(selectedCustomer.phoneNumber)} className="flex-1 btn-whatsapp justify-center py-3 text-sm rounded-xl">
-                  <MessageCircle size={16} /> WhatsApp
+                <div className="w-px bg-gray-200"></div>
+                <button onClick={() => handleWhatsApp(selectedCustomer.phoneNumber)} className="flex items-center gap-1 text-sm font-medium text-green-600 hover:text-green-700">
+                  <MessageCircle size={14} /> WhatsApp
                 </button>
               </div>
             </div>
@@ -394,31 +387,31 @@ export default function Customers() {
 
       {/* Add Customer Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fade-in">
-          <div className="bg-white rounded-lg p-6 w-full max-w-sm mx-4 animate-scale-in">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="font-heading font-bold text-gray-900">{language === 'hi' ? 'Naya Grahak' : 'New Customer'}</h3>
-              <button onClick={() => setShowAddModal(false)} className="p-1 rounded-lg hover:bg-gray-100">
-                <X size={18} className="text-gray-500" />
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20">
+          <div className="bg-white rounded-md p-4 w-full max-w-sm mx-4 shadow-sm">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="font-semibold text-gray-900">{language === 'hi' ? 'Naya Grahak' : 'New Customer'}</h3>
+              <button onClick={() => setShowAddModal(false)} className="text-gray-500 hover:text-gray-700">
+                <X size={16} />
               </button>
             </div>
-            <div className="space-y-3">
+            <div className="space-y-2">
               <input value={newCust.fullName} onChange={e => setNewCust(p => ({ ...p, fullName: e.target.value }))}
-                placeholder="Full Name" className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white text-sm outline-none focus:border-brand-purple" />
+                placeholder="Full Name" className="w-full px-3 py-1.5 rounded border border-gray-200 bg-white text-sm outline-none" />
               <input value={newCust.phoneNumber} onChange={e => setNewCust(p => ({ ...p, phoneNumber: e.target.value }))}
-                placeholder="Phone Number" className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white text-sm outline-none focus:border-brand-purple" />
+                placeholder="Phone Number" className="w-full px-3 py-1.5 rounded border border-gray-200 bg-white text-sm outline-none" />
               <input value={newCust.city} onChange={e => setNewCust(p => ({ ...p, city: e.target.value }))}
-                placeholder="City" className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white text-sm outline-none focus:border-brand-purple" />
+                placeholder="City" className="w-full px-3 py-1.5 rounded border border-gray-200 bg-white text-sm outline-none" />
               <input type="email" value={newCust.email} onChange={e => setNewCust(p => ({ ...p, email: e.target.value }))}
-                placeholder="Email (Optional)" className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white text-sm outline-none focus:border-brand-purple" />
+                placeholder="Email (Optional)" className="w-full px-3 py-1.5 rounded border border-gray-200 bg-white text-sm outline-none" />
               <textarea value={newCust.address} onChange={e => setNewCust(p => ({ ...p, address: e.target.value }))}
-                placeholder="Address (Optional)" rows={2} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white text-sm outline-none focus:border-brand-purple resize-none" />
+                placeholder="Address (Optional)" rows={2} className="w-full px-3 py-1.5 rounded border border-gray-200 bg-white text-sm outline-none resize-none" />
               <input type="number" value={newCust.creditLimit} onChange={e => setNewCust(p => ({ ...p, creditLimit: Number(e.target.value) }))}
-                placeholder="Credit Limit ₹" className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white text-sm outline-none focus:border-brand-purple" />
-              <div className="flex gap-2">
-                <button onClick={() => setShowAddModal(false)} className="flex-1 py-2.5 rounded-xl border border-gray-200 text-sm">{t('cancel')}</button>
+                placeholder="Credit Limit ₹" className="w-full px-3 py-1.5 rounded border border-gray-200 bg-white text-sm outline-none" />
+              <div className="flex gap-2 pt-2">
+                <button onClick={() => setShowAddModal(false)} className="flex-1 py-1.5 rounded border border-gray-200 text-sm">{t('cancel')}</button>
                 <button onClick={handleAddCustomer} disabled={saving || !newCust.fullName}
-                  className={cn('flex-1 btn-primary justify-center py-2.5 text-sm', (saving || !newCust.fullName) && 'opacity-50')}>
+                  className={cn('flex-1 btn-primary py-1.5 text-sm rounded', (saving || !newCust.fullName) && 'opacity-50')}>
                   {saving ? 'Saving...' : t('save')}
                 </button>
               </div>
@@ -426,7 +419,7 @@ export default function Customers() {
           </div>
         </div>
       )}
-      <div className="made-in-india mt-8 text-center text-sm text-gray-500">Made with ❤️ in Jabalpur, India 🇮🇳</div>
+      <div className="mt-6 text-center text-xs text-gray-400">Made with in Jabalpur, India</div>
     </div>
   );
 }

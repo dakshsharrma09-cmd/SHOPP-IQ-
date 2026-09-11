@@ -47,10 +47,10 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
   };
 
   const SidebarContent = () => (
-    <div className="flex flex-col h-full bg-white w-[240px] border-r border-gray-200">
+    <div className="flex flex-col h-full bg-white w-[220px] border-r border-gray-200">
       {/* LOGO AREA */}
-      <div className="h-[56px] flex items-center px-4 border-b border-gray-200 flex-shrink-0">
-        <img src="/logo.png" alt="ShoppIQ" className="h-[44px] w-auto" />
+      <div className="h-12 flex items-center px-3 border-b border-gray-200 flex-shrink-0">
+        <img src="/logo.png" alt="ShoppIQ" className="h-[36px] w-auto" />
       </div>
 
       {/* NAV SECTIONS */}
@@ -67,8 +67,8 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                 onClick={onClose}
                 className={({ isActive }) => cn('nav-item', isActive && 'active')}
               >
-                <item.icon size={18} />
-                <span className="font-medium text-sm">{t(item.key) || item.label}</span>
+                <item.icon size={16} />
+                <span className="font-medium text-[13px]">{t(item.key) || item.label}</span>
               </NavLink>
             ))}
           </div>
@@ -85,8 +85,8 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                 onClick={onClose}
                 className={({ isActive }) => cn('nav-item', isActive && 'active')}
               >
-                <item.icon size={18} />
-                <span className="font-medium text-sm">{t(item.key) || item.label}</span>
+                <item.icon size={16} />
+                <span className="font-medium text-[13px]">{t(item.key) || item.label}</span>
               </NavLink>
             ))}
           </div>
@@ -103,8 +103,8 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                 onClick={onClose}
                 className={({ isActive }) => cn('nav-item', isActive && 'active')}
               >
-                <item.icon size={18} />
-                <span className="font-medium text-sm">{t(item.key) || item.label}</span>
+                <item.icon size={16} />
+                <span className="font-medium text-[13px]">{t(item.key) || item.label}</span>
               </NavLink>
             ))}
           </div>

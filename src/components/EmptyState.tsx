@@ -1,7 +1,7 @@
 
 
 interface EmptyStateProps {
-  icon: string;
+  icon?: string;
   title: string;
   subtitle: string;
   actionLabel?: string;

@@ -35,12 +35,12 @@ function downloadCSV(rows: string[][], filename: string) {
 
 // ── Shimmer Skeleton ─────────────────────────────────────────
 function Skeleton({ h = 'h-6', w = 'w-full', className = '' }: { h?: string; w?: string; className?: string }) {
-  return <div className={cn('animate-pulse rounded-lg bg-gray-200', h, w, className)} />;
+  return <div className={cn('animate-pulse rounded-md bg-gray-200', h, w, className)} />;
 }
 
 function CardSkeleton() {
   return (
-    <div className="p-5 rounded-lg bg-white border border-gray-200 space-y-3">
+    <div className="p-3 rounded-md bg-white border border-gray-200 space-y-3">
       <Skeleton h="h-4" w="w-24" />
       <Skeleton h="h-8" w="w-32" />
       <Skeleton h="h-3" w="w-20" />
@@ -57,7 +57,7 @@ function EmptyChart({ message, showCTA = true }: { message: string; showCTA?: bo
   return (
     <div className="flex flex-col items-center justify-center h-[260px] text-center px-4">
       <FileText size={40} className="text-gray-300 mb-3" />
-      <p className="text-gray-500 text-sm mb-3">{message}</p>
+      <p className="text-xs text-gray-500 mt-0.5">{message}</p>
       {showCTA && (
         <Link to="/billing/new" className="text-sm text-purple-600 font-medium hover:text-purple-700 flex items-center gap-1">
           <ShoppingCart size={14} /> Create First Bill
@@ -406,18 +406,18 @@ export default function Analytics() {
   return (
     <div className="space-y-6">
       {/* ═══ HEADER ═══ */}
-      <div className="p-6 md:p-8 rounded-lg bg-white border border-gray-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="p-3 md:p-8 rounded-md bg-white border border-gray-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-heading font-bold text-gray-900 flex items-center gap-2">
+          <h1 className="text-lg font-semibold text-gray-900">
              {t('analytics')}
           </h1>
-          <p className="text-gray-500 text-sm mt-1">व्यापार विश्लेषण — Business Intelligence</p>
+          <p className="text-xs text-gray-500 mt-0.5">व्यापार विश्लेषण — Business Intelligence</p>
         </div>
         <div className="flex flex-wrap items-center gap-3">
           <div className="flex gap-1 bg-gray-100 rounded-md p-1">
             {(['7d', '30d', '90d', '1y'] as const).map(p => (
               <button key={p} onClick={() => setPeriod(p)}
-                className={cn('px-3 py-1.5 rounded-lg text-sm font-medium transition-all',
+                className={cn('px-3 py-1.5 rounded-md text-sm font-medium transition-all',
                   period === p ? 'bg-purple-600 text-white shadow-sm' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-200')}>
                 {p === '7d' ? '7D' : p === '30d' ? '30D' : p === '90d' ? '90D' : '1Y'}
               </button>
@@ -438,26 +438,25 @@ export default function Analytics() {
             { title: language === 'hi' ? 'कुल ऑर्डर' : 'Total Orders', value: String(stats.orders), pct: stats.ordersPct, icon: Package, borderColor: '#DB2777' },
             { title: language === 'hi' ? 'औसत ऑर्डर' : 'Avg Order Value', value: formatINR(stats.aov), pct: stats.aovPct, icon: DollarSign, borderColor: '#D97706' },
             { title: language === 'hi' ? 'सक्रिय ग्राहक' : 'Active Customers', value: String(stats.activeCustomers), pct: stats.customersPct, icon: Users, borderColor: '#059669' },
-          ].map((s, i) => (
-            <div key={i} className="p-5 rounded-lg bg-white border border-gray-200 shadow-sm relative overflow-hidden"
-              style={{ borderLeft: `4px solid ${s.borderColor}` }}>
-              <div className="flex items-center justify-between mb-2">
-                <div className="w-9 h-9 rounded-md flex items-center justify-center" style={{ backgroundColor: s.borderColor + '15' }}>
-                  <s.icon size={18} style={{ color: s.borderColor }} />
+          ].map((s) => (
+            <div key={s.title} className="p-3 border border-gray-200 rounded-md">
+              <div className="flex items-center justify-between mb-1">
+                <div className="flex items-center gap-1.5 text-xs text-gray-500">
+                  <s.icon size={16} />
+                  {s.title}
                 </div>
                 <Trend pct={s.pct} />
               </div>
-              <div className="text-2xl font-bold font-stat text-gray-900">{s.value}</div>
-              <div className="text-xs text-gray-500 mt-1">{s.title}</div>
+              <div className="text-xl font-semibold text-gray-900">{s.value}</div>
             </div>
           ))
         )}
       </div>
 
       {/* ═══ REVENUE TREND ═══ */}
-      <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-5">
+      <div className="bg-white rounded-md border border-gray-200 shadow-sm p-3">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-heading font-semibold text-gray-900">
+          <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">
             {language === 'hi' ? 'बिक्री रुझान' : 'Revenue Trend'}
             <span className="text-xs text-gray-400 font-normal ml-2">Last {periodDays} days</span>
           </h2>
@@ -468,12 +467,7 @@ export default function Analytics() {
         {loading ? <ChartSkeleton /> : revenueData.some(d => d.rev > 0) ? (
           <ResponsiveContainer width="100%" height={280}>
             <AreaChart data={revenueData}>
-              <defs>
-                <linearGradient id="revGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#7C3AED" stopOpacity={0.2} />
-                  <stop offset="95%" stopColor="#7C3AED" stopOpacity={0} />
-                </linearGradient>
-              </defs>
+              
               <CartesianGrid strokeDasharray="3 3" stroke="#F3F4F6" vertical={false} />
               <XAxis dataKey="day" tick={{ fontSize: 10, fill: '#9CA3AF' }} tickLine={false} axisLine={false}
                 interval={Math.max(0, Math.floor(revenueData.length / 8))} />
@@ -481,10 +475,10 @@ export default function Analytics() {
                 tickFormatter={(v: number) => formatCompact(v).replace('₹', '')} />
               <Tooltip
                 formatter={(v: any) => [formatINR(v), 'Revenue']}
-                contentStyle={{ background: '#fff', border: '1px solid #E5E7EB', borderRadius: 12, boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}
+                contentStyle={{ background: '#fff', border: '1px solid #E5E7EB', borderRadius: 6, fontSize: 12 }}
                 labelStyle={{ color: '#6B7280', fontSize: 11 }} />
               <Area type="monotone" dataKey="rev" stroke="#7C3AED" strokeWidth={2.5}
-                fill="url(#revGrad)" activeDot={{ r: 5, fill: '#7C3AED', stroke: 'white', strokeWidth: 2 }} />
+                fill="#7C3AED" activeDot={{ r: 5, fill: '#7C3AED', stroke: 'white', strokeWidth: 2 }} />
             </AreaChart>
           </ResponsiveContainer>
         ) : <EmptyChart message={language === 'hi' ? 'Is period mein koi bill nahi bana' : 'No invoices found in this period'} />}
@@ -493,9 +487,9 @@ export default function Analytics() {
       {/* ═══ TOP PRODUCTS + CATEGORY ═══ */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Top Products */}
-        <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-5">
+        <div className="bg-white rounded-md border border-gray-200 shadow-sm p-3">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-heading font-semibold text-gray-900">{t('topProducts')}</h2>
+            <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">{t('topProducts')}</h2>
             <button onClick={exportTopProductsCSV} className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-purple-600 transition-colors">
               <Download size={13} /> CSV
             </button>
@@ -507,8 +501,8 @@ export default function Analytics() {
                 <XAxis type="number" tick={{ fontSize: 10, fill: '#9CA3AF' }} tickFormatter={(v: number) => formatCompact(v).replace('₹', '')} />
                 <YAxis type="category" dataKey="name" tick={{ fontSize: 10, fill: '#4B5563' }} width={120} />
                 <Tooltip formatter={(v: any) => [formatINR(v), 'Revenue']}
-                  contentStyle={{ background: '#fff', border: '1px solid #E5E7EB', borderRadius: 12 }} />
-                <Bar dataKey="revenue" radius={[0, 6, 6, 0]}>
+                  contentStyle={{ background: '#fff', border: '1px solid #E5E7EB', borderRadius: 6, fontSize: 12 }} />
+                <Bar dataKey="revenue" radius={[0, 0, 0, 0]}>
                   {topProductsData.map((_, i) => (
                     <Cell key={i} fill={i === 0 ? '#6D28D9' : i === 1 ? '#8B5CF6' : i === 2 ? '#A78BFA' : '#C4B5FD'} />
                   ))}
@@ -519,8 +513,8 @@ export default function Analytics() {
         </div>
 
         {/* Category Breakdown */}
-        <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-5">
-          <h2 className="text-lg font-heading font-semibold text-gray-900 mb-4">{t('revenueByCategory')}</h2>
+        <div className="bg-white rounded-md border border-gray-200 shadow-sm p-3">
+        <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-4">{t('revenueByCategory')}</h2>
           {loading ? <ChartSkeleton height={260} /> : categoryData.length > 0 ? (
             <div className="flex flex-col items-center">
               <ResponsiveContainer width="100%" height={180}>
@@ -529,7 +523,7 @@ export default function Analytics() {
                     {categoryData.map((e, i) => <Cell key={i} fill={e.color} />)}
                   </Pie>
                   <Tooltip formatter={(v: any) => [formatINR(v), '']}
-                    contentStyle={{ background: '#fff', border: '1px solid #E5E7EB', borderRadius: 12 }} />
+                    contentStyle={{ background: '#fff', border: '1px solid #E5E7EB', borderRadius: 6, fontSize: 12 }} />
                 </PieChart>
               </ResponsiveContainer>
               <div className="w-full space-y-1.5 mt-2">
@@ -549,13 +543,13 @@ export default function Analytics() {
       </div>
 
       {/* ═══ P&L STATEMENT ═══ */}
-      <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-5">
-        <h2 className="text-lg font-heading font-semibold text-gray-900 mb-4">
+      <div className="bg-white rounded-md border border-gray-200 shadow-sm p-3">
+        <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-4">
           {language === 'hi' ? 'लाभ और हानि' : 'Profit & Loss'}
           <span className="text-xs text-gray-400 font-normal ml-2">Last {periodDays} days</span>
         </h2>
         {loading ? <ChartSkeleton height={200} /> : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div className="space-y-2">
               {[
                 { label: 'Revenue', value: pnl.revenue, color: 'text-purple-700', bold: true },
@@ -595,9 +589,9 @@ export default function Analytics() {
       </div>
 
       {/* ═══ MONTHLY P&L TABLE ═══ */}
-      <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-5">
+      <div className="bg-white rounded-md border border-gray-200 shadow-sm p-3">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-heading font-semibold text-gray-900">
+          <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">
             {language === 'hi' ? 'मासिक लाभ-हानि' : 'Monthly P&L'}
           </h2>
           <button onClick={exportPnLCSV} className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-purple-600 transition-colors">
@@ -656,8 +650,8 @@ export default function Analytics() {
       {/* ═══ CUSTOMER SEGMENTS + GST ═══ */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Customer Segments Donut */}
-        <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-5">
-          <h2 className="text-lg font-heading font-semibold text-gray-900 mb-4">Customer Segments</h2>
+        <div className="bg-white rounded-md border border-gray-200 shadow-sm p-3">
+        <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-4">Customer Segments</h2>
           {loading ? <ChartSkeleton height={260} /> : customerSegments.length > 0 ? (
             <div className="flex flex-col items-center">
               <div className="relative">
@@ -667,7 +661,7 @@ export default function Analytics() {
                       {customerSegments.map((e, i) => <Cell key={i} fill={e.color} />)}
                     </Pie>
                     <Tooltip formatter={(v: any) => [v, 'Customers']}
-                      contentStyle={{ background: '#fff', border: '1px solid #E5E7EB', borderRadius: 12 }} />
+                      contentStyle={{ background: '#fff', border: '1px solid #E5E7EB', borderRadius: 6, fontSize: 12 }} />
                   </PieChart>
                 </ResponsiveContainer>
                 <div className="absolute inset-0 flex items-center justify-center">
@@ -690,8 +684,8 @@ export default function Analytics() {
         </div>
 
         {/* GST + Expenses */}
-        <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-5">
-          <h2 className="text-lg font-heading font-semibold text-gray-900 mb-4">GST Summary</h2>
+        <div className="bg-white rounded-md border border-gray-200 shadow-sm p-3">
+        <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-4">GST Summary</h2>
           {loading ? <ChartSkeleton height={200} /> : (
             <>
               <div className="space-y-3">
@@ -736,8 +730,8 @@ export default function Analytics() {
       </div>
 
       {/* ═══ VYAPAAR SCORE ═══ */}
-      <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-6">
-        <h2 className="text-lg font-heading font-semibold text-gray-900 mb-6">
+      <div className="bg-white rounded-md border border-gray-200 shadow-sm p-3">
+        <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-4">
           {language === 'hi' ? 'व्यापार स्कोर' : 'Vyapaar Score'}
         </h2>
         {loading ? <ChartSkeleton height={200} /> : (
@@ -789,7 +783,7 @@ export default function Analytics() {
         )}
       </div>
 
-      <div className="made-in-india text-center text-sm py-4 text-gray-500">Made with ❤️ in Jabalpur, India 🇮🇳</div>
+      <div className="made-in-india text-center text-sm py-4 text-gray-500">Made with  in Jabalpur, India </div>
     </div>
   );
 }

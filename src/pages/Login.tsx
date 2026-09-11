@@ -128,14 +128,7 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden"
-      style={{ background: 'radial-gradient(ellipse at top, #EDE9FE 0%, #FCE7F3 50%, #F5F3FF 100%)' }}>
-
-      {/* Decorative blurred circles */}
-      <div className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] rounded-full pointer-events-none"
-        style={{ background: 'rgba(109,40,217,0.06)', filter: 'blur(80px)' }} />
-      <div className="absolute bottom-[-15%] left-[-10%] w-[400px] h-[400px] rounded-full pointer-events-none"
-        style={{ background: 'rgba(219,39,119,0.05)', filter: 'blur(80px)' }} />
+    <div className="min-h-screen flex items-center justify-center p-4" style={{ background: '#F4F5F7' }}>
 
       {/* Language Toggle - top right */}
       <button
@@ -150,13 +143,8 @@ export default function Login() {
       <div id="recaptcha-container" />
 
       {/* Login Card */}
-      <div className="relative w-full max-w-[420px] mx-auto animate-slide-up z-10">
-        <div className="p-10 bg-white relative overflow-hidden"
-          style={{
-            borderRadius: '24px',
-            border: '1px solid rgba(109,40,217,0.1)',
-            boxShadow: '0 20px 60px rgba(109,40,217,0.12), 0 4px 20px rgba(0,0,0,0.06)'
-          }}>
+      <div className="relative w-full max-w-[400px] mx-auto z-10">
+        <div className="p-8 bg-white border border-gray-200 rounded-lg">
 
           {/* Logo */}
           <div className="text-center mb-8">
@@ -165,8 +153,8 @@ export default function Login() {
 
           {step === 'phone' ? (
             <div className="animate-slide-up">
-              <h2 className="text-xl font-heading font-semibold mb-1 text-center" style={{ color: '#1E1B4B' }}>
-                {language === 'hi' ? 'Swagat hai! 👋' : 'Welcome Back! 👋'}
+              <h2 className="text-lg font-semibold mb-1 text-center text-gray-900">
+                {language === 'hi' ? 'Swagat hai!' : 'Welcome Back'}
               </h2>
               <p className="text-sm text-center mb-6" style={{ color: '#6B7280' }}>
                 {language === 'hi' ? 'Apna phone number daalo' : 'Enter your mobile number to continue'}
@@ -177,14 +165,10 @@ export default function Login() {
                 <label className="block text-[13px] font-semibold text-[#374151] mb-2 font-heading">
                   {t('phoneNumber')}
                 </label>
-                <div className="flex overflow-hidden transition-all bg-white"
-                  style={{
-                    borderRadius: '12px',
-                    border: error ? '2px solid #DC2626' : '1.5px solid #E5E7EB',
-                    height: '52px',
-                  }}>
-                  <div className="flex items-center gap-2 px-4 border-r border-[#E5E7EB] text-gray-600 text-sm font-medium flex-shrink-0 bg-gray-50">
-                    🇮🇳 +91
+                <div className="flex overflow-hidden border border-gray-200 rounded-md"
+                  style={{ height: '40px' }}>
+                  <div className="flex items-center gap-1.5 px-3 border-r border-gray-200 text-gray-500 text-sm font-medium flex-shrink-0 bg-gray-50">
+                    +91
                   </div>
                   <input
                     type="tel"
@@ -214,11 +198,10 @@ export default function Login() {
                   (loading || phone.length !== 10) && 'opacity-50 cursor-not-allowed'
                 )}
                 style={{
-                  background: 'linear-gradient(135deg, #6D28D9 0%, #9333EA 50%, #DB2777 100%)',
-                  height: '54px',
-                  borderRadius: '14px',
-                  boxShadow: '0 8px 24px rgba(109,40,217,0.35)',
-                  fontSize: '15px',
+                  background: '#6D28D9',
+                  height: '40px',
+                  borderRadius: '6px',
+                  fontSize: '14px',
                 }}
               >
                 {loading ? (
@@ -258,12 +241,9 @@ export default function Login() {
             </div>
           ) : (
             <div className="animate-slide-up">
-              <div className="text-center mb-6">
-                <div className="w-12 h-12 rounded-full bg-purple-50 flex items-center justify-center mx-auto mb-3">
-                  <MessageSquare size={20} className="text-purple-600" />
-                </div>
-                <h2 className="text-xl font-heading font-semibold mb-1" style={{ color: '#1E1B4B' }}>
-                  {language === 'hi' ? 'OTP Bhej Diya! ✅' : 'OTP Sent! ✅'}
+              <div className="text-center mb-5">
+                <h2 className="text-lg font-semibold mb-1 text-gray-900">
+                  {language === 'hi' ? 'OTP Bhej Diya' : 'OTP Sent'}
                 </h2>
                 <p className="text-sm" style={{ color: '#6B7280' }}>
                   {language === 'hi'
@@ -290,11 +270,11 @@ export default function Login() {
                         : 'border-[#E5E7EB] bg-white text-[#1F2937] focus:border-[#6D28D9]'
                     )}
                     style={{
-                      borderWidth: '2px',
+                      borderWidth: '1px',
                       borderStyle: 'solid',
-                      borderRadius: '12px',
-                      height: '52px',
-                      width: '48px',
+                      borderRadius: '6px',
+                      height: '44px',
+                      width: '40px',
                     }}
                     maxLength={1}
                     autoFocus={index === 0}
@@ -313,11 +293,10 @@ export default function Login() {
                   (loading || otp.join('').length !== 6) && 'opacity-50 cursor-not-allowed'
                 )}
                 style={{
-                  background: 'linear-gradient(135deg, #6D28D9 0%, #9333EA 50%, #DB2777 100%)',
-                  height: '54px',
-                  borderRadius: '14px',
-                  boxShadow: '0 8px 24px rgba(109,40,217,0.35)',
-                  fontSize: '15px',
+                  background: '#6D28D9',
+                  height: '40px',
+                  borderRadius: '6px',
+                  fontSize: '14px',
                 }}
               >
                 {loading ? (
