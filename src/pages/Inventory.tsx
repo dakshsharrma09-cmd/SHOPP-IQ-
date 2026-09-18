@@ -12,10 +12,11 @@ import { db } from '../lib/firebase';
 import type { Product, Category, StockMovement } from '../types/firestore';
 import {
   Search, Plus, Upload, LayoutGrid, LayoutList, AlertTriangle, X,
-  Pencil, Trash2, PlusCircle
+  Pencil, Trash2, PlusCircle, Camera
 } from 'lucide-react';
 import { PageSkeleton } from '../components/Skeleton';
 import { EmptyState } from '../components/EmptyState';
+import InventoryScanner from '../components/InventoryScanner';
 
 const defaultForm = {
   name: '', nameHindi: '', barcode: '', sku: '', hsnCode: '',
@@ -39,6 +40,7 @@ export default function Inventory() {
   const [showStockModal, setShowStockModal] = useState(false);
   const [stockProduct, setStockProduct] = useState<Product | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null);
+  const [showScanner, setShowScanner] = useState(false);
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
   const [loaded, setLoaded] = useState(false);
@@ -118,6 +120,17 @@ export default function Inventory() {
       reorderQuantity: p.reorderQuantity, isActive: true,
     });
     setShowSlideOver(true);
+  };
+
+  // Scanner callbacks
+  const handleScanNewProduct = (barcode: string) => {
+    setEditingProduct(null);
+    setForm({ ...defaultForm, barcode });
+    setShowSlideOver(true);
+  };
+
+  const handleScanEditProduct = (product: Product) => {
+    openEditProduct(product);
   };
 
   const handleAddCategory = async () => {
@@ -226,6 +239,10 @@ export default function Inventory() {
         <div className="flex gap-2">
           <button onClick={() => showToast('Bulk import jaldi aa raha hai!', 'info')} className="flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-gray-200 text-gray-700 hover:bg-gray-50 transition-all text-sm">
             <Upload size={14} /> {t('bulkImport')}
+          </button>
+          <button onClick={() => setShowScanner(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-gray-200 text-gray-700 hover:bg-gray-50 transition-all text-sm">
+            <Camera size={14} /> Scan
           </button>
           <button onClick={openAddProduct}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-purple-700 hover:bg-purple-800 text-white transition-all text-sm font-medium">
@@ -563,6 +580,16 @@ export default function Inventory() {
           </div>
         </div>
       )}
+
+      {/* Inventory Scanner */}
+      <InventoryScanner
+        isOpen={showScanner}
+        onClose={() => setShowScanner(false)}
+        products={products}
+        onNewProduct={handleScanNewProduct}
+        onEditProduct={handleScanEditProduct}
+      />
+
       <div className="text-center text-xs py-4 text-gray-400 mt-4">Made in Jabalpur, India</div>
     </div>
   );
