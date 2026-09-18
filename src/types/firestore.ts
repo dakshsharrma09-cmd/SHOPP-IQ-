@@ -50,7 +50,7 @@ export interface Product {
   hsnCode?: string;
   categoryId: string;
   categoryName?: string;
-  unit: 'kg' | 'g' | 'litre' | 'ml' | 'piece' | 'dozen' | 'box' | 'packet' | 'other';
+  unit: 'kg' | 'g' | 'litre' | 'ml' | 'piece' | 'dozen' | 'box' | 'packet' | 'set' | 'pair' | 'bundle' | 'meter' | 'other';
   purchasePrice: number;
   sellingPrice: number;
   mrp: number;

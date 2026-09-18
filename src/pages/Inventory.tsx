@@ -193,19 +193,19 @@ export default function Inventory() {
 
   if (loading) return <PageSkeleton />;
 
-  if (loaded && products.length === 0) {
-    return (
-      <EmptyState
-        title="Koi product nahi hai"
-        subtitle="Apna pehla product add karo!"
-        actionLabel="+ Product Add Karo"
-        onAction={() => setShowSlideOver(true)}
-      />
-    );
-  }
+  const showEmptyState = loaded && products.length === 0;
 
   return (
     <div>
+      {showEmptyState ? (
+        <EmptyState
+          title="Koi product nahi hai"
+          subtitle="Apna pehla product add karo!"
+          actionLabel="+ Product Add Karo"
+          onAction={() => { setEditingProduct(null); setForm(defaultForm); setShowSlideOver(true); }}
+        />
+      ) : (
+        <>
       {/* Low Stock Banner */}
       {lowStockCount > 0 && (
         <div className="flex items-center gap-2 px-3 py-2 mb-4 bg-amber-50 border border-amber-200 rounded-md">
@@ -411,6 +411,9 @@ export default function Inventory() {
         </div>
       )}
 
+      </>
+      )}
+
       {/* Slide-Over: Add/Edit Product */}
       {showSlideOver && (
         <div className="fixed inset-0 z-50 flex">
@@ -466,6 +469,8 @@ export default function Inventory() {
                   className="w-full px-3 py-1.5 rounded-md border border-gray-200 text-sm outline-none focus:border-brand-purple">
                   <option value="piece">Piece</option>
                   <option value="packet">Packet</option>
+                  <option value="set">Set</option>
+                  <option value="pair">Pair</option>
                   <option value="kg">KG</option>
                   <option value="gram">Gram</option>
                   <option value="litre">Litre</option>
@@ -473,6 +478,8 @@ export default function Inventory() {
                   <option value="box">Box</option>
                   <option value="dozen">Dozen</option>
                   <option value="meter">Meter</option>
+                  <option value="bundle">Bundle</option>
+                  <option value="other">Other</option>
                 </select>
               </div>
               <div className="grid grid-cols-3 gap-2">
