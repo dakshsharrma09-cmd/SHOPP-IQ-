@@ -15,7 +15,7 @@ import {
   Pencil, Trash2, PlusCircle, Camera
 } from 'lucide-react';
 import { PageSkeleton } from '../components/Skeleton';
-import { EmptyState } from '../components/EmptyState';
+// import { EmptyState } from '../components/EmptyState';
 import InventoryScanner from '../components/InventoryScanner';
 
 const defaultForm = {
@@ -211,12 +211,20 @@ export default function Inventory() {
   return (
     <div>
       {showEmptyState ? (
-        <EmptyState
-          title="Koi product nahi hai"
-          subtitle="Apna pehla product add karo!"
-          actionLabel="+ Product Add Karo"
-          onAction={() => { setEditingProduct(null); setForm(defaultForm); setShowSlideOver(true); }}
-        />
+        <div className="flex flex-col items-center justify-center py-16 px-4 text-center">
+          <h2 className="text-lg font-semibold text-gray-900 mb-1">Koi product nahi hai</h2>
+          <p className="text-sm text-gray-500 mb-6 max-w-sm">Apna pehla product add karo! Barcode scan karo ya manually add karo.</p>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <button onClick={() => setShowScanner(true)}
+              className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-md bg-purple-700 hover:bg-purple-800 text-white text-sm font-medium transition-colors">
+              <Camera size={16} /> Scan & Add
+            </button>
+            <button onClick={() => { setEditingProduct(null); setForm(defaultForm); setShowSlideOver(true); }}
+              className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-md border border-gray-200 text-gray-700 hover:bg-gray-50 text-sm font-medium transition-colors">
+              <Plus size={16} /> Manual Add
+            </button>
+          </div>
+        </div>
       ) : (
         <>
       {/* Low Stock Banner */}
